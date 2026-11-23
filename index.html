@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -10,525 +9,1094 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&amp;family=Inter:wght@400;500;600;700&amp;family=Patrick+Hand&amp;display=swap" rel="stylesheet"/>
 <style>
-    :root{--bg-cream:#fbf6ee;--ink-espresso:#2b1d14;--accent-terracotta:#b85d3b;--accent-sage:#4f6d58}
-    body{font-family:Inter,system-ui,sans-serif;background-color:var(--bg-cream);background-image:radial-gradient(rgba(92,70,56,.08) 1px,transparent 0),radial-gradient(rgba(184,93,59,.05) 1px,transparent 0);background-size:24px 24px;background-position:0 0,12px 12px;color:var(--ink-espresso);overflow-x:hidden}
-    h1,h2,h3,.font-display{font-family:Fraunces,Georgia,serif}.font-sketch{font-family:"Patrick Hand",Inter,cursive}
-    .sketch-box{border:2px solid #2b1d14;border-radius:22px 16px 25px 18px/17px 24px 16px 22px;box-shadow:3px 4px 0 rgba(43,29,20,.16);position:relative}
-    .sketch-pill{border:1.5px solid #2b1d14;border-radius:14px 10px 15px 11px/11px 14px 10px 13px;box-shadow:2px 2px 0 rgba(43,29,20,.14)}
-    .sketch-btn{border:1.8px solid #2b1d14;border-radius:15px 11px 16px 12px/12px 15px 11px 14px;box-shadow:2px 3px 0 #2b1d14;transition:transform .12s,box-shadow .12s}
-    .sketch-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 4px 0 #2b1d14}.sketch-btn:active{transform:translate(1px,2px);box-shadow:1px 1px 0 #2b1d14}
-    .corkboard-surface{background-color:#c89566;background-image:radial-gradient(rgba(66,36,14,.22) 1px,transparent 0),radial-gradient(rgba(255,236,204,.18) 1px,transparent 0),linear-gradient(160deg,#cf9d6e,#b98353 55%,#a87243);background-size:14px 14px,21px 21px,100% 100%;background-position:0 0,7px 11px,0 0;border:10px solid #5c381e;border-radius:24px 18px 26px 20px/19px 25px 18px 23px;box-shadow:inset 0 4px 14px rgba(34,17,5,.35),4px 6px 0 rgba(43,29,20,.18)}
-    .pushpin-head{width:14px;height:14px;border-radius:9999px;border:2px solid #2b1d14;box-shadow:1px 2px 2px #0006,inset -2px -2px 3px #0004}
-    .chalk-board{background:linear-gradient(160deg,#27332b,#1b241e);border:2px solid #2b1d14;border-radius:18px 22px 16px 20px/20px 16px 22px 18px;box-shadow:inset 0 0 0 2px #fde68a29,3px 4px 0 #2b1d1440}
-    .wood-shelf{background:linear-gradient(180deg,#9a633e,#6f4228);border:8px solid #54331f;box-shadow:inset 0 0 0 2px #e6bd8b55}
-    .wood-shelf-espresso{background:linear-gradient(180deg,#5b4034,#30231d);border-color:#241913}
-    .wood-shelf-matcha{background:linear-gradient(180deg,#8a9064,#4c6048);border-color:#344433}
-    .book-spine{writing-mode:vertical-rl;transform:rotate(180deg);min-height:150px;max-height:210px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #2b1d14;border-radius:5px 3px 4px 2px;box-shadow:2px 3px 0 #24150f88;padding:10px 6px;font-family:Fraunces,serif;font-weight:700;letter-spacing:.03em;transition:transform .15s}
-    .book-spine:hover{transform:rotate(180deg) translateY(5px)}
-    .thermal-receipt{background:#fffefa;color:#261a12;border:1.5px dashed #2b1d14;border-radius:6px;box-shadow:2px 4px 0 #2b1d141f}
-    @media print{body *{visibility:hidden!important}#printableReceiptCard,#printableReceiptCard *{visibility:visible!important}#printableReceiptCard{position:fixed!important;left:0!important;top:0!important;width:100%!important;max-width:420px!important;margin:0 auto!important;box-shadow:none!important;background:white!important;color:black!important}.no-print{display:none!important}}
-
-    /* Hand-inked café illustration pass — inspired by cozy café game art */
-    :root{
-      --bg-cream:#fff8e9;--ink-espresso:#38281f;--accent-terracotta:#c76e4b;--accent-sage:#71856a;
-    }
-    body{
-      font-family:"Patrick Hand",cursive!important;
-      background-color:#fff8e9;
-      background-image:
-        radial-gradient(ellipse at 12% 18%,rgba(191,145,91,.10) 0 1px,transparent 2px),
-        radial-gradient(ellipse at 78% 62%,rgba(191,145,91,.10) 0 1px,transparent 2px),
-        repeating-linear-gradient(0deg,transparent 0 31px,rgba(177,143,105,.055) 32px 33px);
-      background-size:29px 29px,37px 37px,100% 33px;
-      color:#38281f;
-      font-size:17px;
-    }
-    h1,h2,h3,h4,.font-display{font-family:Fraunces,Georgia,serif}
-    p, label, input, textarea, select, button, a, li, span{letter-spacing:.01em}
-    h1,h2,h3{ text-decoration: underline; text-decoration-color:rgba(199,110,75,.34); text-decoration-thickness:2px; text-underline-offset:6px; }
-    .sketch-box,.sketch-pill,.sketch-btn,
-    section .rounded-2xl, main .rounded-xl, main .rounded-2xl{
-      border-color:#49372b!important;
-      border-radius:23px 17px 25px 19px/18px 25px 17px 23px!important;
-    }
-    .sketch-box, .sketch-btn, .sketch-pill{
-      box-shadow:2px 3px 0 rgba(56,40,31,.16), 0 0 0 1px rgba(56,40,31,.06);
-    }
-    .sketch-btn{
-      border-width:2px!important;
-      transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
-      font-family:"Patrick Hand",cursive!important;
-      font-size:15px!important;
-    }
-    .sketch-btn:hover{transform:translate(-1px,-2px) rotate(-.5deg);filter:saturate(1.08);box-shadow:3px 5px 0 rgba(56,40,31,.25)!important}
-    button:not(.sketch-btn){
-      font-family:"Patrick Hand",cursive;
-      cursor:pointer;
-    }
-    input,textarea,select{
-      font-family:"Patrick Hand",cursive!important;
-      border:2px solid rgba(56,40,31,.7)!important;
-      border-radius:13px 10px 15px 11px!important;
-      box-shadow:inset 0 1px 2px rgba(56,40,31,.05);
-    }
-    header{
-      background:rgba(255,248,233,.94)!important;
-      border-bottom:2px dashed rgba(56,40,31,.55)!important;
-    }
-    header a{font-family:"Patrick Hand",cursive}
-    .chalk-board{
-      background-color:#536b52!important;
-      background-image:radial-gradient(rgba(255,255,255,.13) .8px,transparent 1px)!important;
-      background-size:8px 8px!important;
-      border:3px solid #49372b!important;
-      border-radius:18px 23px 17px 22px/22px 17px 24px 18px!important;
-    }
-    .wood-shelf{
-      border-radius:10px 7px 12px 8px!important;
-      outline:2px dashed rgba(255,232,194,.45);
-      outline-offset:-7px;
-    }
-    .book-spine{font-family:"Patrick Hand",cursive!important;border-radius:4px 2px 5px 3px!important}
-    .thermal-receipt{font-family:"Patrick Hand",cursive!important;background:#fffdf5}
-    #boothFrame{border-radius:17px 22px 16px 21px!important;border-width:4px!important;box-shadow:4px 5px 0 rgba(56,40,31,.24)!important}
-    #bookSongsList li{
-      border:1.7px dashed rgba(56,40,31,.45);
-      border-radius:13px 10px 15px 11px!important;
-      box-shadow:2px 2px 0 rgba(56,40,31,.09);
-    }
-    .spotify-song-link{display:flex;color:inherit;text-decoration:none;align-items:center;gap:12px;width:100%;min-width:0}
-    .spotify-song-link:hover .spotify-song-title{color:#287447;text-decoration:underline;text-decoration-style:wavy;text-underline-offset:3px}
-    .spotify-song-icon{flex:0 0 auto;width:29px;height:29px;border:1.5px solid #38281f;border-radius:50%;display:grid;place-items:center;background:#dce9d7;color:#245c3a;font-size:15px;box-shadow:1px 2px 0 rgba(56,40,31,.18)}
-    .spotify-song-copy{min-width:0}
-    .spotify-song-title{font-weight:700}
-    .spotify-song-hint{font-size:12px;color:#58704e}
-    /* little doodle details */
-    .font-sketch{font-family:"Patrick Hand",cursive!important}
-    ::selection{background:#f4d59b;color:#38281f}
-    @media(max-width:640px){body{font-size:16px}.sketch-box{box-shadow:2px 3px 0 rgba(56,40,31,.13)}}
-
-
-    .doodle-book,.doodle-lamp{display:block;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(1px 1px 0 rgba(255,235,195,.45))}
-    .doodle-book{width:34px;height:34px;transform:rotate(-4deg)}
-    .doodle-lamp{width:92px;height:64px;color:#594536;stroke-width:2.3;transform:rotate(-1deg)}
-    .hand-drawn-mark{display:inline-flex;align-items:center;justify-content:center;position:relative}
-    .hand-drawn-mark:after{content:"";position:absolute;inset:2px;border:1.5px solid currentColor;border-radius:43% 57% 48% 52% / 55% 44% 56% 45%;transform:rotate(-8deg);pointer-events:none}
-    .doodle-word{font-family:"Patrick Hand",cursive;letter-spacing:.03em}
-    .spotify-song-icon{font-family:"Patrick Hand",cursive;font-size:19px;font-weight:bold;transform:rotate(-7deg)}
-    /* Hand-drawn iconography uses ink strokes rather than platform emoji glyphs. */
-    button,label,.spotify-song-link{font-variant-emoji:text}
-
-
-    #student-corner input:focus,#student-corner textarea:focus,#student-corner select:focus{outline:3px solid rgba(113,133,106,.28);outline-offset:2px}
-    #student-corner button:disabled{cursor:not-allowed;opacity:.45}
-    #studyFlashcard{transition:transform .18s ease,box-shadow .18s ease;box-shadow:3px 4px 0 rgba(56,40,31,.12)}
-    #studyFlashcard:hover{transform:rotate(-.35deg) translateY(-1px);box-shadow:4px 5px 0 rgba(56,40,31,.16)}
-
-  
-    .page-view.hidden{display:none!important}.page-intro{border-style:dashed}.page-view{animation:pageArrive .22s ease-out}@keyframes pageArrive{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+  :root{--bg-cream:#fff8e9;--ink-espresso:#38281f;--accent-terracotta:#c76e4b;--accent-sage:#71856a}
+  body{
+    font-family:"Patrick Hand",cursive!important;
+    background-color:#fff8e9;
+    background-image:
+      radial-gradient(ellipse at 12% 18%,rgba(191,145,91,.10) 0 1px,transparent 2px),
+      radial-gradient(ellipse at 78% 62%,rgba(191,145,91,.10) 0 1px,transparent 2px),
+      repeating-linear-gradient(0deg,transparent 0 31px,rgba(177,143,105,.055) 32px 33px);
+    background-size:29px 29px,37px 37px,100% 33px;
+    color:#38281f;
+    font-size:17px;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4,.font-display{font-family:Fraunces,Georgia,serif}
+  h1,h2,h3{text-decoration:underline;text-decoration-color:rgba(199,110,75,.34);text-decoration-thickness:2px;text-underline-offset:6px}
+  .sketch-box,.sketch-pill,.sketch-btn,section .rounded-2xl,main .rounded-xl,main .rounded-2xl{
+    border:2px solid #49372b!important;
+    border-radius:23px 17px 25px 19px/18px 25px 17px 23px!important;
+    box-shadow:2px 3px 0 rgba(56,40,31,.16),0 0 0 1px rgba(56,40,31,.06);
+  }
+  .sketch-btn{transition:transform .16s ease,box-shadow .16s ease;font-family:"Patrick Hand",cursive!important;font-size:15px!important}
+  .sketch-btn:hover{transform:translate(-1px,-2px);box-shadow:3px 5px 0 rgba(56,40,31,.25)!important}
+  button{cursor:pointer}
+  input,textarea,select{font-family:"Patrick Hand",cursive!important;border:2px solid rgba(56,40,31,.7)!important;border-radius:13px 10px 15px 11px!important}
+  header{background:rgba(255,248,233,.94)!important;border-bottom:2px dashed rgba(56,40,31,.55)!important}
+  .chalk-board{background-color:#536b52!important;background-image:radial-gradient(rgba(255,255,255,.13) .8px,transparent 1px)!important;background-size:8px 8px!important;border:3px solid #49372b!important}
+  .wood-shelf{background:linear-gradient(180deg,#9a633e,#6f4228);border:8px solid #54331f;border-radius:10px 7px 12px 8px!important;outline:2px dashed rgba(255,232,194,.45);outline-offset:-7px}
+  .wood-shelf-espresso{background:linear-gradient(180deg,#5b4034,#30231d);border-color:#241913}
+  .wood-shelf-matcha{background:linear-gradient(180deg,#8a9064,#4c6048);border-color:#344433}
+  .book-spine{writing-mode:vertical-rl;transform:rotate(180deg);min-height:150px;max-height:210px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #2b1d14;border-radius:4px 2px 5px 3px!important;box-shadow:2px 3px 0 #24150f88;padding:10px 6px;font-family:"Patrick Hand",cursive!important;font-weight:700;transition:transform .15s}
+  .book-spine:hover{transform:rotate(180deg) translateY(5px)}
+  .pushpin-head{width:14px;height:14px;border-radius:9999px;border:2px solid #2b1d14;box-shadow:1px 2px 2px #0006,inset -2px -2px 3px #0004}
+  .thermal-receipt{background:#fffdf5;color:#261a12;border:1.5px dashed #2b1d14!important}
+  .spotify-song-link{display:flex;color:inherit;text-decoration:none;align-items:center;gap:12px;width:100%;min-width:0}
+  .spotify-song-icon{flex:0 0 auto;width:29px;height:29px;border:1.5px solid #38281f;border-radius:50%;display:grid;place-items:center;background:#dce9d7;color:#245c3a;font-size:15px}
+  .page-view.hidden{display:none!important}
+  .doodle-book{width:34px;height:34px;display:block;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-4deg)}
+  @media print{body *{visibility:hidden!important}#printableReceiptCard,#printableReceiptCard *{visibility:visible!important}#printableReceiptCard{position:fixed!important;left:0!important;top:0!important;width:100%!important;max-width:420px!important;margin:0 auto!important}.no-print{display:none!important}}
 </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-amber-200 selection:text-stone-900">
-<header class="sticky top-0 z-30 bg-[#fbf6ee]/95 backdrop-blur border-b-2 border-stone-900/80 no-print">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
-<div class="flex items-center gap-3"><div class="w-11 h-11 sketch-pill bg-amber-900 text-amber-100 flex items-center justify-center text-2xl"><svg aria-hidden="true" class="doodle-book" viewbox="0 0 44 44"><path d="M7 10 Q15 6 22 12 Q29 6 37 10 L37 34 Q29 30 22 36 Q15 30 7 34 Z"></path><path d="M22 12 L22 36 M11 15 Q16 13 19 16 M25 16 Q30 13 34 15 M11 21 Q16 19 19 22 M25 22 Q30 19 34 21"></path></svg></div><div><a class="font-display text-xl sm:text-2xl font-bold" href="#home" onclick="showPage('home')">Quillfinite</a><p class="font-sketch text-sm text-stone-700 hidden sm:block">Hand-drawn café nook • fresh espresso pulls • booth snaps &amp; margin doodles</p></div></div>
-<nav class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium"><button class="px-3 py-2 sketch-btn bg-amber-900 text-amber-50" onclick='showPage("home")' data-nav-page="home" type="button">Home</button><button class="px-3 py-2 sketch-btn bg-white" onclick='showPage("scanner-booth")' data-nav-page="scanner-booth" type="button">Book Booth</button><button class="px-3 py-2 sketch-btn bg-white" onclick='showPage("story-explorer")' data-nav-page="story-explorer" type="button">Story Notes</button><button class="px-3 py-2 sketch-btn bg-white" onclick='showPage("student-corner")' data-nav-page="student-corner" type="button">Study Studio</button><button class="px-3 py-2 sketch-btn bg-white" onclick='showPage("bookshelf-section")' data-nav-page="bookshelf-section" type="button">Bookshelf</button><button class="px-3 py-2 sketch-btn bg-white" onclick='showPage("corkboard-section")' data-nav-page="corkboard-section" type="button">Corkboard</button><button class="px-3 py-2 sketch-btn bg-white" onclick='showPage("nightstand-section")' data-nav-page="nightstand-section" type="button">Nightstand</button></nav>
-</div>
+<body class="min-h-screen flex flex-col">
+<header class="sticky top-0 z-30 bg-[#fbf6ee]/95 backdrop-blur no-print">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-11 h-11 sketch-pill bg-amber-900 text-amber-100 flex items-center justify-center">
+        <svg aria-hidden="true" class="doodle-book" viewBox="0 0 44 44">
+          <path d="M7 10 Q15 6 22 12 Q29 6 37 10 L37 34 Q29 30 22 36 Q15 30 7 34 Z"></path>
+          <path d="M22 12 L22 36 M11 15 Q16 13 19 16 M25 16 Q30 13 34 15 M11 21 Q16 19 19 22 M25 22 Q30 19 34 21"></path>
+        </svg>
+      </div>
+      <div>
+        <a class="font-display text-xl sm:text-2xl font-bold" href="#home" onclick="showPage('home')">Quillfinite</a>
+        <p class="text-sm text-stone-700 hidden sm:block">Hand-drawn café nook • scan a book, pin notes, and shelve your favorites</p>
+      </div>
+    </div>
+    <nav class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium">
+      <button class="px-3 py-2 sketch-btn bg-amber-900 text-amber-50" data-nav-page="home" onclick="showPage('home')" type="button">Home</button>
+      <button class="px-3 py-2 sketch-btn bg-white" data-nav-page="scanner-booth" onclick="showPage('scanner-booth')" type="button">Book Booth</button>
+      <button class="px-3 py-2 sketch-btn bg-white" data-nav-page="story-explorer" onclick="showPage('story-explorer')" type="button">Story Notes</button>
+      <button class="px-3 py-2 sketch-btn bg-white" data-nav-page="student-corner" onclick="showPage('student-corner')" type="button">Study Studio</button>
+      <button class="px-3 py-2 sketch-btn bg-white" data-nav-page="bookshelf-section" onclick="showPage('bookshelf-section')" type="button">Bookshelf</button>
+    </nav>
+  </div>
 </header>
-<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-10" id="top">
-<div class="hidden sketch-box bg-amber-50 px-4 py-3 text-sm flex items-center justify-between gap-3" id="statusBanner" role="status"><span id="statusBannerText">Ready.</span><button class="text-xs font-semibold" onclick="hideBanner()">Dismiss ✕</button></div><section class="page-view" data-page="home" id="page-home"><div class="sketch-box bg-[#fffaf2] p-6 sm:p-10 mb-7 text-center"><p class="font-sketch text-lg text-stone-600">A little corner for readers, dreamers, and students</p><h1 class="font-display text-4xl sm:text-6xl font-bold mt-2">Welcome to Quillfinite</h1><p class="max-w-2xl mx-auto font-sketch text-lg sm:text-xl text-stone-700 mt-4">Choose a space to wander into. Your books, story notes, study plans, and favorite little things each have a place here.</p></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"><button class="sketch-box bg-amber-100 p-5 text-left hover:-translate-y-1 transition-transform min-h-[190px] flex flex-col justify-between" onclick='showPage("scanner-booth")' type="button"><div><p class="font-sketch text-sm text-stone-600">OPEN THIS SPACE</p><h2 class="font-display text-2xl font-bold mt-2">Book Booth</h2><p class="text-sm text-stone-700 mt-2">Scan a cover, discover a book, and start your reading session.</p></div><div class="font-sketch text-base font-bold mt-5">Step inside →</div></button><button class="sketch-box bg-[#f3dcc2] p-5 text-left hover:-translate-y-1 transition-transform min-h-[190px] flex flex-col justify-between" onclick='showPage("story-explorer")' type="button"><div><p class="font-sketch text-sm text-stone-600">OPEN THIS SPACE</p><h2 class="font-display text-2xl font-bold mt-2">Story Notes</h2><p class="text-sm text-stone-700 mt-2">Explore summaries, themes, characters, story arcs, and soundtrack links.</p></div><div class="font-sketch text-base font-bold mt-5">Step inside →</div></button><button class="sketch-box bg-emerald-100 p-5 text-left hover:-translate-y-1 transition-transform min-h-[190px] flex flex-col justify-between" onclick='showPage("student-corner")' type="button"><div><p class="font-sketch text-sm text-stone-600">OPEN THIS SPACE</p><h2 class="font-display text-2xl font-bold mt-2">Study Studio</h2><p class="text-sm text-stone-700 mt-2">Plan assignments, focus with a timer, make flashcards, and save notes.</p></div><div class="font-sketch text-base font-bold mt-5">Step inside →</div></button><button class="sketch-box bg-amber-100 p-5 text-left hover:-translate-y-1 transition-transform min-h-[190px] flex flex-col justify-between" onclick='showPage("bookshelf-section")' type="button"><div><p class="font-sketch text-sm text-stone-600">OPEN THIS SPACE</p><h2 class="font-display text-2xl font-bold mt-2">My Bookshelf</h2><p class="text-sm text-stone-700 mt-2">Browse your saved books and keep track of your reading era.</p></div><div class="font-sketch text-base font-bold mt-5">Step inside →</div></button><button class="sketch-box bg-[#e8cbb0] p-5 text-left hover:-translate-y-1 transition-transform min-h-[190px] flex flex-col justify-between" onclick='showPage("corkboard-section")' type="button"><div><p class="font-sketch text-sm text-stone-600">OPEN THIS SPACE</p><h2 class="font-display text-2xl font-bold mt-2">Corkboard</h2><p class="text-sm text-stone-700 mt-2">Pin quotes, memories, and little things worth remembering.</p></div><div class="font-sketch text-base font-bold mt-5">Step inside →</div></button><button class="sketch-box bg-emerald-100 p-5 text-left hover:-translate-y-1 transition-transform min-h-[190px] flex flex-col justify-between" onclick='showPage("nightstand-section")' type="button"><div><p class="font-sketch text-sm text-stone-600">OPEN THIS SPACE</p><h2 class="font-display text-2xl font-bold mt-2">Nightstand</h2><p class="text-sm text-stone-700 mt-2">Keep your favorite quotes and reading comforts close.</p></div><div class="font-sketch text-base font-bold mt-5">Step inside →</div></button></div></section>
-<div class="page-view hidden" data-page="scanner-booth" id="page-scanner-booth"><div class="page-intro sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3"><div class="min-w-0 flex-1"><p class="font-sketch text-sm text-stone-600">A warm little corner to begin a new story.</p><h1 class="font-display text-2xl sm:text-3xl font-bold">Book Booth</h1></div><button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick='showPage("home")' type="button">← Home</button></div><section class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start" id="scanner-booth">
-<div class="lg:col-span-5 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5">
-<div class="flex items-start justify-between gap-2"><div><span class="inline-block text-xs font-sketch px-2.5 py-0.5 sketch-pill bg-amber-100">Corner Table Booth • 2:3 Sketch Frame</span><h2 class="font-display text-xl sm:text-2xl font-bold mt-1.5">Book Scan Booth</h2><p class="font-sketch text-base text-stone-700 mt-0.5">Snap your cover with a warm cuppa, upload a pic, or type any book title/author.</p></div><button class="shrink-0 text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50" id="filmTintBtn" onclick="toggleFilmTint()">Golden Hour Cam</button></div>
-<div class="flex justify-center"><div class="relative w-full max-w-[270px] aspect-[2/3] rounded-2xl border-[5px] border-stone-900 bg-stone-950 overflow-hidden shadow-xl" id="boothFrame">
-<div class="w-full h-full bg-gradient-to-b from-stone-900 via-[#2a1d15] to-stone-950 flex flex-col items-center justify-between p-4 text-amber-50" id="idleBoothPlaceholder"><div class="w-full flex justify-between text-[10px] font-mono tracking-widest"><span>QUILL-BOOTH 04</span><span id="boothTimestamp">READY</span></div><div class="text-center"><div class="mx-auto mb-3 w-14 h-20 rounded-md border border-dashed border-amber-300/60 flex items-center justify-center text-amber-200 text-xl">✧</div><p class="font-display font-bold">Frame That Cover</p><p class="font-sketch text-sm text-amber-200/80 mt-1">Camera snaps, cover uploads, and book discoveries.</p></div><div class="w-full border-t border-amber-200/15 pt-2 flex justify-between text-[10px] text-amber-200/70"><span>2:3 PRINT</span><span>SOLO SHOT</span></div></div>
-<video autoplay="" class="hidden absolute inset-0 w-full h-full object-cover" id="cameraVideo" playsinline=""></video><img alt="Book booth preview" class="hidden absolute inset-0 w-full h-full object-contain bg-stone-900" id="snapshotImg"/><div class="pointer-events-none absolute inset-0 bg-amber-400/10 mix-blend-screen" id="filmOverlay"></div><div class="hidden absolute left-2 right-2 h-0.5 bg-amber-300 shadow-[0_0_12px_#fcd34d]" id="scanBeam"></div>
-<span class="pointer-events-none absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-amber-300"></span><span class="pointer-events-none absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-amber-300"></span><span class="pointer-events-none absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-amber-300"></span><span class="pointer-events-none absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-amber-300"></span>
-</div></div>
-<canvas class="hidden" id="captureCanvas"></canvas>
-<div class="flex flex-wrap justify-center gap-2"><button class="px-3.5 py-2 sketch-btn bg-amber-100 text-xs sm:text-sm font-semibold" id="cameraToggleBtn" onclick="toggleCamera()">Start Camera</button><label class="px-3.5 py-2 sketch-btn bg-white text-xs sm:text-sm font-semibold cursor-pointer">Upload Cover<input accept="image/*" class="hidden" id="coverFileInput" onchange="handleCoverFileUpload(event)" type="file"/></label><button class="px-3.5 py-2 sketch-btn bg-[#e8cbb0] text-xs sm:text-sm font-semibold" onclick="pinCurrentBoothPhoto()">Pin Snap Pin It</button></div>
-<form class="space-y-2.5 pt-1" onsubmit="handleScanSubmit(event)"><label class="block text-xs font-semibold text-stone-700" for="scanTitleInput">Book Title, Author, or Vibe to Scan &amp; Pull</label><div class="flex flex-col sm:flex-row gap-2"><input class="flex-1 rounded-xl border-2 border-stone-800/80 bg-white px-3.5 py-2.5 text-sm" id="scanTitleInput" placeholder="e.g., Flipped, Piranesi, Pachinko..." required="" type="text"/><button class="px-4 py-2.5 sketch-btn bg-[#b85d3b] text-white text-sm font-semibold" type="submit">Snap &amp; Scan</button></div><p class="font-sketch text-base text-stone-700 min-h-5" id="scanFeedback"></p></form>
-<div class="chalk-board rounded-2xl p-4 text-amber-50 space-y-3"><div class="flex items-center justify-between border-b border-dashed border-amber-200/20 pb-2"><div><p class="text-[10px] font-mono uppercase tracking-widest text-amber-300">Counter Special • Brew &amp; Read</p><p class="font-display text-sm font-bold">Pick Your Cuppa for This Chapter</p></div><span class="text-xs font-sketch px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200" id="cafeCupBadge">Oat Latte</span></div><div class="flex flex-wrap gap-1.5" id="coffeeMenuButtons"></div><p class="font-sketch text-base text-amber-100/90" id="coffeePairingNote"></p></div>
-</div>
-<div class="lg:col-span-7 sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-6">
-<div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-stone-800/20 pb-5"><div class="space-y-1.5 max-w-2xl"><div class="flex flex-wrap items-center gap-2"><span class="text-xs font-semibold px-2.5 py-1 sketch-pill bg-amber-100 text-amber-900" id="bookGenreBadge">Genre</span><span class="text-xs text-stone-600" id="bookMetaBadge">Year • Pages</span><span class="hidden text-xs px-2.5 py-1 sketch-pill bg-emerald-100 text-emerald-900" id="readStatusBadge">Finished ✓</span></div><h1 class="font-display text-2xl sm:text-4xl font-bold" id="bookTitle">Loading Book...</h1><p class="text-sm font-medium text-stone-700" id="bookAuthor">Author</p><p class="font-sketch text-base text-[#b85d3b]" id="bookVibe">Atmosphere</p></div><div class="flex flex-wrap items-center gap-2"><button class="px-3.5 py-2 sketch-btn bg-white text-xs font-semibold" id="markReadBtn" onclick="toggleReadStatus()">Finished It</button><button class="px-3.5 py-2 sketch-btn bg-[#4f6d58] text-white text-xs font-semibold" id="nightstandBtn" onclick="toggleNightstandStatus()">Pin to Nightstand</button><a class="px-3.5 py-2 sketch-btn bg-amber-100 text-amber-950 text-xs font-semibold" href="https://books.google.com" id="activeBookSearchLink" rel="noopener" target="_blank">Open in Books ↗</a></div></div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="md:col-span-2 rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-4"><h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">The Plot &amp; Lore</h3><p class="text-sm leading-relaxed" id="bookSynopsis"></p></div><div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4"><h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">Main Characters &amp; POVs</h3><p class="text-sm leading-relaxed" id="bookCharacters"></p></div><div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4"><h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">Core Themes &amp; Takeaways</h3><p class="text-sm leading-relaxed" id="bookThemes"></p></div></div>
-<div class="rounded-2xl border-2 border-stone-800/15 bg-white p-4 sm:p-5 space-y-3"><div class="flex flex-wrap items-center justify-between gap-2"><div><h3 class="font-display text-lg font-bold">Reading Queue Soundtrack</h3><p class="font-sketch text-base text-stone-600" id="bookSongMood"></p></div><button class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50" id="songListToggleBtn" onclick="toggleSongListView()">Show Top 2 Only</button></div><ol class="space-y-2.5 text-sm" id="bookSongsList"></ol></div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/50 p-4 space-y-2.5"><h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Adaptation &amp; Visual Notes</h3><p class="text-sm leading-relaxed text-stone-700" id="bookFilmNotes"></p><a class="inline-flex text-xs font-semibold text-[#b85d3b] hover:underline" href="#" id="bookTrailerLink" rel="noopener" target="_blank">Search Trailer &amp; Adaptation Clips ↗</a></div><div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4 space-y-2.5"><div class="flex items-center justify-between"><h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Your Rating &amp; Hot Take</h3><div aria-label="Book rating" class="flex items-center gap-1" id="ratingStars"></div></div><textarea class="w-full rounded-xl border-2 border-stone-800/20 bg-white p-2.5 font-sketch text-base" id="bookPersonalNote" oninput="savePersonalNote()" placeholder="Drop your hot take, favorite scene, or reaction..." rows="3"></textarea></div></div>
-<div class="thermal-receipt p-4 sm:p-6 space-y-3.5 max-w-xl mx-auto w-full" id="printableReceiptCard"><div class="text-center border-b border-dashed border-stone-800/40 pb-3"><p class="text-[11px] font-mono tracking-widest text-stone-600">★ QUILLFINITE COFFEE &amp; PAGE CO. ★</p><h3 class="font-mono text-base font-bold">READING RECEIPT &amp; BOOKMARK</h3><p class="text-[11px] font-mono text-stone-600" id="receiptTicketMeta">TICKET #QF-0104 • WARM CORNER TABLE</p></div><div class="space-y-1.5 font-mono text-xs border-b border-dashed border-stone-800/40 pb-3"><div class="flex justify-between gap-2"><span>TITLE:</span><span class="font-bold text-right" id="receiptTitleLine">—</span></div><div class="flex justify-between gap-2"><span>CUPPA PAIR:</span><span class="font-semibold" id="receiptDrinkLine">Oat Latte</span></div><div class="flex justify-between gap-2"><span>PROGRESS:</span><span class="font-semibold" id="receiptSummaryLine">p.0</span></div><div class="flex justify-between gap-2"><span>VIBE RATING:</span><span id="receiptRatingLine">Unrated</span></div><p class="font-sketch text-base pt-1 italic" id="receiptQuoteLine"></p></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end no-print"><div><label class="block text-[11px] font-semibold mb-1" for="currentPageInput">Current Page</label><input class="w-full rounded-xl border-2 border-stone-800/25 bg-white px-3 py-1.5 text-sm" id="currentPageInput" min="0" oninput="saveBookProgress()" placeholder="e.g. 84" type="number"/></div><div><label class="block text-[11px] font-semibold mb-1" for="totalPagesInput">Total Pages</label><input class="w-full rounded-xl border-2 border-stone-800/25 bg-white px-3 py-1.5 text-sm" id="totalPagesInput" min="1" oninput="saveBookProgress()" placeholder="e.g. 272" type="number"/></div><div><div class="flex justify-between text-[11px] font-semibold mb-1"><span>Bookmark</span><span id="pageProgressPercent">0%</span></div><div class="w-full h-2.5 rounded-full border border-stone-800/30 bg-amber-900/10 overflow-hidden"><div class="h-full bg-[#b85d3b]" id="pageProgressBar" style="width:0%"></div></div></div></div><div class="flex flex-wrap items-center justify-between gap-2 pt-1 no-print"><span class="font-mono text-[10px] text-stone-500">THANK YOU FOR READING SLOWLY</span><div class="flex gap-2"><button class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-100" onclick="copyReadingReceipt()">Copy Copy</button><button class="text-xs font-semibold px-3.5 py-1.5 sketch-btn bg-amber-900 text-amber-50" onclick="printReadingReceipt()">Print Print</button></div></div></div>
-</div>
-</section></div>
-<div class="page-view hidden" data-page="story-explorer" id="page-story-explorer"><div class="page-intro sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3"><div class="min-w-0 flex-1"><p class="font-sketch text-sm text-stone-600">Your reading companion and story guide.</p><h1 class="font-display text-2xl sm:text-3xl font-bold">Story Notes</h1></div><button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick='showPage("home")' type="button">← Home</button></div><section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="story-explorer">
-<div class="flex flex-wrap items-start justify-between gap-3">
-<div><span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-amber-100">The reading room • story notes</span>
-<h2 class="font-display text-2xl font-bold mt-1.5">Your Next Read, Understood</h2>
-<p class="font-sketch text-base text-stone-700">A closer look at the story, its atmosphere, its people, and the ideas between the lines.</p>
-</div>
-<button class="sketch-btn bg-amber-900 text-amber-50 px-3.5 py-2 text-xs font-semibold" id="readAloudBtn" onclick="toggleReadAloud()">Read Aloud</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4">
-<h3 class="font-display text-lg font-bold">The Story in a Minute</h3>
-<p class="font-sketch text-base leading-relaxed mt-1" id="storyMinute"></p>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4">
-<h3 class="font-display text-lg font-bold">Why Read It?</h3>
-<p class="font-sketch text-base leading-relaxed mt-1" id="whyRead"></p>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4">
-<h3 class="font-display text-lg font-bold">Setting &amp; Atmosphere</h3>
-<p class="font-sketch text-base leading-relaxed mt-1" id="settingAtmosphere"></p>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4">
-<h3 class="font-display text-lg font-bold">Core Themes &amp; Key Takeaways</h3>
-<p class="font-sketch text-base leading-relaxed mt-1" id="keyTakeaways"></p>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4">
-<h3 class="font-display text-lg font-bold">Characters &amp; Relationships</h3>
-<p class="font-sketch text-base leading-relaxed mt-1" id="characterRelations"></p>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4">
-<h3 class="font-display text-lg font-bold">Writing, Imagery &amp; Symbolism</h3>
-<p class="font-sketch text-base leading-relaxed mt-1" id="writingImagery"></p>
-</article>
-</div>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-[#f6ead8] p-4 space-y-3">
-<div><h3 class="font-display text-lg font-bold">Follow the Story Stages</h3><p class="font-sketch text-sm text-stone-600">A spoiler-light story arc guide, not an edition-specific chapter list.</p></div>
-<ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2" id="storyStages"></ol>
-</article>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4 space-y-2">
-<h3 class="font-display text-lg font-bold">Movie &amp; Screen Connections</h3>
-<p class="font-sketch text-base" id="movieConnections"></p>
-<a class="font-sketch text-sm text-[#8b4b32] underline" id="movieSearchLink" rel="noopener noreferrer" target="_blank">Explore adaptation search ↗</a>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4 space-y-2">
-<h3 class="font-display text-lg font-bold">Music Connections</h3>
-<p class="font-sketch text-base">Songs in the reading queue open Spotify search in a new tab. Choose a track to find the recording.</p>
-<a class="font-sketch text-sm text-[#287447] underline" id="musicSearchLink" rel="noopener noreferrer" target="_blank">Find this book's soundtrack on Spotify ↗</a>
-</article>
-</div>
-<article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4 space-y-2">
-<h3 class="font-display text-lg font-bold">Your Next Chapter • Related Books</h3>
-<div class="flex flex-wrap gap-2" id="relatedBooks"></div>
-</article>
-<article class="rounded-2xl border-2 border-dashed border-stone-800/30 bg-white/80 p-4">
-<h3 class="font-display text-lg font-bold">Sources &amp; Further Reading</h3>
-<p class="font-sketch text-sm text-stone-600 mb-2">Use these links to check bibliographic details and explore more about the selected title.</p>
-<div class="flex flex-wrap gap-3 text-sm">
-<a class="underline text-[#8b4b32]" id="sourceBooksLink" rel="noopener noreferrer" target="_blank">Google Books ↗</a>
-<a class="underline text-[#8b4b32]" id="sourceWebLink" rel="noopener noreferrer" target="_blank">Web search ↗</a>
-</div>
-</article>
-</section></div>
-<div class="page-view hidden" data-page="student-corner" id="page-student-corner"><div class="page-intro sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3"><div class="min-w-0 flex-1"><p class="font-sketch text-sm text-stone-600">A calmer space for schoolwork and revision.</p><h1 class="font-display text-2xl sm:text-3xl font-bold">Study Studio</h1></div><button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick='showPage("home")' type="button">← Home</button></div><section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="student-corner">
-<div class="flex flex-wrap items-start justify-between gap-3">
-<div>
-<span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-emerald-100">The little study studio</span>
-<h2 class="font-display text-2xl font-bold mt-2">A Student's Corner</h2>
-<p class="font-sketch text-base text-stone-700">A calm place to plan schoolwork, practise recall, and take focused breaks.</p>
-</div>
-<div class="font-sketch text-sm text-stone-600 border-b-2 border-dashed border-stone-400 pb-1">Small steps count.</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
-<article class="lg:col-span-3 rounded-2xl border-2 border-stone-800/30 bg-[#f8efdf] p-4 space-y-3">
-<div class="flex items-center justify-between gap-2">
-<div><h3 class="font-display text-xl font-bold">Assignment &amp; Exam Planner</h3><p class="font-sketch text-sm text-stone-600">Add deadlines and tick things off as you go.</p></div>
-<span class="font-sketch text-xs sketch-pill bg-white px-2 py-1">Saved on this device</span>
-</div>
-<form class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="studyTaskForm">
-<input class="sm:col-span-2 w-full bg-white px-3 py-2" id="studyTaskTitle" maxlength="100" placeholder="What do you need to do?" required=""/>
-<input class="w-full bg-white px-3 py-2" id="studyTaskSubject" maxlength="50" placeholder="Subject / class"/>
-<input aria-label="Due date" class="w-full bg-white px-3 py-2" id="studyTaskDue" type="date"/>
-<select class="w-full bg-white px-3 py-2" id="studyTaskPriority">
-<option value="Normal">Normal priority</option><option value="High">High priority</option><option value="Low">Low priority</option>
-</select>
-<button class="sketch-btn bg-emerald-900 text-white px-4 py-2 font-sketch" type="submit">Add to my list</button>
-</form>
-<div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-<p class="font-sketch text-sm text-stone-700" id="studyTaskSummary">No tasks yet.</p>
-<button class="font-sketch text-xs underline" id="clearCompletedTasks" type="button">Clear completed</button>
-</div>
-<ul class="space-y-2" id="studyTaskList"></ul>
-</article>
-<article class="lg:col-span-2 rounded-2xl border-2 border-stone-800/30 bg-white p-4 space-y-3">
-<div><h3 class="font-display text-xl font-bold">Focus Session</h3><p class="font-sketch text-sm text-stone-600">Try 25 minutes of focus, then take a 5-minute break.</p></div>
-<div class="rounded-2xl border-2 border-dashed border-stone-500 bg-[#fbf3e5] p-5 text-center">
-<div class="font-display text-5xl tabular-nums" id="studyTimerDisplay">25:00</div>
-<p class="font-sketch text-sm mt-1" id="studyTimerLabel">Focus time</p>
-<div class="flex justify-center flex-wrap gap-2 mt-4">
-<button class="sketch-btn bg-emerald-900 text-white px-4 py-2 font-sketch" id="studyTimerStart" type="button">Start</button>
-<button class="sketch-btn bg-white px-4 py-2 font-sketch" id="studyTimerReset" type="button">Reset</button>
-</div>
-</div>
-<div class="flex items-center justify-between gap-2">
-<button class="font-sketch text-sm underline" id="studyFocusMode" type="button">Switch to break (5 min)</button>
-<span class="font-sketch text-sm text-stone-600" id="studySessionCount">Focus sessions: 0</span>
-</div>
-<p class="font-sketch text-xs text-stone-500">The timer runs while this page stays open.</p>
-</article>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<article class="rounded-2xl border-2 border-stone-800/30 bg-[#f4eadb] p-4 space-y-3">
-<div><h3 class="font-display text-xl font-bold">Flashcard Practice</h3><p class="font-sketch text-sm text-stone-600">Active recall helps you check what you actually remember.</p></div>
-<div aria-label="Flip flashcard" class="min-h-40 rounded-2xl border-2 border-stone-800/70 bg-white p-5 flex flex-col items-center justify-center text-center cursor-pointer select-none" id="studyFlashcard" role="button" tabindex="0">
-<span class="font-sketch text-xs uppercase tracking-widest text-[#9b5c3d]" id="flashcardSide">Question</span>
-<p class="font-display text-xl mt-2" id="flashcardText">Add your first flashcard below.</p>
-<span class="font-sketch text-xs text-stone-500 mt-3">Tap card to flip</span>
-</div>
-<div class="flex flex-wrap gap-2 justify-center">
-<button class="sketch-btn bg-white px-3 py-2 font-sketch" id="flashcardPrev" type="button">Previous</button>
-<span class="font-sketch text-sm self-center" id="flashcardCount">0 / 0</span>
-<button class="sketch-btn bg-white px-3 py-2 font-sketch" id="flashcardNext" type="button">Next</button>
-</div>
-<form class="space-y-2 border-t border-dashed border-stone-400 pt-3" id="flashcardForm">
-<input class="w-full bg-white px-3 py-2" id="flashcardQuestion" maxlength="180" placeholder="Question or term" required=""/>
-<textarea class="w-full bg-white px-3 py-2" id="flashcardAnswer" maxlength="500" placeholder="Answer or definition" required="" rows="2"></textarea>
-<button class="sketch-btn bg-amber-900 text-amber-50 px-4 py-2 font-sketch" type="submit">Save flashcard</button>
-</form>
-</article>
-<article class="rounded-2xl border-2 border-stone-800/30 bg-white p-4 space-y-3">
-<div><h3 class="font-display text-xl font-bold">Study Notes &amp; Reflection</h3><p class="font-sketch text-sm text-stone-600">Capture what you learned and what to revisit next time.</p></div>
-<textarea class="w-full bg-[#fffdf7] px-3 py-3" id="studentStudyNotes" maxlength="5000" placeholder="Today I learned...
 
-Something I still find confusing...
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-10">
+  <div class="hidden sketch-box bg-amber-50 px-4 py-3 text-sm flex items-center justify-between gap-3" id="statusBanner" role="status">
+    <span id="statusBannerText">Ready.</span>
+    <button class="text-xs font-semibold" onclick="hideBanner()" type="button">Dismiss ✕</button>
+  </div>
 
-My next small step..." rows="7"></textarea>
-<div class="flex items-center justify-between gap-2">
-<span class="font-sketch text-xs text-stone-500" id="studyNotesStatus">Notes are stored on this device.</span>
-<button class="sketch-btn bg-emerald-900 text-white px-4 py-2 font-sketch" id="saveStudyNotes" type="button">Save notes</button>
-</div>
-<div class="rounded-xl border border-dashed border-stone-400 bg-amber-50 p-3">
-<p class="font-display font-bold">A gentle study reminder</p>
-<p class="font-sketch text-sm">Take a short break, drink some water, and ask for help when a topic stays confusing. You do not have to learn everything in one sitting.</p>
-</div>
-</article>
-</div>
-</section></div>
-<div class="page-view hidden" data-page="bookshelf-section" id="page-bookshelf-section"><div class="page-intro sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3"><div class="min-w-0 flex-1"><p class="font-sketch text-sm text-stone-600">A shelf for every story you want to keep.</p><h1 class="font-display text-2xl sm:text-3xl font-bold">My Bookshelf</h1></div><button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick='showPage("home")' type="button">← Home</button></div><section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="bookshelf-section"><div class="flex flex-wrap items-center justify-between gap-3"><div><span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-amber-100">Café Wall Display • Hand-Drawn Spines</span><h2 class="font-display text-2xl font-bold mt-1.5">Your Bookshelf Era</h2><p class="font-sketch text-base text-stone-700" id="shelfStatsText">Tap any book spine to open its full breakdown.</p></div><div class="flex flex-wrap items-center gap-2"><button class="px-3 py-1.5 sketch-btn text-xs font-semibold bg-amber-900 text-amber-50" id="filterAllBtn" onclick="setShelfFilter('all')">All Books</button><button class="px-3 py-1.5 sketch-btn text-xs font-semibold bg-amber-100" id="filterReadBtn" onclick="setShelfFilter('read')">Finished</button><button class="px-3 py-1.5 sketch-btn text-xs font-semibold bg-amber-100" id="filterNightstandBtn" onclick="setShelfFilter('nightstand')">Nightstand</button><select class="sketch-btn bg-white px-2.5 py-1.5 text-xs" id="shelfFinishSelect" onchange="setShelfFinish(this.value)"><option value="wood-shelf">Oak Counter</option><option value="wood-shelf-espresso">Espresso Roast</option><option value="wood-shelf-matcha">Matcha Wood</option></select></div></div><form class="flex flex-col sm:flex-row gap-2 rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-3" onsubmit="handleQuickShelfAdd(event)"><input class="flex-1 rounded-xl border-2 border-stone-800/20 bg-white px-3.5 py-2 text-sm" id="quickShelfInput" placeholder="Quick-add a book title or author straight to your shelf..." required="" type="text"/><button class="px-4 py-2 sketch-btn bg-amber-900 text-amber-50 text-sm font-semibold" type="submit">+ Add to Shelf</button></form><div class="wood-shelf rounded-2xl p-4 sm:p-5 space-y-6" id="bookcaseCabinet"></div></section></div>
-<div class="page-view hidden" data-page="corkboard-section" id="page-corkboard-section"><div class="page-intro sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3"><div class="min-w-0 flex-1"><p class="font-sketch text-sm text-stone-600">A wall of thoughts, inspiration, and keepsakes.</p><h1 class="font-display text-2xl sm:text-3xl font-bold">Corkboard</h1></div><button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick='showPage("home")' type="button">← Home</button></div><section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="corkboard-section"><div class="flex flex-wrap items-start justify-between gap-4"><div><span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-[#f3dcc2]">Café Memory Wall • Pin &amp; Arrange</span><h2 class="font-display text-2xl font-bold mt-1.5">Cozy Corkboard</h2><p class="font-sketch text-base text-stone-700">Pin cover snaps, coffee cup moments, or cozy aesthetic notes. Drag cards around the board.</p></div><div class="flex flex-wrap gap-2"><label class="px-3.5 py-2 sketch-btn bg-[#b85d3b] text-white text-xs font-semibold cursor-pointer">+ Upload Photo<input accept="image/*" class="hidden" id="corkboardPhotoInput" onchange="handleCorkboardFileUpload(event)" type="file"/></label><button class="px-3.5 py-2 sketch-btn bg-amber-100 text-xs font-semibold" onclick="addTextNotePin()">+ Pin Note Card</button></div></div><form class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-3.5" onsubmit="handleAddCorkboardPin(event)"><input class="sm:col-span-5 rounded-xl border-2 border-stone-800/20 bg-white px-3 py-2 text-sm" id="corkCaptionInput" placeholder="Caption (e.g. Late-night latte + chapter)" type="text"/><input class="sm:col-span-4 rounded-xl border-2 border-stone-800/20 bg-white px-3 py-2 text-sm" id="corkImageUrlInput" placeholder="Optional image link" type="url"/><select class="sm:col-span-1 rounded-xl border-2 border-stone-800/20 bg-white px-2 py-2 text-xs" id="corkPinColorSelect"><option value="terracotta">Red</option><option value="sage">Sage</option><option value="amber">Gold</option></select><button class="sm:col-span-2 px-3 py-2 sketch-btn bg-[#4f6d58] text-white text-xs font-semibold" type="submit">Pin It Pin It</button></form><div class="corkboard-surface relative min-h-[430px] w-full p-4 sm:p-6 overflow-hidden" id="corkboardStage"><div class="relative w-full min-h-[380px]" id="corkboardPinsLayer"></div></div></section></div>
-<div class="page-view hidden" data-page="nightstand-section" id="page-nightstand-section"><div class="page-intro sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3"><div class="min-w-0 flex-1"><p class="font-sketch text-sm text-stone-600">A soft landing place for the end of the day.</p><h1 class="font-display text-2xl sm:text-3xl font-bold">Nightstand</h1></div><button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick='showPage("home")' type="button">← Home</button></div><section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start" id="nightstand-section"><div class="lg:col-span-6 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-emerald-100">Late-Night Corner</span><h2 class="font-display text-2xl font-bold mt-1">Nightstand &amp; Quotes</h2></div><select class="sketch-btn bg-white px-3 py-2 text-xs" id="nightstandBookSelect" onchange="handleNightstandBookChange()"></select></div><div class="rounded-2xl border-2 border-stone-800/15 bg-gradient-to-b from-amber-50 to-stone-100 p-3.5 flex items-center gap-4"><div class="text-5xl"><svg aria-hidden="true" class="doodle-lamp" viewbox="0 0 92 64"><path d="M8 43 Q9 32 20 32 L66 32 Q79 34 81 45 L81 52 L8 52 Z"></path><path d="M17 33 L17 25 Q17 19 25 19 L62 19 Q72 20 72 30 L72 33 M26 19 L26 12 M22 12 L31 12 M47 19 L47 8 M42 8 L52 8 M13 52 L10 59 M76 52 L79 59 M34 35 L34 47 M57 35 L57 47"></path></svg></div><div><p class="font-display text-sm font-bold">Late-Night Margin Corner</p><p class="font-sketch text-base text-stone-700">Save lines that lived rent-free in your head past midnight.</p></div></div><form class="space-y-2.5 rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-4" onsubmit="addNightstandQuote(event)"><label class="block text-xs font-semibold" for="quoteTextInput">Save a Line That Lived Rent-Free</label><textarea class="w-full rounded-xl border-2 border-stone-800/20 bg-white p-2.5 font-sketch text-base" id="quoteTextInput" placeholder="Type a quote or line that hit different..." required="" rows="2"></textarea><div class="flex flex-col sm:flex-row gap-2"><input class="flex-1 rounded-xl border-2 border-stone-800/20 bg-white px-3 py-2 text-sm" id="quotePageInput" placeholder="Page or chapter (optional)" type="text"/><button class="px-4 py-2 sketch-btn bg-amber-900 text-amber-50 text-xs font-semibold" type="submit">Save Quote</button></div></form><div class="space-y-2.5 max-h-72 overflow-y-auto pr-1" id="nightstandQuotesList"></div></div>
-<div class="lg:col-span-6 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5"><div class="flex flex-wrap items-center justify-between gap-2"><div><h2 class="font-display text-2xl font-bold">Nightstand Sketch Pad</h2><p class="font-sketch text-base text-stone-700">Doodle scenes, symbols, or margin sketches.</p></div><div class="flex items-center gap-1.5"><button class="w-6 h-6 rounded-full bg-[#2b1d14] border-2 border-stone-900" onclick="setSketchColor('#2b1d14')" title="Espresso"></button><button class="w-6 h-6 rounded-full bg-[#b85d3b] border-2 border-stone-900" onclick="setSketchColor('#b85d3b')" title="Terracotta"></button><button class="w-6 h-6 rounded-full bg-[#4f6d58] border-2 border-stone-900" onclick="setSketchColor('#4f6d58')" title="Sage"></button><button class="px-2.5 py-1 sketch-btn bg-white text-xs" onclick="setSketchColor('#fffdf9')">Eraser</button><button class="px-2.5 py-1 sketch-btn bg-amber-50 text-xs" onclick="clearSketchPad()">Clear</button></div></div><div class="w-full h-56 rounded-2xl border-2 border-stone-900/80 bg-[#fffdf9] overflow-hidden"><canvas class="w-full h-full touch-none block cursor-crosshair" id="sketchCanvas"></canvas></div><div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4 space-y-4"><div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-wider text-stone-600">Reading Session Timer</p><div class="flex items-center gap-2.5"><span class="font-mono text-xl font-bold" id="timerDisplay">25:00</span><button class="px-3 py-1.5 sketch-btn bg-amber-900 text-amber-50 text-xs" id="timerToggleBtn" onclick="toggleTimer()">Start</button><button class="px-2.5 py-1.5 sketch-btn bg-white text-xs" onclick="resetTimer()">Reset</button></div></div><div class="space-y-1.5"><p class="text-xs font-bold uppercase tracking-wider text-stone-600">Warm Room Ambience</p><div class="flex flex-wrap gap-1.5"><button class="px-2.5 py-1.5 sketch-btn bg-[#4f6d58] text-white text-xs" id="modePourBtn" onclick="setAmbienceMode('pouring')">Coffee Café</button><button class="px-2.5 py-1.5 sketch-btn bg-white text-xs" id="modeRainBtn" onclick="setAmbienceMode('rain')">Rain Rain</button><button class="px-2.5 py-1.5 sketch-btn bg-white text-xs" id="modeChimeBtn" onclick="setAmbienceMode('chimes')">Chimes Chimes</button><button class="px-3 py-1.5 sketch-btn bg-amber-900 text-amber-50 text-xs" id="ambienceBtn" onclick="toggleAmbience()">Play</button></div></div></div><p class="font-sketch text-sm text-stone-600" id="ambienceStatusText">Mode: Café Pouring • Paused</p></div></div></section></div>
+  <!-- HOME -->
+  <section class="page-view space-y-8" data-page="home" id="page-home">
+    <div class="sketch-box bg-[#fffaf2] p-6 sm:p-10 text-center">
+      <p class="text-lg text-stone-600">A little corner for readers, dreamers, and students</p>
+      <h1 class="font-display text-4xl sm:text-6xl font-bold mt-2">Welcome to Quillfinite</h1>
+      <p class="max-w-2xl mx-auto text-lg sm:text-xl text-stone-700 mt-4">Scan any book in the Book Booth to open its post-scan card—with its Nightstand pin, Corkboard notes, and an option to add it straight to your Bookshelf.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <button class="sketch-box bg-amber-100 p-5 text-left hover:-translate-y-1 transition-transform min-h-[185px] flex flex-col justify-between" onclick="showPage('scanner-booth')" type="button">
+        <div>
+          <p class="text-sm text-stone-600">SCAN &amp; UNLOCK</p>
+          <h2 class="font-display text-2xl font-bold mt-2">Book Booth</h2>
+          <p class="text-sm text-stone-700 mt-2">Scan a book to open its post-scan card, Nightstand &amp; Corkboard, and add it to your shelf.</p>
+        </div>
+        <div class="text-base font-bold mt-5">Step inside →</div>
+      </button>
+      <button class="sketch-box bg-[#f3dcc2] p-5 text-left hover:-translate-y-1 transition-transform min-h-[185px] flex flex-col justify-between" onclick="showPage('story-explorer')" type="button">
+        <div>
+          <p class="text-sm text-stone-600">READ DEEPER</p>
+          <h2 class="font-display text-2xl font-bold mt-2">Story Notes</h2>
+          <p class="text-sm text-stone-700 mt-2">Explore summaries, themes, characters, story arcs, and soundtrack links.</p>
+        </div>
+        <div class="text-base font-bold mt-5">Step inside →</div>
+      </button>
+      <button class="sketch-box bg-emerald-100 p-5 text-left hover:-translate-y-1 transition-transform min-h-[185px] flex flex-col justify-between" onclick="showPage('student-corner')" type="button">
+        <div>
+          <p class="text-sm text-stone-600">FOCUS DESK</p>
+          <h2 class="font-display text-2xl font-bold mt-2">Study Studio</h2>
+          <p class="text-sm text-stone-700 mt-2">Plan assignments, focus with a timer, make flashcards, and save notes.</p>
+        </div>
+        <div class="text-base font-bold mt-5">Step inside →</div>
+      </button>
+      <button class="sketch-box bg-[#e8cbb0] p-5 text-left hover:-translate-y-1 transition-transform min-h-[185px] flex flex-col justify-between" onclick="showPage('bookshelf-section')" type="button">
+        <div>
+          <p class="text-sm text-stone-600">YOUR COLLECTION</p>
+          <h2 class="font-display text-2xl font-bold mt-2">My Bookshelf</h2>
+          <p class="text-sm text-stone-700 mt-2">Browse the books you’ve added to your shelf and pull any spine into the booth.</p>
+        </div>
+        <div class="text-base font-bold mt-5">Step inside →</div>
+      </button>
+    </div>
+
+    <!-- CAFÉS & LIBRARIES ACROSS NEGROS OCCIDENTAL -->
+    <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5">
+      <div class="flex flex-wrap items-end justify-between gap-3 border-b-2 border-dashed border-stone-800/20 pb-4">
+        <div>
+          <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Negros Occidental Nook Map</span>
+          <h2 class="font-display text-2xl sm:text-3xl font-bold mt-1.5">Cafés &amp; Libraries Across Negros Occidental</h2>
+          <p class="text-base text-stone-700 mt-0.5">Quiet study tables, heritage reading rooms, and cozy coffee corners around the province.</p>
+        </div>
+        <div class="flex flex-wrap gap-1.5" id="negrosFilterButtons"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="negrosSpotsGrid"></div>
+    </div>
+  </section>
+
+  <!-- BOOK BOOTH -->
+  <div class="page-view hidden" data-page="scanner-booth" id="page-scanner-booth">
+    <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-sm text-stone-600">Scan a book to reveal its Nightstand &amp; Corkboard and add it to your Bookshelf.</p>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold">Book Booth</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="hidden sketch-btn bg-amber-50 px-3 py-2 text-xs font-semibold" id="clearScanBtn" onclick="clearScannedBook()" type="button">Reset Scan</button>
+        <button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick="showPage('home')" type="button">← Home</button>
+      </div>
+    </div>
+
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start" id="boothInnerSection">
+      <!-- Scanner Column -->
+      <div class="lg:col-span-5 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span class="inline-block text-xs px-2.5 py-0.5 sketch-pill bg-amber-100" id="boothSpotBadge">Corner Table Booth • 2:3 Sketch Frame</span>
+            <h2 class="font-display text-xl sm:text-2xl font-bold mt-1.5">Book Scan Booth</h2>
+            <p class="text-base text-stone-700 mt-0.5">Type any book title or upload a cover to scan and add it to your shelf.</p>
+          </div>
+          <button class="shrink-0 text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50" id="filmTintBtn" onclick="toggleFilmTint()" type="button">Golden Hour Cam</button>
+        </div>
+
+        <div class="flex justify-center">
+          <div class="relative w-full max-w-[260px] aspect-[2/3] rounded-2xl border-[5px] border-stone-900 bg-stone-950 overflow-hidden shadow-xl">
+            <div class="w-full h-full bg-gradient-to-b from-stone-900 via-[#2a1d15] to-stone-950 flex flex-col items-center justify-between p-4 text-amber-50" id="idleBoothPlaceholder">
+              <div class="w-full flex justify-between text-[10px] font-mono tracking-widest"><span>QUILL-BOOTH 04</span><span>READY</span></div>
+              <div class="text-center">
+                <div class="mx-auto mb-3 w-14 h-20 rounded-md border border-dashed border-amber-300/60 flex items-center justify-center text-amber-200 text-xl">✧</div>
+                <p class="font-display font-bold">Scan Any Book</p>
+                <p class="text-sm text-amber-200/80 mt-1">Type a title below or try a quick scan.</p>
+              </div>
+              <div class="w-full border-t border-amber-200/15 pt-2 flex justify-between text-[10px] text-amber-200/70"><span>POST-SCAN</span><span>SHELF + CORK</span></div>
+            </div>
+            <img alt="Book booth preview" class="hidden absolute inset-0 w-full h-full object-contain bg-stone-900" id="snapshotImg"/>
+            <div class="pointer-events-none absolute inset-0 bg-amber-400/10" id="filmOverlay"></div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2">
+          <label class="px-3.5 py-2 sketch-btn bg-white text-xs sm:text-sm font-semibold cursor-pointer">
+            Upload Cover
+            <input accept="image/*" class="hidden" id="coverFileInput" onchange="handleCoverFileUpload(event)" type="file"/>
+          </label>
+          <button class="px-3.5 py-2 sketch-btn bg-amber-100 text-xs sm:text-sm font-semibold" onclick="scanBookById('flipped')" type="button">Quick Scan: Flipped</button>
+          <button class="px-3.5 py-2 sketch-btn bg-emerald-100 text-xs sm:text-sm font-semibold" onclick="scanBookById('piranesi')" type="button">Quick Scan: Piranesi</button>
+        </div>
+
+        <form class="space-y-2.5 pt-1" onsubmit="handleScanSubmit(event)">
+          <label class="block text-xs font-semibold text-stone-700" for="scanTitleInput">Any Book Title or Author to Scan</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input class="flex-1 rounded-xl bg-white px-3.5 py-2.5 text-sm" id="scanTitleInput" placeholder="e.g., Flipped, Frankenstein, Little Women..." required="" type="text"/>
+            <button class="px-4 py-2.5 sketch-btn bg-[#b85d3b] text-white text-sm font-semibold" type="submit">Scan Book</button>
+          </div>
+          <p class="text-base text-stone-700 min-h-5" id="scanFeedback"></p>
+        </form>
+
+        <div class="chalk-board rounded-2xl p-4 text-amber-50 space-y-3">
+          <div class="flex items-center justify-between border-b border-dashed border-amber-200/20 pb-2">
+            <div>
+              <p class="text-[10px] font-mono uppercase tracking-widest text-amber-300">Counter Special • Brew &amp; Read</p>
+              <p class="font-display text-sm font-bold">Pick Your Cuppa for This Chapter</p>
+            </div>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200" id="cafeCupBadge">Oat Latte</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5" id="coffeeMenuButtons"></div>
+          <p class="text-base text-amber-100/90" id="coffeePairingNote"></p>
+        </div>
+      </div>
+
+      <!-- Post-Scan Result Column -->
+      <div class="lg:col-span-7">
+        <div class="sketch-box bg-[#fffaf2] p-8 text-center space-y-2" id="preScanPromptCard">
+          <p class="text-sm uppercase tracking-wider text-stone-500">Waiting for Scan</p>
+          <h2 class="font-display text-2xl font-bold">Nothing Scanned Yet</h2>
+          <p class="text-base text-stone-700 max-w-md mx-auto">Scan any book on the left (or tap a spine in My Bookshelf) to open its post-scan card—where you can add it to your <strong>Bookshelf</strong>, toggle <strong>Nightstand</strong>, and pin notes to its <strong>Corkboard</strong>.</p>
+        </div>
+
+        <div class="hidden sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-6" id="postScanBookCard">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-stone-800/20 pb-5">
+            <div class="space-y-1.5 max-w-2xl">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-semibold px-2.5 py-1 sketch-pill bg-amber-100 text-amber-900" id="bookGenreBadge">Genre</span>
+                <span class="text-xs text-stone-600" id="bookMetaBadge">Year • Pages</span>
+                <span class="hidden text-xs px-2.5 py-1 sketch-pill bg-emerald-100 text-emerald-900" id="readStatusBadge">Finished ✓</span>
+              </div>
+              <h2 class="font-display text-2xl sm:text-4xl font-bold" id="bookTitle">Book Title</h2>
+              <p class="text-sm font-medium text-stone-700" id="bookAuthor">Author</p>
+              <p class="text-base text-[#b85d3b]" id="bookVibe">Atmosphere</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button class="px-3.5 py-2 sketch-btn bg-[#b85d3b] text-white text-xs font-semibold" id="addToShelfBtn" onclick="toggleBookshelfStatus()" type="button">+ Add to Bookshelf</button>
+              <button class="px-3.5 py-2 sketch-btn bg-white text-xs font-semibold" id="markReadBtn" onclick="toggleReadStatus()" type="button">Finished It</button>
+              <a class="px-3.5 py-2 sketch-btn bg-amber-100 text-amber-950 text-xs font-semibold" href="https://books.google.com" id="activeBookSearchLink" rel="noopener" target="_blank">Open in Books ↗</a>
+            </div>
+          </div>
+
+          <!-- Built-in Post-Scan Nightstand + Corkboard -->
+          <div class="rounded-2xl border-2 border-stone-800/20 bg-[#f6ead8]/75 p-4 sm:p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-stone-800/25 pb-3">
+              <div>
+                <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">Post-Scan Nightstand &amp; Corkboard</span>
+                <h3 class="font-display text-lg font-bold mt-1" id="postScanBookCornerTitle">Nightstand &amp; Corkboard</h3>
+                <p class="text-sm text-stone-700" id="postScanBookCornerStatus"></p>
+              </div>
+              <button class="sketch-btn bg-[#4f6d58] text-white px-3.5 py-2 text-xs font-semibold" id="nightstandBtn" onclick="toggleNightstandStatus()" type="button">Pin to Nightstand</button>
+            </div>
+
+            <form class="flex flex-col sm:flex-row gap-2" onsubmit="addBookCorkNote(event)">
+              <input class="flex-1 rounded-xl bg-[#fffdf5] px-3.5 py-2 text-sm" id="boothCorkInput" placeholder="Pin a quote, scene, or note to this book's corkboard..." required="" type="text"/>
+              <button class="sketch-btn bg-amber-200 px-4 py-2 text-xs font-semibold" type="submit">Pin to Corkboard</button>
+            </form>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="boothBookCorkList"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2 rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-4">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">The Plot &amp; Lore</h3>
+              <p class="text-sm leading-relaxed" id="bookSynopsis"></p>
+            </div>
+            <div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">Main Characters &amp; POVs</h3>
+              <p class="text-sm leading-relaxed" id="bookCharacters"></p>
+            </div>
+            <div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-1.5">Core Themes &amp; Takeaways</h3>
+              <p class="text-sm leading-relaxed" id="bookThemes"></p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border-2 border-stone-800/15 bg-white p-4 sm:p-5 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="font-display text-lg font-bold">Reading Queue Soundtrack</h3>
+                <p class="text-base text-stone-600" id="bookSongMood"></p>
+              </div>
+              <button class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50" id="songListToggleBtn" onclick="toggleSongListView()" type="button">Show Top 2 Only</button>
+            </div>
+            <ol class="space-y-2.5 text-sm" id="bookSongsList"></ol>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/50 p-4 space-y-2.5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Adaptation &amp; Visual Notes</h3>
+              <p class="text-sm leading-relaxed text-stone-700" id="bookFilmNotes"></p>
+              <a class="inline-flex text-xs font-semibold text-[#b85d3b] hover:underline" href="#" id="bookTrailerLink" rel="noopener" target="_blank">Search Trailer &amp; Adaptation Clips ↗</a>
+            </div>
+            <div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50 p-4 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Your Rating &amp; Hot Take</h3>
+                <div aria-label="Book rating" class="flex items-center gap-1" id="ratingStars"></div>
+              </div>
+              <textarea class="w-full rounded-xl border-2 border-stone-800/20 bg-white p-2.5 text-base" id="bookPersonalNote" oninput="savePersonalNote()" placeholder="Drop your hot take, favorite scene, or reaction..." rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="thermal-receipt p-4 sm:p-6 space-y-3.5 max-w-xl mx-auto w-full" id="printableReceiptCard">
+            <div class="text-center border-b border-dashed border-stone-800/40 pb-3">
+              <p class="text-[11px] font-mono tracking-widest text-stone-600">★ QUILLFINITE COFFEE &amp; PAGE CO. ★</p>
+              <h3 class="font-mono text-base font-bold">READING RECEIPT &amp; BOOKMARK</h3>
+            </div>
+            <div class="space-y-1.5 font-mono text-xs border-b border-dashed border-stone-800/40 pb-3">
+              <div class="flex justify-between gap-2"><span>TITLE:</span><span class="font-bold text-right" id="receiptTitleLine">—</span></div>
+              <div class="flex justify-between gap-2"><span>CUPPA PAIR:</span><span class="font-semibold" id="receiptDrinkLine">Oat Latte</span></div>
+              <div class="flex justify-between gap-2"><span>PROGRESS:</span><span class="font-semibold" id="receiptSummaryLine">p.0</span></div>
+              <div class="flex justify-between gap-2"><span>VIBE RATING:</span><span id="receiptRatingLine">Unrated</span></div>
+              <p class="text-base pt-1 italic" id="receiptQuoteLine"></p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end no-print">
+              <div>
+                <label class="block text-[11px] font-semibold mb-1" for="currentPageInput">Current Page</label>
+                <input class="w-full rounded-xl bg-white px-3 py-1.5 text-sm" id="currentPageInput" min="0" oninput="saveBookProgress()" type="number"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold mb-1" for="totalPagesInput">Total Pages</label>
+                <input class="w-full rounded-xl bg-white px-3 py-1.5 text-sm" id="totalPagesInput" min="1" oninput="saveBookProgress()" type="number"/>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] font-semibold mb-1"><span>Bookmark</span><span id="pageProgressPercent">0%</span></div>
+                <div class="w-full h-2.5 rounded-full border border-stone-800/30 bg-amber-900/10 overflow-hidden"><div class="h-full bg-[#b85d3b]" id="pageProgressBar" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center justify-end gap-2 pt-1 no-print">
+              <button class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-100" onclick="copyReadingReceipt()" type="button">Copy</button>
+              <button class="text-xs font-semibold px-3.5 py-1.5 sketch-btn bg-amber-900 text-amber-50" onclick="printReadingReceipt()" type="button">Print</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- STORY NOTES -->
+  <div class="page-view hidden" data-page="story-explorer" id="page-story-explorer">
+    <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-sm text-stone-600">Your reading companion and story guide.</p>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold">Story Notes</h1>
+      </div>
+      <button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick="showPage('home')" type="button">← Home</button>
+    </div>
+    <section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="storyInnerSection">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <span class="text-sm px-2.5 py-0.5 sketch-pill bg-amber-100">The reading room • story notes</span>
+          <h2 class="font-display text-2xl font-bold mt-1.5" id="storyExplorerHeading">Your Next Read, Understood</h2>
+        </div>
+        <button class="sketch-btn bg-amber-900 text-amber-50 px-3.5 py-2 text-xs font-semibold" onclick="toggleReadAloud()" type="button">Read Aloud</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">The Story in a Minute</h3><p class="text-base leading-relaxed mt-1" id="storyMinute"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Why Read It?</h3><p class="text-base leading-relaxed mt-1" id="whyRead"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Setting &amp; Atmosphere</h3><p class="text-base leading-relaxed mt-1" id="settingAtmosphere"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">Core Themes &amp; Key Takeaways</h3><p class="text-base leading-relaxed mt-1" id="keyTakeaways"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">Characters &amp; Relationships</h3><p class="text-base leading-relaxed mt-1" id="characterRelations"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Writing, Imagery &amp; Symbolism</h3><p class="text-base leading-relaxed mt-1" id="writingImagery"></p></article>
+      </div>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-[#f6ead8] p-4 space-y-3">
+        <h3 class="font-display text-lg font-bold">Follow the Story Stages</h3>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2" id="storyStages"></ol>
+      </article>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4 space-y-2">
+        <h3 class="font-display text-lg font-bold">Movie &amp; Screen Connections</h3>
+        <p class="text-base" id="movieConnections"></p>
+      </article>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4 space-y-2">
+        <h3 class="font-display text-lg font-bold">Your Next Chapter • Related Books</h3>
+        <div class="flex flex-wrap gap-2" id="relatedBooks"></div>
+      </article>
+    </section>
+  </div>
+
+  <!-- STUDY STUDIO -->
+  <div class="page-view hidden" data-page="student-corner" id="page-student-corner">
+    <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-sm text-stone-600">Quiet desk space for essays, research, and deep focus.</p>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold">Study Studio</h1>
+      </div>
+      <button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick="showPage('home')" type="button">← Home</button>
+    </div>
+    <section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-6" id="studyInnerSection">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/60 p-4 space-y-3">
+          <h2 class="font-display text-lg font-bold">Focus Timer</h2>
+          <div class="font-mono text-3xl font-bold py-2" id="timerDisplay">25:00</div>
+          <div class="flex flex-wrap gap-2">
+            <button class="sketch-btn bg-[#4f6d58] text-white px-3 py-1.5 text-xs font-semibold" id="startTimerBtn" onclick="toggleTimer()" type="button">Start</button>
+            <button class="sketch-btn bg-white px-3 py-1.5 text-xs font-semibold" onclick="resetTimer()" type="button">Reset</button>
+          </div>
+        </div>
+        <div class="rounded-2xl border-2 border-stone-800/20 bg-white p-4 space-y-3">
+          <h2 class="font-display text-lg font-bold">Quick Tasks</h2>
+          <form class="flex gap-2" onsubmit="addStudyTask(event)">
+            <input class="flex-1 rounded-xl bg-amber-50/40 px-3 py-1.5 text-sm" id="studyTaskInput" placeholder="Draft intro, cite source..." required="" type="text"/>
+            <button class="sketch-btn bg-[#b85d3b] text-white px-3 py-1.5 text-xs font-semibold" type="submit">Add</button>
+          </form>
+          <ul class="space-y-1.5 text-sm" id="studyTaskList"></ul>
+        </div>
+        <div class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/50 p-4 space-y-3">
+          <h2 class="font-display text-lg font-bold">Study Flashcard</h2>
+          <div class="rounded-xl border-2 border-stone-800/20 bg-white p-3.5 min-h-[92px] flex flex-col justify-center cursor-pointer" onclick="flipFlashcard()">
+            <p class="text-[11px] uppercase tracking-wider text-stone-500" id="flashcardSideLabel">Prompt (click to flip)</p>
+            <p class="text-lg mt-1" id="flashcardText"></p>
+          </div>
+          <button class="sketch-btn bg-white px-3 py-1.5 text-xs font-semibold" onclick="nextFlashcard()" type="button">Next Card →</button>
+        </div>
+      </div>
+      <div class="rounded-2xl border-2 border-stone-800/20 bg-white p-4 space-y-2">
+        <h2 class="font-display text-lg font-bold">Scratchpad Notes</h2>
+        <textarea class="w-full rounded-xl bg-amber-50/30 p-3 text-base" id="studyScratchpad" oninput="saveScratchpad()" placeholder="Jot down thesis angles, quotes with page numbers, or research questions..." rows="4"></textarea>
+      </div>
+    </section>
+  </div>
+
+  <!-- BOOKSHELF -->
+  <div class="page-view hidden" data-page="bookshelf-section" id="page-bookshelf-section">
+    <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-sm text-stone-600">Books you scanned and added to your shelf. Tap any spine to open it in the Book Booth.</p>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold">My Bookshelf</h1>
+      </div>
+      <button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick="showPage('home')" type="button">← Home</button>
+    </div>
+    <section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="shelfInnerSection">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="font-display text-xl font-bold">Curated Shelf</h2>
+          <p class="text-sm text-stone-600" id="shelfCountLabel"></p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="sketch-btn bg-amber-100 px-3 py-1 text-xs font-semibold" onclick="setShelfStyle('')" type="button">Classic Oak</button>
+          <button class="sketch-btn bg-[#e8cbb0] px-3 py-1 text-xs font-semibold" onclick="setShelfStyle('wood-shelf-espresso')" type="button">Espresso</button>
+          <button class="sketch-btn bg-emerald-100 px-3 py-1 text-xs font-semibold" onclick="setShelfStyle('wood-shelf-matcha')" type="button">Matcha</button>
+        </div>
+      </div>
+      <div class="wood-shelf rounded-2xl p-4 sm:p-6 flex flex-wrap items-end gap-3 min-h-[210px]" id="bookshelfSpines"></div>
+    </section>
+  </div>
 </main>
-<footer class="border-t-2 border-stone-900/80 bg-[#f5ede0] mt-12 py-6 text-center font-sketch text-base text-stone-700 no-print">Made for slow mornings, warm cups, and one-more-chapter nights.</footer>
+
 <script>
-'use strict';
-const $ = id => document.getElementById(id);
-const STORAGE_KEY = 'quillfinite-state-v1';
-const PALETTE = ['#7c4727','#3f5e4b','#8f4432','#5a4636','#52617a','#806044'];
-const CAFE_DRINKS = [
- {id:'oat',label:'Oat Latte',note:'Creamy, mellow, and perfect for a soft character-driven chapter.'},
- {id:'matcha',label:'Iced Matcha',note:'A fresh, bright pairing for a curious plot twist.'},
- {id:'mocha',label:'Dark Mocha',note:'Rich chocolate notes for a dramatic, high-stakes read.'},
- {id:'tea',label:'Chamomile Tea',note:'A gentle wind-down for reflective pages and quiet endings.'},
- {id:'americano',label:'Americano',note:'A clean, bold cup for a fast-paced reading sprint.'}
-];
-const DEFAULT_BOOKS = [
- {id:'flipped',title:'Flipped',author:'Wendelin Van Draanen',genre:'Young Adult • Romance',year:'2001',pages:'212 pages',vibe:'Sunlit sidewalks, first crushes, and two perspectives finding their way.',synopsis:'Two neighbors grow up side by side while seeing the same moments in very different ways. A tender story about perspective, growing up, and learning what matters.',characters:'Juli Baker and Bryce Loski tell the story through alternating perspectives.',themes:'Perspective, empathy, family, growing up, and looking beyond first impressions.',songMood:'Sunny indie folk, gentle nostalgia, and warm acoustic afternoons.',songs:[['Sweet Pea','Amos Lee','A breezy, sweet opening mood'],['First Day of My Life','Bright Eyes','For tender turning points'],['Bloom','The Paper Kites','For the softest scenes']],filmNotes:'The 2010 film adaptation leans into warm suburban colors, childhood nostalgia, and the changing seasons.',color:'#7b8b56'},
- {id:'piranesi',title:'Piranesi',author:'Susanna Clarke',genre:'Literary Fantasy',year:'2020',pages:'272 pages',vibe:'Endless marble halls, tides, statues, and beautiful mystery.',synopsis:'A solitary narrator lives in an immense House of halls, statues, and rising tides. His careful journals slowly reveal that the world—and his own history—may be stranger than he understands.',characters:'Piranesi, the House’s devoted chronicler, and the enigmatic person he calls the Other.',themes:'Memory, identity, wonder, isolation, knowledge, and the ethics of discovery.',songMood:'Ethereal piano, ambient strings, and oceanic soundscapes.',songs:[['On the Nature of Daylight','Max Richter','For the House’s quiet grandeur'],['Near Light','Ólafur Arnalds','For drifting through the halls'],['Says','Nils Frahm','For the slow revelation']],filmNotes:'Imagine cool stone, soft reflected light, immense architecture, and water moving through impossible rooms.',color:'#607d78'},
- {id:'pachinko',title:'Pachinko',author:'Min Jin Lee',genre:'Historical Fiction',year:'2017',pages:'496 pages',vibe:'Generational memory, resilience, and a family across changing worlds.',synopsis:'A Korean family’s story unfolds across generations and countries, tracing love, sacrifice, prejudice, and the choices that shape a family’s future.',characters:'Sunja anchors the story, alongside the family members whose lives branch across generations.',themes:'Belonging, identity, migration, family, resilience, and social inequality.',songMood:'Cinematic strings, Korean indie, and reflective piano.',songs:[['Your Existence','Wonstein','For intimate emotional moments'],['Through the Night','IU','For tenderness and memory'],['Experience','Ludovico Einaudi','For generational passages']],filmNotes:'The screen adaptation uses richly textured period detail, intimate family scenes, and visual contrasts between places and eras.',color:'#9b684d'}
-];
-let state = loadState();
-let cameraStream = null, timerInterval = null, timerRemaining = 25*60, ambiencePlaying = false, ambienceInterval = null, audioCtx = null, noiseSource = null, noiseGain = null, sketchColor = '#2b1d14', drawing = false, dragPin = null, showAllSongs = true;
-function freshState(){return {books:DEFAULT_BOOKS.map(b=>({...b,songs:b.songs.map(s=>({title:s[0],artist:s[1],note:s[2]}))})),activeBookId:'flipped',shelfFilter:'all',shelfFinish:'wood-shelf',readIds:[],nightstandIds:['piranesi','flipped'],ratings:{},notes:{},progress:{},quotes:{},selectedDrinkId:'oat',corkPins:[{id:'pin-1',caption:'Sycamore tree chapters & warm afternoon light tree',imageUrl:'',x:24,y:24,rotate:-3,pinColor:'terracotta',date:'Pinned today'},{id:'pin-2',caption:'Marble halls & rising tides in my head',imageUrl:'',x:270,y:38,rotate:2.5,pinColor:'sage',date:'Pinned today'}],ambienceMode:'pouring',sketches:{}}}
-function loadState(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved&&Array.isArray(saved.books)&&saved.books.length)return {...freshState(),...saved}}catch(e){console.warn('Saved state could not be loaded',e)}return freshState()}
-function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){showBanner('Storage is full. Try removing a large uploaded photo from the corkboard.')} }
-function showBanner(message){$('statusBannerText').textContent=message;$('statusBanner').classList.remove('hidden');clearTimeout(showBanner.timeout);showBanner.timeout=setTimeout(hideBanner,3500)}
-function hideBanner(){$('statusBanner').classList.add('hidden')}
-function escapeHtml(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function escapeAttr(s=''){return escapeHtml(s)}
-function getActiveBook(){return state.books.find(b=>b.id===state.activeBookId)||state.books[0]}
-function bookEntry(title){const clean=title.trim();const slug=clean.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||`book-${Date.now()}`;return {id:`${slug}-${Date.now().toString().slice(-5)}`,title:clean,author:'Added from your reading nook',genre:'To Be Discovered',year:String(new Date().getFullYear()),pages:'288 pages',vibe:'A fresh discovery waiting for its first chapter.',synopsis:`Your Quillfinite entry for “${clean}” is ready. Add your own notes, track your page progress, and save the moments that stay with you.`,characters:'Add character and point-of-view notes as you read.',themes:'Add themes and takeaways as the story unfolds.',songMood:'A cozy soundtrack for your next reading session.',songs:[{title:'Morning Pour Over',artist:'Corner Booth Quartet',note:'Steady warmth for chapter one'},{title:'Rain on the Glass',artist:'Paper & Steam',note:'A soft background for plot turns'},{title:'Last Light at 5 PM',artist:'Amber Tape',note:'A gentle wind-down'}],filmNotes:'Picture warm amber window light, a ceramic mug beside a worn paperback, and slow camera pans between pages.',color:PALETTE[clean.length%PALETTE.length]}}
-function selectBook(id){if(!state.books.some(b=>b.id===id))return;state.activeBookId=id;const b=getActiveBook();$('bookGenreBadge').textContent=b.genre||'Genre';$('bookMetaBadge').textContent=`${b.year||'—'} • ${b.pages||'Pages unknown'}`;$('bookTitle').textContent=b.title;$('bookAuthor').textContent=b.author||'Unknown author';$('bookVibe').textContent=b.vibe||'';$('bookSynopsis').textContent=b.synopsis||'Add your own synopsis here.';$('bookCharacters').textContent=b.characters||'Add character notes here.';$('bookThemes').textContent=b.themes||'Add themes here.';$('bookSongMood').textContent=b.songMood||'';$('bookFilmNotes').textContent=b.filmNotes||'';renderStoryExplorer();$('bookTrailerLink').href=`https://www.youtube.com/results?search_query=${encodeURIComponent(b.title+' trailer adaptation')}`;$('activeBookSearchLink').href=`https://books.google.com/books?q=${encodeURIComponent(b.title)}`;$('readStatusBadge').classList.toggle('hidden',!state.readIds.includes(id));$('markReadBtn').textContent=state.readIds.includes(id)?'Finished ✓':'Finished It';$('nightstandBtn').textContent=state.nightstandIds.includes(id)?'On Nightstand ✓':'Pin to Nightstand';$('bookPersonalNote').value=state.notes[id]||'';renderSongs();renderStars();loadProgress();renderNightstandSelect();renderQuotes();updateReceiptSummary();saveState()}
+const SPINE_PALETTE = ["#c76e4b", "#71856a", "#5b4034", "#8b5a3c", "#4f6d58", "#9c523b"];
 
-const STORY_NOTES = {
- flipped:{
-  why:"A warm, accessible story for readers who enjoy seeing how one event can mean something different to two people. It invites empathy without losing its humor and tenderness.",
-  setting:"A familiar suburban neighborhood, school corridors, family homes, and the sycamore tree become the emotional map of growing up.",
-  writing:"Alternating first-person viewpoints let the reader compare assumptions with reality. The sycamore tree works as a recurring image of perspective, beauty, and what deserves protecting.",
-  stages:["Two neighbors meet and form first impressions","Small moments are retold from both sides","New experiences challenge old assumptions","Growing up brings a clearer way of seeing"]
- },
- piranesi:{
-  why:"A good fit for readers who love atmospheric mysteries, unusual worlds, careful observation, and stories that reward curiosity.",
-  setting:"An immense House of halls, statues, vestibules, and tides. Its beauty feels wondrous and peaceful, but its scale also creates isolation and uncertainty.",
-  writing:"Journal entries make the reader discover the world alongside the narrator. The House's statues, tides, and repeated spaces carry symbolic weight around memory, knowledge, and belonging.",
-  stages:["The narrator records the House and its rhythms","Unusual details begin to unsettle the routine","Questions about identity and the past grow","The narrator's understanding of the world changes"]
- },
- pachinko:{
-  why:"A compelling choice for readers interested in family sagas, migration, identity, history, and the ways social forces shape private lives.",
-  setting:"The story moves across Korea and Japan over generations, with homes, workplaces, and changing cities reflecting shifting possibilities and constraints.",
-  writing:"A wide, generational lens connects intimate family choices to larger historical pressures. Repeated images of home, inheritance, and survival deepen the novel's sense of continuity.",
-  stages:["A family's story begins amid social change","A major choice reshapes the family's path","New generations face inherited pressures","The long view reveals resilience and lasting consequences"]
- }
-};
-const TEEN_FAVORITES = [
- {title:"The Perks of Being a Wallflower",author:"Stephen Chbosky",year:"1999"},
- {title:"The Phantom of the Opera",author:"Gaston Leroux",year:"1910"}
-];
-function renderStoryExplorer(){
- const b=getActiveBook(), n=STORY_NOTES[b.id]||{};
- $('storyMinute').textContent=b.synopsis||'Add a synopsis to your book notes to see a short introduction here.';
- $('whyRead').textContent=n.why||`Read ${b.title} for its ${b.genre||'story'} atmosphere, its central questions, and the perspective it offers. Add your own reasons as you read.`;
- $('settingAtmosphere').textContent=n.setting||b.vibe||'Add setting and atmosphere notes for this title.';
- $('keyTakeaways').textContent=b.themes||'Add the themes and takeaways you notice as you read.';
- $('characterRelations').textContent=b.characters||'Add character relationships and points of view.';
- $('writingImagery').textContent=n.writing||'Notice recurring images, narrative voice, and the details that shape the book’s mood.';
- const stages=$('storyStages'); stages.innerHTML='';
- (n.stages||['The world and central characters are introduced','A question or challenge begins to take shape','Events complicate what the characters understand','The story reaches a turning point and aftermath']).forEach((label,i)=>{
-  const li=document.createElement('li');li.className='sketch-box bg-[#fffdf9] p-3';
-  li.innerHTML=`<span class="font-sketch text-xs text-[#9b5c3d]">STAGE 0${i+1}</span><p class="font-sketch text-base mt-1">${escapeHtml(label)}</p>`;stages.appendChild(li);
- });
- $('movieConnections').textContent=b.filmNotes||'Search for screen adaptations, cast interviews, and visual interpretations of this story.';
- $('movieSearchLink').href=`https://www.youtube.com/results?search_query=${encodeURIComponent(b.title+' film adaptation trailer')}`;
- $('musicSearchLink').href=`https://open.spotify.com/search/${encodeURIComponent(b.title+' soundtrack')}`;
- $('sourceBooksLink').href=`https://books.google.com/books?q=${encodeURIComponent(b.title+' '+(b.author||''))}`;
- $('sourceWebLink').href=`https://www.google.com/search?q=${encodeURIComponent('"'+b.title+'" '+(b.author||'')+' book')}`;
- const related=$('relatedBooks');related.innerHTML='';
- const candidates=state.books.filter(x=>x.id!==b.id).slice(0,4);
- if(!candidates.length){related.innerHTML='<span class="font-sketch text-sm text-stone-600">Add more books to your shelf to build a personal reading trail.</span>'}
- candidates.forEach(book=>{const btn=document.createElement('button');btn.className='sketch-btn bg-white px-3 py-2 text-sm';btn.textContent=book.title;btn.onclick=()=>{selectBook(book.id);$('story-explorer').scrollIntoView({behavior:'smooth'})};related.appendChild(btn)});
- TEEN_FAVORITES.forEach(book=>{const btn=document.createElement('a');btn.className='sketch-btn bg-[#f3dcc2] px-3 py-2 text-sm';btn.href=`https://www.google.com/search?q=${encodeURIComponent(book.title+' '+book.author)}`;btn.target='_blank';btn.rel='noopener noreferrer';btn.textContent=`${book.title} · ${book.author}`;btn.title=`Teen favorite, ${book.year}`;related.appendChild(btn)});
-}
-function toggleReadAloud(){
- if(!('speechSynthesis' in window)){showBanner('Read Aloud is not supported in this browser.');return}
- if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();$('readAloudBtn').textContent='Read Aloud';return}
- const b=getActiveBook(), text=[b.title+' by '+b.author,b.synopsis,b.characters,b.themes].filter(Boolean).join('. ');
- const utterance=new SpeechSynthesisUtterance(text);utterance.rate=.94;utterance.pitch=1.02;
- utterance.onend=()=>{$('readAloudBtn').textContent='Read Aloud'};
- utterance.onerror=()=>{$('readAloudBtn').textContent='Read Aloud';showBanner('Read Aloud could not start.')};
- $('readAloudBtn').textContent='Stop Reading';window.speechSynthesis.speak(utterance);
-}
-
-function renderSongs(){const b=getActiveBook();const list=$('bookSongsList');list.innerHTML='';(showAllSongs?b.songs:b.songs.slice(0,2)).forEach((s,i)=>{const li=document.createElement('li');li.className='rounded-xl bg-amber-50 px-3 py-2';const query=encodeURIComponent(`${s.title||''} ${s.artist||''}`.trim());const spotifyUrl=`https://open.spotify.com/search/${query}`;li.innerHTML=`<span class="font-mono text-xs text-stone-500">${i+1}.</span><a class="spotify-song-link" href="${spotifyUrl}" target="_blank" rel="noopener noreferrer" aria-label="Find ${escapeHtml(cleanEmojiText(s.title))} by ${escapeHtml(cleanEmojiText(s.artist))} on Spotify"><span class="spotify-song-icon" aria-hidden="true">♫</span><span class="spotify-song-copy"><span class="spotify-song-title block">${escapeHtml(cleanEmojiText(s.title))}</span><span class="text-xs text-stone-600">${escapeHtml(cleanEmojiText(s.artist))} · ${escapeHtml(s.note||'')}</span><span class="spotify-song-hint block">Open in Spotify ↗</span></span></a>`;list.appendChild(li)});$('songListToggleBtn').textContent=showAllSongs?'Show Top 2 Only':'Show Full Queue'}
-function toggleSongListView(){showAllSongs=!showAllSongs;renderSongs()}
-function renderStars(){const b=getActiveBook(),rating=Number(state.ratings[b.id]||0),el=$('ratingStars');el.innerHTML='';for(let i=1;i<=5;i++){const btn=document.createElement('button');btn.type='button';btn.textContent=i<=rating?'★':'☆';btn.className='text-xl '+(i<=rating?'text-amber-500':'text-stone-400');btn.setAttribute('aria-label',`Rate ${i} out of 5`);btn.onclick=()=>{state.ratings[b.id]=i;saveState();renderStars();updateReceiptSummary()};el.appendChild(btn)}}
-function savePersonalNote(){const b=getActiveBook();state.notes[b.id]=$('bookPersonalNote').value;saveState();updateReceiptSummary()}
-function loadProgress(){const p=state.progress[getActiveBook().id]||{};$('currentPageInput').value=p.currentPage??'';$('totalPagesInput').value=p.totalPage ?? (parseInt(getActiveBook().pages,10) || '');saveBookProgress(false)}
-function saveBookProgress(persist=true){const b=getActiveBook(),cur=Math.max(0,Number($('currentPageInput').value)||0),tot=Math.max(0,Number($('totalPagesInput').value)||0),pct=tot?Math.min(100,Math.round(cur/tot*100)):0;state.progress[b.id]={currentPage:cur,totalPage:tot};$('pageProgressPercent').textContent=pct+'%';$('pageProgressBar').style.width=pct+'%';updateReceiptSummary();if(persist)saveState()}
-function updateReceiptSummary(){const b=getActiveBook();if(!b)return;const p=state.progress[b.id]||{},drink=CAFE_DRINKS.find(d=>d.id===state.selectedDrinkId)||CAFE_DRINKS[0],rating=Number(state.ratings[b.id]||0),cur=p.currentPage||0,tot=p.totalPage||0,pct=tot?Math.min(100,Math.round(cur/tot*100)):0;$('receiptTitleLine').textContent=b.title;$('receiptDrinkLine').textContent=drink.label;$('receiptSummaryLine').textContent=`p.${cur}${tot?`/${tot} (${pct}%)`:''}`;$('receiptRatingLine').textContent=rating?`${'★'.repeat(rating)} (${rating}/5)`:'Unrated';$('receiptQuoteLine').textContent=(state.notes[b.id]||'').trim()?`“${state.notes[b.id].trim()}”`:'';$('receiptTicketMeta').textContent=`ORDER #QF-${String(state.books.findIndex(x=>x.id===b.id)+101)} • ${new Date().toLocaleDateString()}`}
-function copyReadingReceipt(){const b=getActiveBook(),p=state.progress[b.id]||{},txt=`QUILLFINITE READING RECEIPT\nTitle: ${b.title}\nDrink: ${$('receiptDrinkLine').textContent}\nProgress: ${$('receiptSummaryLine').textContent}\nRating: ${$('receiptRatingLine').textContent}\nNote: ${state.notes[b.id]||''}`;if(navigator.clipboard?.writeText)navigator.clipboard.writeText(txt).then(()=>showBanner('Reading receipt copied!')).catch(()=>showBanner('Clipboard access was blocked by your browser.'));else showBanner('Clipboard is not available in this browser.')}
-function printReadingReceipt(){window.print()}
-function renderShelf(){const cabinet=$('bookcaseCabinet');cabinet.className=`${state.shelfFinish} rounded-2xl p-4 sm:p-5 space-y-6`;const books=state.books.filter(b=>state.shelfFilter==='all'||(state.shelfFilter==='read'?state.readIds.includes(b.id):state.nightstandIds.includes(b.id)));$('shelfStatsText').textContent=`${state.books.length} books on your shelf • ${state.readIds.length} finished • ${state.nightstandIds.length} on your nightstand`;cabinet.innerHTML='';if(!books.length){cabinet.innerHTML='<p class="text-amber-50 text-center font-sketch text-xl py-12">No books in this section yet. Add or scan a title above!</p>';return}const row=document.createElement('div');row.className='flex items-end flex-wrap gap-2 border-b-[12px] border-[#4b2d1b] pb-2';books.forEach((b,i)=>{const btn=document.createElement('button');btn.className='book-spine';btn.style.background=b.color||PALETTE[i%PALETTE.length];btn.style.color='#fff8eb';btn.style.height=`${150+(i%3)*18}px`;btn.title=`Open ${b.title}`;btn.textContent=b.title;btn.onclick=()=>{selectBook(b.id);$('scanner-booth').scrollIntoView({behavior:'smooth'})};row.appendChild(btn)});cabinet.appendChild(row)}
-function setShelfFilter(filter){state.shelfFilter=filter;['all','read','nightstand'].forEach(k=>{const el=$('filter'+k[0].toUpperCase()+k.slice(1)+'Btn');if(el)el.className=`px-3 py-1.5 sketch-btn text-xs font-semibold ${filter===k?'bg-amber-900 text-amber-50':'bg-amber-100 text-stone-900'}`});saveState();renderShelf()}
-function setShelfFinish(finish){state.shelfFinish=['wood-shelf','wood-shelf-espresso','wood-shelf-matcha'].includes(finish)?finish:'wood-shelf';$('shelfFinishSelect').value=state.shelfFinish;saveState();renderShelf()}
-function toggleReadStatus(){const id=getActiveBook().id;state.readIds=state.readIds.includes(id)?state.readIds.filter(x=>x!==id):[...state.readIds,id];saveState();selectBook(id);renderShelf()}
-function toggleNightstandStatus(){const id=getActiveBook().id;state.nightstandIds=state.nightstandIds.includes(id)?state.nightstandIds.filter(x=>x!==id):[...state.nightstandIds,id];saveState();selectBook(id);renderShelf();renderNightstandSelect()}
-function addBook(title){const found=state.books.find(b=>b.title.toLowerCase()===title.trim().toLowerCase());if(found){selectBook(found.id);return found}const b=bookEntry(title);state.books.unshift(b);state.activeBookId=b.id;saveState();selectBook(b.id);renderShelf();return b}
-function handleScanSubmit(e){e.preventDefault();const q=$('scanTitleInput').value.trim();if(!q)return;const match=state.books.find(b=>b.title.toLowerCase().includes(q.toLowerCase())||String(b.author||'').toLowerCase().includes(q.toLowerCase()));const b=match||addBook(q);selectBook(b.id);$('scanFeedback').textContent=match?`Matched “${b.title}” on your shelf — dossier loaded!`:`Scanned & added “${b.title}” to your shelf!`;$('scanTitleInput').value='';$('boothTimestamp').textContent='SCANNED';$('idleBoothPlaceholder').classList.add('hidden');$('snapshotImg').classList.remove('hidden');$('snapshotImg').src=`https://placehold.co/400x600/efe2ce/2b1d14?text=${encodeURIComponent(b.title)}`;showBanner(`Scanned “${b.title}” in the book booth.`)}
-function handleQuickShelfAdd(e){e.preventDefault();const q=$('quickShelfInput').value.trim();if(q){addBook(q);$('quickShelfInput').value='';showBanner('Book added to your shelf!')}}
-function renderCoffeeMenu(){const el=$('coffeeMenuButtons');el.innerHTML='';CAFE_DRINKS.forEach(d=>{const btn=document.createElement('button');btn.className='px-2.5 py-1 sketch-btn text-xs '+(state.selectedDrinkId===d.id?'bg-amber-300 text-stone-900':'bg-white/10 text-amber-50');btn.textContent=d.label;btn.onclick=()=>{state.selectedDrinkId=d.id;saveState();renderCoffeeMenu()};el.appendChild(btn)});const d=CAFE_DRINKS.find(x=>x.id===state.selectedDrinkId)||CAFE_DRINKS[0];$('cafeCupBadge').textContent=d.label;$('coffeePairingNote').textContent=d.note;updateReceiptSummary()}
-function toggleFilmTint(){const overlay=$('filmOverlay');overlay.classList.toggle('hidden');$('filmTintBtn').textContent=overlay.classList.contains('hidden')?'Golden Hour Cam':'Golden Hour On'}
-async function toggleCamera(){if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;$('cameraVideo').classList.add('hidden');$('cameraToggleBtn').textContent='Start Camera';return}if(!navigator.mediaDevices?.getUserMedia){showBanner('Camera access requires a supported browser and a secure page (HTTPS or localhost).');return}try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});$('cameraVideo').srcObject=cameraStream;$('cameraVideo').classList.remove('hidden');$('idleBoothPlaceholder').classList.add('hidden');$('snapshotImg').classList.add('hidden');$('cameraToggleBtn').textContent='Stop Camera'}catch(err){showBanner('Camera permission was denied or no camera is available. You can upload a cover instead.');console.warn(err)}}
-function handleCoverFileUpload(e){const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')){showBanner('Please choose an image file.');return}const reader=new FileReader();reader.onload=()=>{$('snapshotImg').src=reader.result;$('snapshotImg').classList.remove('hidden');$('cameraVideo').classList.add('hidden');$('idleBoothPlaceholder').classList.add('hidden');$('boothTimestamp').textContent='COVER UPLOADED'};reader.readAsDataURL(file);e.target.value=''}
-function getPinColorClass(color){return color==='sage'?'bg-[#4f6d58]':color==='amber'?'bg-amber-400':'bg-[#b85d3b]'}
-function renderCorkboard(){const layer=$('corkboardPinsLayer');layer.innerHTML='';if(!state.corkPins.length){layer.innerHTML='<p class="font-sketch text-xl text-stone-900 bg-[#fffdf9]/90 border-2 border-stone-900 px-5 py-3 rounded-2xl inline-block">Nothing pinned yet—add a photo or note!</p>';return}state.corkPins.forEach((pin,idx)=>{const card=document.createElement('div');card.dataset.pinId=pin.id;card.className='absolute w-52 sm:w-56 bg-[#fffdf9] border-2 border-stone-900 rounded-md p-2.5 shadow-lg cursor-grab select-none';card.style.cssText=`left:${pin.x||12}px;top:${pin.y||12}px;transform:rotate(${pin.rotate||0}deg);z-index:${10+idx}`;card.innerHTML=`<div class="flex justify-center -mt-4 mb-1.5"><span class="pushpin-head ${getPinColorClass(pin.pinColor)}"></span></div>${pin.imageUrl?`<img src="${escapeAttr(pin.imageUrl)}" alt="${escapeAttr(pin.caption)}" class="w-full h-32 object-cover rounded border mb-2" onerror="this.style.display='none'">`:`<div class="w-full py-3 px-2.5 rounded border border-dashed bg-amber-50/80 mb-2"><p class="font-sketch text-base">“${escapeHtml(cleanEmojiText(pin.caption))}”</p></div>`}<div class="flex items-start justify-between gap-1"><p class="font-sketch text-base break-words flex-1">${escapeHtml(cleanEmojiText(pin.caption))}</p><button type="button" class="remove-pin text-xs font-bold text-stone-500 px-1" aria-label="Remove pin">✕</button></div><p class="text-[10px] font-mono text-stone-500 mt-1">${escapeHtml(pin.date||'')}</p>`;card.querySelector('.remove-pin').onclick=()=>{state.corkPins=state.corkPins.filter(p=>p.id!==pin.id);saveState();renderCorkboard()};card.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;dragPin={pin,card,startX:e.clientX,startY:e.clientY,origX:Number(pin.x)||0,origY:Number(pin.y)||0};card.setPointerCapture?.(e.pointerId)});layer.appendChild(card)})}
-function createCorkPin({caption,imageUrl='',pinColor='terracotta'}){const idx=state.corkPins.length;state.corkPins.push({id:`pin-${Date.now()}-${idx}`,caption:(caption||'Pinned in the café corner').trim(),imageUrl,x:12+(idx%3)*195,y:14+(idx%3)*58,rotate:(idx%5-2)*1.8,pinColor,date:new Date().toLocaleDateString()});saveState();renderCorkboard();showBanner('Added to your corkboard!')}
-function handleAddCorkboardPin(e){e.preventDefault();createCorkPin({caption:$('corkCaptionInput').value,imageUrl:$('corkImageUrlInput').value,pinColor:$('corkPinColorSelect').value});$('corkCaptionInput').value='';$('corkImageUrlInput').value=''}
-function addTextNotePin(){createCorkPin({caption:$('corkCaptionInput').value||'Late-night chapter + warm cuppa',pinColor:$('corkPinColorSelect').value||'amber'});$('corkCaptionInput').value=''}
-function handleCorkboardFileUpload(e){const file=e.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>createCorkPin({caption:$('corkCaptionInput').value||file.name.replace(/\.[^.]+$/,''),imageUrl:String(reader.result),pinColor:$('corkPinColorSelect').value});reader.readAsDataURL(file);e.target.value=''}
-function pinCurrentBoothPhoto(){if(!$('snapshotImg').classList.contains('hidden'))createCorkPin({caption:getActiveBook().title+' — Booth Snap',imageUrl:$('snapshotImg').src});else if(cameraStream){const v=$('cameraVideo'),c=$('captureCanvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);createCorkPin({caption:getActiveBook().title+' — Booth Snap',imageUrl:c.toDataURL('image/jpeg',.85)})}else createCorkPin({caption:getActiveBook().title+' — Booth Snap'})}
-window.addEventListener('pointermove',e=>{if(!dragPin)return;const rect=$('corkboardPinsLayer').getBoundingClientRect();const x=Math.max(0,Math.min(rect.width-210,dragPin.origX+e.clientX-dragPin.startX)),y=Math.max(0,Math.min(rect.height-150,dragPin.origY+e.clientY-dragPin.startY));dragPin.pin.x=x;dragPin.pin.y=y;dragPin.card.style.left=x+'px';dragPin.card.style.top=y+'px'});window.addEventListener('pointerup',()=>{if(dragPin){dragPin=null;saveState()}});
-function renderNightstandSelect(){const sel=$('nightstandBookSelect'),current=sel.value;sel.innerHTML='';state.books.filter(b=>state.nightstandIds.includes(b.id)).forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b.title;sel.appendChild(o)});if(!sel.options.length){const o=document.createElement('option');o.value=getActiveBook().id;o.textContent=getActiveBook().title;sel.appendChild(o)}sel.value=state.books.some(b=>b.id===current)&&state.nightstandIds.includes(current)?current:getActiveBook().id}
-function handleNightstandBookChange(){const id=$('nightstandBookSelect').value;if(id)selectBook(id)}
-function renderQuotes(){const id=$('nightstandBookSelect').value||getActiveBook().id,quotes=state.quotes[id]||[];const el=$('nightstandQuotesList');el.innerHTML='';if(!quotes.length){el.innerHTML='<p class="font-sketch text-stone-500">No saved lines yet. Keep a quote close.</p>';return}quotes.forEach((q,i)=>{const card=document.createElement('div');card.className='rounded-xl border-2 border-stone-800/15 bg-white p-3 flex justify-between gap-2';card.innerHTML=`<div><p class="font-sketch text-base">“${escapeHtml(cleanEmojiText(q.text))}”</p><p class="text-[10px] text-stone-500 mt-1">${escapeHtml(q.page||'')} </p></div><button class="text-xs text-rose-700" aria-label="Delete quote">✕</button>`;card.querySelector('button').onclick=()=>{state.quotes[id].splice(i,1);saveState();renderQuotes()};el.appendChild(card)})}
-function addNightstandQuote(e){e.preventDefault();const id=$('nightstandBookSelect').value||getActiveBook().id;state.quotes[id]??=[];state.quotes[id].unshift({text:$('quoteTextInput').value.trim(),page:$('quotePageInput').value.trim()});$('quoteTextInput').value='';$('quotePageInput').value='';saveState();renderQuotes()}
-function setupSketch(){const canvas=$('sketchCanvas'),ctx=canvas.getContext('2d');function resize(){const old=document.createElement('canvas');old.width=canvas.width;old.height=canvas.height;old.getContext('2d').drawImage(canvas,0,0);const rect=canvas.getBoundingClientRect();canvas.width=Math.max(1,Math.floor(rect.width*devicePixelRatio));canvas.height=Math.max(1,Math.floor(rect.height*devicePixelRatio));ctx.scale(devicePixelRatio,devicePixelRatio);ctx.lineCap='round';ctx.lineJoin='round';if(old.width&&old.height)ctx.drawImage(old,0,0,old.width,old.height,0,0,rect.width,rect.height)}resize();new ResizeObserver(resize).observe(canvas);function point(e){const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}canvas.addEventListener('pointerdown',e=>{drawing=true;canvas.setPointerCapture(e.pointerId);const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=point(e);ctx.strokeStyle=sketchColor;ctx.lineWidth=3;ctx.lineTo(p.x,p.y);ctx.stroke()});canvas.addEventListener('pointerup',()=>{drawing=false});canvas.addEventListener('pointercancel',()=>{drawing=false})}
-function setSketchColor(color){sketchColor=color}
-function clearSketchPad(){const c=$('sketchCanvas');c.getContext('2d').clearRect(0,0,c.width,c.height)}
-function updateTimerDisplay(){$('timerDisplay').textContent=`${String(Math.floor(timerRemaining/60)).padStart(2,'0')}:${String(timerRemaining%60).padStart(2,'0')}`}
-function toggleTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;$('timerToggleBtn').textContent='Start';return}$('timerToggleBtn').textContent='Pause';timerInterval=setInterval(()=>{timerRemaining--;updateTimerDisplay();if(timerRemaining<=0){clearInterval(timerInterval);timerInterval=null;$('timerToggleBtn').textContent='Start';showBanner('Reading session complete. Stretch and sip some water! Coffee')}},1000)}
-function resetTimer(){clearInterval(timerInterval);timerInterval=null;timerRemaining=25*60;$('timerToggleBtn').textContent='Start';updateTimerDisplay()}
-function ensureAudio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!audioCtx)audioCtx=new AC();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}
-function stopNoise(){try{noiseSource?.stop();noiseSource?.disconnect();noiseGain?.disconnect()}catch(e){}noiseSource=null;noiseGain=null}
-function startNoise(mode){const ctx=ensureAudio();if(!ctx)return;stopNoise();const n=ctx.sampleRate*2,buf=ctx.createBuffer(1,n,ctx.sampleRate),data=buf.getChannelData(0);let last=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;last=(last+.04*w)/1.04;data[i]=last*3.2+w*.08}const src=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();src.buffer=buf;src.loop=true;filter.type=mode==='rain'?'lowpass':'bandpass';filter.frequency.value=mode==='rain'?1600:1100;gain.gain.value=.045;src.connect(filter);filter.connect(gain);gain.connect(ctx.destination);src.start();noiseSource=src;noiseGain=gain}
-function playChime(){const ctx=ensureAudio();if(!ctx)return;const osc=ctx.createOscillator(),gain=ctx.createGain(),now=ctx.currentTime;osc.type='sine';osc.frequency.value=[392,494,587,659][Math.floor(Math.random()*4)];gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.025,now+.2);gain.gain.exponentialRampToValueAtTime(.0001,now+2);osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(now+2.1)}
-function updateAmbienceUI(){const mode=state.ambienceMode||'pouring';[['pouring','modePourBtn'],['rain','modeRainBtn'],['chimes','modeChimeBtn']].forEach(([m,id])=>{$(id).className=`px-2.5 py-1.5 sketch-btn text-xs ${m===mode?'bg-[#4f6d58] text-white':'bg-white text-stone-800'}`});$('ambienceBtn').textContent=ambiencePlaying?'Pause':'Play';$('ambienceStatusText').textContent=`Mode: ${{pouring:'Café Pouring',rain:'Rain',chimes:'Chimes'}[mode]} • ${ambiencePlaying?'Playing':'Paused'}`}
-function applyAmbience(){clearInterval(ambienceInterval);stopNoise();if(ambiencePlaying){if(state.ambienceMode==='chimes'){playChime();ambienceInterval=setInterval(playChime,4200)}else startNoise(state.ambienceMode)}updateAmbienceUI()}
-function setAmbienceMode(mode){if(!['pouring','rain','chimes'].includes(mode))return;state.ambienceMode=mode;saveState();applyAmbience()}
-function toggleAmbience(){ambiencePlaying=!ambiencePlaying;applyAmbience()}
-
-const STUDY_STORAGE_KEY='quillfinite-student-tools-v1';
-let studyData={tasks:[],cards:[],notes:'',focusSessions:0};
-let studySeconds=25*60,studyInterval=null,studyMode='focus',studyCardIndex=0,studyCardFlipped=false;
-function loadStudyData(){try{const x=JSON.parse(localStorage.getItem(STUDY_STORAGE_KEY)||'{}');return {...studyData,...x,tasks:Array.isArray(x.tasks)?x.tasks:[],cards:Array.isArray(x.cards)?x.cards:[]}}catch(e){return studyData}}
-function saveStudyData(){try{localStorage.setItem(STUDY_STORAGE_KEY,JSON.stringify(studyData))}catch(e){showBanner('Could not save study tools. Your browser storage may be full.')}}
-function renderStudyTasks(){
- const list=$('studyTaskList');list.innerHTML='';
- const sorted=[...studyData.tasks].sort((a,b)=>(a.done-b.done)||(a.due||'9999').localeCompare(b.due||'9999')||({High:0,Normal:1,Low:2}[a.priority]-{High:0,Normal:1,Low:2}[b.priority]));
- const done=studyData.tasks.filter(t=>t.done).length;
- $('studyTaskSummary').textContent=`${done} of ${studyData.tasks.length} completed`;
- if(!sorted.length){list.innerHTML='<li class="font-sketch text-sm text-stone-500 py-3 text-center">Your list is clear. Add a task when you are ready.</li>';return}
- sorted.forEach(task=>{
-  const li=document.createElement('li');li.className='flex items-start gap-2 rounded-xl border border-stone-800/20 bg-white p-3';
-  const check=document.createElement('input');check.type='checkbox';check.checked=!!task.done;check.className='mt-1 accent-emerald-800';check.setAttribute('aria-label','Mark task complete');check.onchange=()=>{task.done=check.checked;saveStudyData();renderStudyTasks()};
-  const body=document.createElement('div');body.className='min-w-0 flex-1';
-  const title=document.createElement('p');title.className='font-sketch text-base '+(task.done?'line-through text-stone-400':'');title.textContent=task.title;
-  const meta=document.createElement('p');meta.className='font-sketch text-xs text-stone-500';meta.textContent=[task.subject||'No subject',task.due?'Due '+task.due:'No due date',task.priority+' priority'].join(' · ');
-  body.append(title,meta);
-  const del=document.createElement('button');del.type='button';del.className='font-sketch text-xs underline text-stone-500';del.textContent='Remove';del.onclick=()=>{studyData.tasks=studyData.tasks.filter(t=>t.id!==task.id);saveStudyData();renderStudyTasks()};
-  li.append(check,body,del);list.appendChild(li);
- });
-}
-function renderStudyFlashcard(){
- const c=studyData.cards[studyCardIndex];
- $('flashcardCount').textContent=studyData.cards.length?`${studyCardIndex+1} / ${studyData.cards.length}`:'0 / 0';
- $('flashcardSide').textContent=studyCardFlipped?'Answer':'Question';
- $('flashcardText').textContent=c?(studyCardFlipped?c.answer:c.question):'Add your first flashcard below.';
- $('flashcardPrev').disabled=!studyData.cards.length;$('flashcardNext').disabled=!studyData.cards.length;
- $('flashcardPrev').style.opacity=$('flashcardNext').style.opacity=studyData.cards.length?'1':'.45';
-}
-function flipStudyFlashcard(){if(!studyData.cards.length)return;studyCardFlipped=!studyCardFlipped;renderStudyFlashcard()}
-function updateStudyTimer(){const m=Math.floor(studySeconds/60),s=studySeconds%60;$('studyTimerDisplay').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
-function stopStudyTimer(){if(studyInterval){clearInterval(studyInterval);studyInterval=null}$('studyTimerStart').textContent='Start'}
-function toggleStudyTimer(){
- if(studyInterval){stopStudyTimer();return}
- $('studyTimerStart').textContent='Pause';
- studyInterval=setInterval(()=>{
-  studySeconds=Math.max(0,studySeconds-1);updateStudyTimer();
-  if(studySeconds===0){stopStudyTimer();if(studyMode==='focus'){studyData.focusSessions++;saveStudyData();$('studySessionCount').textContent=`Focus sessions: ${studyData.focusSessions}`;showBanner('Focus session complete. Time for a short break!')}else{showBanner('Break complete. Ready for another focus session?')}}
- },1000);
-}
-function switchStudyMode(){stopStudyTimer();studyMode=studyMode==='focus'?'break':'focus';studySeconds=studyMode==='focus'?25*60:5*60;$('studyTimerLabel').textContent=studyMode==='focus'?'Focus time':'Break time';$('studyFocusMode').textContent=studyMode==='focus'?'Switch to break (5 min)':'Switch to focus (25 min)';updateStudyTimer()}
-function initStudentCorner(){
- studyData=loadStudyData();renderStudyTasks();renderStudyFlashcard();$('studentStudyNotes').value=studyData.notes||'';
- $('studySessionCount').textContent=`Focus sessions: ${studyData.focusSessions||0}`;updateStudyTimer();
- $('studyTaskForm').addEventListener('submit',e=>{e.preventDefault();const title=$('studyTaskTitle').value.trim();if(!title)return;studyData.tasks.push({id:Date.now()+Math.random(),title,subject:$('studyTaskSubject').value.trim(),due:$('studyTaskDue').value,priority:$('studyTaskPriority').value,done:false});saveStudyData();renderStudyTasks();e.target.reset()});
- $('clearCompletedTasks').onclick=()=>{studyData.tasks=studyData.tasks.filter(t=>!t.done);saveStudyData();renderStudyTasks()};
- $('flashcardForm').addEventListener('submit',e=>{e.preventDefault();studyData.cards.push({question:$('flashcardQuestion').value.trim(),answer:$('flashcardAnswer').value.trim()});studyCardIndex=studyData.cards.length-1;studyCardFlipped=false;saveStudyData();renderStudyFlashcard();e.target.reset()});
- $('studyFlashcard').onclick=flipStudyFlashcard;$('studyFlashcard').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flipStudyFlashcard()}};
- $('flashcardPrev').onclick=()=>{if(!studyData.cards.length)return;studyCardIndex=(studyCardIndex-1+studyData.cards.length)%studyData.cards.length;studyCardFlipped=false;renderStudyFlashcard()};
- $('flashcardNext').onclick=()=>{if(!studyData.cards.length)return;studyCardIndex=(studyCardIndex+1)%studyData.cards.length;studyCardFlipped=false;renderStudyFlashcard()};
- $('studyTimerStart').onclick=toggleStudyTimer;$('studyTimerReset').onclick=()=>{stopStudyTimer();studySeconds=studyMode==='focus'?25*60:5*60;updateStudyTimer()};$('studyFocusMode').onclick=switchStudyMode;
- $('saveStudyNotes').onclick=()=>{studyData.notes=$('studentStudyNotes').value;saveStudyData();$('studyNotesStatus').textContent='Saved just now on this device.'};
-}
-
-// Page navigation: keep exactly one room visible and make browser history work.
-const QUILLFINITE_PAGES = ['home','scanner-booth','story-explorer','student-corner','bookshelf-section','corkboard-section','nightstand-section'];
-function showPage(pageId, updateHistory=true){
-  const target = QUILLFINITE_PAGES.includes(pageId) ? pageId : 'home';
-  document.querySelectorAll('.page-view').forEach(page => {
-    const active = page.dataset.page === target;
-    page.classList.toggle('hidden', !active);
-    page.setAttribute('aria-hidden', active ? 'false' : 'true');
-  });
-  document.querySelectorAll('nav [data-nav-page]').forEach(button => {
-    const active = button.dataset.navPage === target;
-    button.classList.toggle('bg-amber-900', active);
-    button.classList.toggle('text-amber-50', active);
-    button.classList.toggle('bg-white', !active);
-    button.setAttribute('aria-current', active ? 'page' : 'false');
-  });
-  if(updateHistory){
-    const hash = '#' + target;
-    if(location.hash !== hash) history.pushState({page:target}, '', hash);
+const NEGROS_SPOTS = [
+  {
+    name: "Negros Occidental Provincial Library",
+    city: "Bacolod",
+    type: "Library",
+    area: "Gatuslao St., Bacolod City",
+    vibe: "Quiet study tables, Filipiniana & local Negrense archives, and cool reading halls.",
+    cup: "Cold Brew"
+  },
+  {
+    name: "Bacolod City Public Library",
+    city: "Bacolod",
+    type: "Library",
+    area: "Araneta–Hernaez St., Bacolod City",
+    vibe: "Student-friendly reading room ideal for afternoon reviews and research notes.",
+    cup: "Oat Latte"
+  },
+  {
+    name: "Coffee Culture Roastery",
+    city: "Bacolod",
+    type: "Café",
+    area: "Alijis / Lacson, Bacolod City",
+    vibe: "Local specialty pours, warm wood tables, and creative journaling energy.",
+    cup: "Spanish Latte"
+  },
+  {
+    name: "Bean Brewing Café",
+    city: "Bacolod",
+    type: "Café",
+    area: "Villamonte / La Salle Area, Bacolod City",
+    vibe: "Cozy student hangout near campus with mellow playlists and long study sessions.",
+    cup: "Oat Latte"
+  },
+  {
+    name: "Silay City Public Library",
+    city: "Silay",
+    type: "Library",
+    area: "Rizal St., Silay City",
+    vibe: "Heritage town calm just steps away from ancestral houses and quiet plazas.",
+    cup: "Matcha Latte"
+  },
+  {
+    name: "Damgo Coffee",
+    city: "Silay",
+    type: "Café",
+    area: "Silay Heritage Zone",
+    vibe: "Slow-paced afternoon brews, vintage charm, and unhurried poetry or novel reading.",
+    cup: "Spanish Latte"
+  },
+  {
+    name: "Talisay City Public Library",
+    city: "Talisay",
+    type: "Library",
+    area: "Talisay City Proper",
+    vibe: "Peaceful community reading corner for weekend homework and quiet chapters.",
+    cup: "Cold Brew"
+  },
+  {
+    name: "Hinigaran Municipal Library & Town Plaza Cafés",
+    city: "Hinigaran",
+    type: "Library & Café",
+    area: "Poblacion, Hinigaran",
+    vibe: "Hometown study tables and breezy afternoon iced coffee stops between classes.",
+    cup: "Spanish Latte"
+  },
+  {
+    name: "Kabankalan City Public Library",
+    city: "Kabankalan",
+    type: "Library",
+    area: "Kabankalan City Proper",
+    vibe: "Southern Negros reading hub for students prepping reports and book notes.",
+    cup: "Matcha Latte"
   }
-  window.scrollTo({top:0, behavior:'smooth'});
-  return false;
+];
+
+const BOOKS = [
+  {
+    id: "flipped",
+    title: "Flipped",
+    author: "Wendelin Van Draanen",
+    genre: "Coming-of-Age Fiction",
+    year: "2001",
+    pages: "212",
+    spineColor: "#c76e4b",
+    textColor: "#fff8e9",
+    vibe: "Golden-hour sycamore trees, alternating voices, and shifting first impressions",
+    synopsis: "Told from alternating viewpoints between Juli Baker and Bryce Loski across six years, Flipped traces how childhood assumptions unravel and give way to genuine empathy.",
+    characters: "Juli Baker (curious, loyal, tree-loving) • Bryce Loski (cautious, conflicted, growing into honesty)",
+    themes: "Perspective shifts, moral courage, family roots, and seeing people beyond surface judgments.",
+    storyMinute: "Two neighbors grow up seeing each other through completely different lenses until small moments of honesty and sacrifice reshape what they value.",
+    whyRead: "Quick, warm, and perceptive—great for exploring dual POV storytelling and how growing up changes what you notice.",
+    settingAtmosphere: "Suburban neighborhoods, a beloved sycamore tree, and everyday school milestones.",
+    keyTakeaways: "A whole person rarely fits into a first impression; integrity shows up in quiet choices.",
+    characterRelations: "Juli's tight-knit family contrasts with Bryce's quieter household dynamics, testing both kids as they mature.",
+    writingImagery: "The sycamore tree anchors Juli's sense of wonder and belonging throughout the shifting perspectives.",
+    stages: ["1. Childhood Lenses", "2. Growing Friction", "3. The Turning Point", "4. Clearer Sight"],
+    filmNotes: "Adapted into a 2010 film directed by Rob Reiner with warm nostalgia and memorable visual framing.",
+    songs: [
+      { title: "Invisible String — Taylor Swift", note: "Threads of connection over time" },
+      { title: "Here Comes the Sun — The Beatles", note: "Bright morning reset" },
+      { title: "Landslide — Fleetwood Mac", note: "Growing up and changing views" }
+    ]
+  },
+  {
+    id: "piranesi",
+    title: "Piranesi",
+    author: "Susanna Clarke",
+    genre: "Speculative Mystery",
+    year: "2020",
+    pages: "245",
+    spineColor: "#71856a",
+    textColor: "#fff8e9",
+    vibe: "Tidal halls, marble statues, quiet wonder, and pieced-together memory",
+    synopsis: "In a vast house of endless halls, tides, and classical statues, a careful journal-keeper documents the rhythm of the ocean while uncovering clues about who he really is.",
+    characters: "Piranesi (observant, gentle, devoted to the House) • The Other (ambitious, secretive, seeking hidden knowledge)",
+    themes: "Wonder versus obsession, memory, kindness, and finding beauty in stillness.",
+    storyMinute: "A gentle scholar maps tides and statues in an infinite labyrinth until subtle anomalies reveal a deeper truth about his past.",
+    whyRead: "Atmospheric, concise, and emotionally resonant—ideal if you love slow-burn mystery and lyrical worldbuilding.",
+    settingAtmosphere: "Sunlit upper halls, roaring lower tides, seabirds, and thousands of named statues.",
+    keyTakeaways: "Curiosity grounded in care heals more than ambition driven by control.",
+    characterRelations: "Piranesi's trusting nature collides with The Other's guarded agenda, slowly shifting the balance of the House.",
+    writingImagery: "Journal entries, ocean spray, and marble figures create a meditative, dreamlike rhythm.",
+    stages: ["1. Journals & Tides", "2. Missing Entries", "3. Shifting Currents", "4. Return to Light"],
+    filmNotes: "No feature film release yet; widely praised for its painterly, architectural mood.",
+    songs: [
+      { title: "Nuvole Bianche — Ludovico Einaudi", note: "Calm, rippling piano movement" },
+      { title: "Holocene — Bon Iver", note: "Vast landscapes and quiet realization" },
+      { title: "To Build a Home — The Cinematic Orchestra", note: "Memory and longing" }
+    ]
+  },
+  {
+    id: "pachinko",
+    title: "Pachinko",
+    author: "Min Jin Lee",
+    genre: "Historical Saga",
+    year: "2017",
+    pages: "490",
+    spineColor: "#5b4034",
+    textColor: "#fff8e9",
+    vibe: "Generational resilience, boardinghouses, quiet endurance, and family legacy",
+    synopsis: "Spanning four generations of a Korean family living in Japan, Pachinko follows everyday choices made under heavy historical pressure and the quiet strength that carries a family forward.",
+    characters: "Sunja (resilient, resourceful, anchor of the family) • Solomon (navigating identity and modern ambition)",
+    themes: "Belonging, sacrifice, survival, dignity, and intergenerational memory.",
+    storyMinute: "One bold decision sets a family's path across decades of migration, hardship, and adaptation.",
+    whyRead: "Sweeping yet deeply personal—rewards readers who enjoy character-driven historical fiction.",
+    settingAtmosphere: "Yeongdo coastal life, Osaka boardinghouses, and postwar cities.",
+    keyTakeaways: "Endurance isn't loud; it lives in how people show up for one another over time.",
+    characterRelations: "Parents, siblings, and descendants negotiate duty, love, and selfhood across changing eras.",
+    writingImagery: "Food, boardinghouse routines, and recurring motifs tie decades together seamlessly.",
+    stages: ["1. A Fateful Choice", "2. New Shores", "3. Enduring Seasons", "4. Inherited Threads"],
+    filmNotes: "Adapted into a serialized screen adaptation on Apple TV+.",
+    songs: [
+      { title: "Spring Day — BTS", note: "Longing, memory, and seasons turning" },
+      { title: "River Flows in You — Yiruma", note: "Reflective and tender" },
+      { title: "Vienna — Billy Joel", note: "Patience and taking life one step at a time" }
+    ]
+  }
+];
+
+const COFFEE_PAIRINGS = [
+  { name: "Oat Latte", note: "Creamy, gentle, and steady for slow Sunday chapters." },
+  { name: "Spanish Latte", note: "Sweet and cozy—pairs well with comfort reads and plot twists." },
+  { name: "Cold Brew", note: "Crisp and focused for dense pages and study notes." },
+  { name: "Matcha Latte", note: "Earthy and calm for late-afternoon reading sessions." }
+];
+
+const FLASHCARDS = [
+  { q: "How does setting shape the narrator's choices in your current chapter?", a: "Notice what the environment makes easy or risky—place often acts like a silent character." },
+  { q: "What does a character want most right now, and what stands in the way?", a: "Clear desire + friction drives almost every memorable scene." },
+  { q: "Which detail or image keeps recurring across pages?", a: "Recurring motifs usually point straight to a story's core theme." }
+];
+
+const state = {
+  scannedBookId: null,
+  activeBookId: BOOKS[0].id,
+  shelfIds: ["flipped", "piranesi"],
+  negrosFilter: "All",
+  checkedInSpot: "Corner Table Booth • 2:3 Sketch Frame",
+  cup: COFFEE_PAIRINGS[0].name,
+  showAllSongs: true,
+  readIds: [],
+  nightstandIds: [],
+  ratings: {},
+  notes: {},
+  progress: {},
+  corkNotesByBook: {
+    flipped: ["Juli and the sycamore tree—first impressions shift when you see the whole picture."],
+    piranesi: ["Keep track of the tides and the missing journal entries."]
+  },
+  tasks: [
+    { id: 1, text: "Read 20 pages before checking phone", done: false },
+    { id: 2, text: "Pull 2 quotes for Story Notes", done: false }
+  ],
+  scratchpad: "",
+  flashIndex: 0,
+  flashFlipped: false,
+  goldenTint: true,
+  shelfStyle: "",
+  timerSeconds: 25 * 60,
+  timerRunning: false
+};
+
+let timerInterval = null;
+
+function showBanner(msg) {
+  document.getElementById("statusBannerText").textContent = msg;
+  document.getElementById("statusBanner").classList.remove("hidden");
 }
-window.showPage = showPage;
-window.addEventListener('popstate', () => showPage(location.hash.slice(1) || 'home', false));
-function init(){initStudentCorner();renderCoffeeMenu();renderShelf();renderCorkboard();selectBook(state.activeBookId);setShelfFilter(state.shelfFilter);setShelfFinish(state.shelfFinish);renderNightstandSelect();renderQuotes();updateTimerDisplay();updateAmbienceUI();setupSketch();window.addEventListener('beforeunload',()=>{if(cameraStream)cameraStream.getTracks().forEach(t=>t.stop());stopNoise()})}
-document.addEventListener('DOMContentLoaded',()=>{init();showPage(location.hash.slice(1)||'home',false)});
+function hideBanner() {
+  document.getElementById("statusBanner").classList.add("hidden");
+}
+
+function showPage(pageId) {
+  document.querySelectorAll(".page-view").forEach(v => {
+    v.classList.toggle("hidden", v.dataset.page !== pageId);
+  });
+  document.querySelectorAll("[data-nav-page]").forEach(btn => {
+    const active = btn.dataset.navPage === pageId;
+    btn.classList.toggle("bg-amber-900", active);
+    btn.classList.toggle("text-amber-50", active);
+    btn.classList.toggle("bg-white", !active);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderNegrosSpots() {
+  const filters = ["All", "Bacolod", "Silay", "Talisay", "Hinigaran", "Kabankalan"];
+  const btnWrap = document.getElementById("negrosFilterButtons");
+  btnWrap.innerHTML = "";
+  filters.forEach(city => {
+    const active = state.negrosFilter === city;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `px-3 py-1 sketch-btn text-xs font-semibold ${active ? "bg-amber-900 text-amber-50" : "bg-white"}`;
+    btn.textContent = city;
+    btn.onclick = () => {
+      state.negrosFilter = city;
+      renderNegrosSpots();
+    };
+    btnWrap.appendChild(btn);
+  });
+
+  const grid = document.getElementById("negrosSpotsGrid");
+  grid.innerHTML = "";
+  const list = state.negrosFilter === "All"
+    ? NEGROS_SPOTS
+    : NEGROS_SPOTS.filter(s => s.city === state.negrosFilter);
+
+  list.forEach(spot => {
+    const isLibrary = spot.type.includes("Library");
+    const card = document.createElement("article");
+    card.className = `rounded-2xl p-4 flex flex-col justify-between gap-3 ${isLibrary ? "bg-emerald-50/70" : "bg-amber-50/75"}`;
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${spot.name} ${spot.city} Negros Occidental`)}`;
+    card.innerHTML = `
+      <div class="space-y-1.5">
+        <div class="flex flex-wrap items-center justify-between gap-1.5">
+          <span class="text-xs px-2 py-0.5 sketch-pill ${isLibrary ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-amber-950"}">${spot.type}</span>
+          <span class="text-xs font-bold text-stone-600">${spot.city}</span>
+        </div>
+        <h3 class="font-display text-lg font-bold leading-snug">${spot.name}</h3>
+        <p class="text-xs text-stone-600">${spot.area}</p>
+        <p class="text-sm text-stone-800 pt-1">${spot.vibe}</p>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-dashed border-stone-800/20">
+        <a class="text-xs font-semibold underline text-[#8b4b32]" href="${mapUrl}" target="_blank" rel="noopener noreferrer">Open Map ↗</a>
+        <button type="button" class="sketch-btn bg-white px-3 py-1 text-xs font-semibold">Read Here →</button>
+      </div>
+    `;
+    card.querySelector("button").onclick = () => {
+      state.checkedInSpot = `${spot.name} (${spot.city})`;
+      state.cup = spot.cup;
+      document.getElementById("boothSpotBadge").textContent = state.checkedInSpot;
+      renderCoffeeMenu();
+      renderBookBoothAndStory();
+      showPage("scanner-booth");
+      showBanner(`Checked into ${spot.name}, ${spot.city} with a ${spot.cup}.`);
+    };
+    grid.appendChild(card);
+  });
+}
+
+function currentBook() {
+  return BOOKS.find(b => b.id === state.activeBookId) || BOOKS[0];
+}
+
+function createScannedBookEntry(titleText) {
+  const cleanTitle = titleText.trim().replace(/\w/g, c => c.toUpperCase());
+  const slug = `${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`;
+  const color = SPINE_PALETTE[BOOKS.length % SPINE_PALETTE.length];
+  const book = {
+    id: slug,
+    title: cleanTitle,
+    author: "Scanned Edition",
+    genre: "Scanned Read",
+    year: "2026",
+    pages: "260",
+    spineColor: color,
+    textColor: "#fff8e9",
+    vibe: "Freshly scanned at the corner booth—ready for your notes, pins, and cuppa",
+    synopsis: `Scanned "${cleanTitle}" at Quillfinite. Use the Nightstand & Corkboard panel above to save favorite quotes, jot down character impressions, or shelve it on your Bookshelf.`,
+    characters: "Add your own character notes and POV observations in the Hot Take box below.",
+    themes: "Personal takeaways, favorite passages, and chapter-by-chapter reflections.",
+    storyMinute: `A newly scanned edition of ${cleanTitle} waiting for your reading receipt and margin notes.`,
+    whyRead: "Captured directly in the Book Booth so you can keep its pins, nightstand status, and progress in one cozy place.",
+    settingAtmosphere: "Warm café table light, freshly brewed coffee, and open margins.",
+    keyTakeaways: "Every book becomes richer once you pin the lines that stay with you.",
+    characterRelations: "Track how relationships evolve as you log pages on your bookmark receipt.",
+    writingImagery: "Pin memorable motifs and quotes onto this book's corkboard as you read.",
+    stages: ["1. First Pages", "2. Rising Questions", "3. Turning Point", "4. Final Reflection"],
+    filmNotes: "Search clips, trailers, or visual inspirations using the link below.",
+    songs: [
+      { title: `${cleanTitle} Reading Ambience`, note: "Custom soundtrack search on Spotify" },
+      { title: "Paper Rings — Taylor Swift", note: "Page-turning energy" }
+    ]
+  };
+  BOOKS.push(book);
+  return book;
+}
+
+function scanBookById(id, openBooth = false) {
+  const found = BOOKS.find(b => b.id === id);
+  if (!found) return;
+  state.activeBookId = found.id;
+  state.scannedBookId = found.id;
+  renderAll();
+  if (openBooth) showPage("scanner-booth");
+  showBanner(`Scanned "${found.title}"—you can now add it to your Bookshelf or pin notes.`);
+}
+
+function clearScannedBook() {
+  state.scannedBookId = null;
+  document.getElementById("scanFeedback").textContent = "";
+  renderPostScanState();
+  showBanner("Cleared scanned book. Scan again to open its card.");
+}
+
+function renderPostScanState() {
+  const hasScanned = Boolean(state.scannedBookId);
+  document.getElementById("preScanPromptCard").classList.toggle("hidden", hasScanned);
+  document.getElementById("postScanBookCard").classList.toggle("hidden", !hasScanned);
+  document.getElementById("clearScanBtn").classList.toggle("hidden", !hasScanned);
+}
+
+function renderBookBoothAndStory() {
+  const b = currentBook();
+  const prog = state.progress[b.id] || { cur: 0, tot: Number(b.pages) || 250 };
+  const pct = prog.tot > 0 ? Math.min(100, Math.round((prog.cur / prog.tot) * 100)) : 0;
+
+  document.getElementById("bookGenreBadge").textContent = b.genre;
+  document.getElementById("bookMetaBadge").textContent = `${b.year} • ${b.pages} pp.`;
+  document.getElementById("bookTitle").textContent = b.title;
+  document.getElementById("bookAuthor").textContent = `by ${b.author}`;
+  document.getElementById("bookVibe").textContent = b.vibe;
+  document.getElementById("bookSynopsis").textContent = b.synopsis;
+  document.getElementById("bookCharacters").textContent = b.characters;
+  document.getElementById("bookThemes").textContent = b.themes;
+  document.getElementById("bookSongMood").textContent = `Tracks for "${b.title}" — ${b.vibe}`;
+  document.getElementById("bookFilmNotes").textContent = b.filmNotes;
+  document.getElementById("bookPersonalNote").value = state.notes[b.id] || "";
+
+  const isOnShelf = state.shelfIds.includes(b.id);
+  const shelfBtn = document.getElementById("addToShelfBtn");
+  shelfBtn.textContent = isOnShelf ? "On Bookshelf ✓" : "+ Add to Bookshelf";
+  shelfBtn.classList.toggle("bg-emerald-700", isOnShelf);
+  shelfBtn.classList.toggle("bg-[#b85d3b]", !isOnShelf);
+
+  const isRead = state.readIds.includes(b.id);
+  document.getElementById("readStatusBadge").classList.toggle("hidden", !isRead);
+  document.getElementById("markReadBtn").textContent = isRead ? "Finished ✓" : "Finished It";
+
+  const onNightstand = state.nightstandIds.includes(b.id);
+  const pins = state.corkNotesByBook[b.id] || [];
+  document.getElementById("nightstandBtn").textContent = onNightstand ? "On Nightstand ✓" : "Pin to Nightstand";
+  document.getElementById("postScanBookCornerTitle").textContent = `${b.title} • Nightstand & Corkboard`;
+  document.getElementById("postScanBookCornerStatus").textContent =
+    `${onNightstand ? "Pinned to your Nightstand" : "Not on Nightstand"} • ${pins.length} corkboard ${pins.length === 1 ? "pin" : "pins"}`;
+
+  const corkList = document.getElementById("boothBookCorkList");
+  corkList.innerHTML = "";
+  if (!pins.length) {
+    corkList.innerHTML = `<p class="sm:col-span-2 text-sm text-stone-600">No pins for "${b.title}" yet.</p>`;
+  } else {
+    pins.forEach(text => {
+      const card = document.createElement("div");
+      card.className = "rounded-xl bg-[#fffdf5] border-2 border-stone-900 p-3 pt-5 relative shadow-sm";
+      card.innerHTML = `<span class="pushpin-head bg-rose-500 absolute top-2 left-1/2 -translate-x-1/2"></span><p class="text-sm text-stone-800">${text}</p>`;
+      corkList.appendChild(card);
+    });
+  }
+
+  const q = encodeURIComponent(`${b.title} ${b.author === "Scanned Edition" ? "" : b.author}`.trim());
+  document.getElementById("activeBookSearchLink").href = `https://www.google.com/search?tbm=bks&q=${q}`;
+  document.getElementById("bookTrailerLink").href = `https://www.youtube.com/results?search_query=${q}+adaptation+trailer`;
+
+  const listEl = document.getElementById("bookSongsList");
+  listEl.innerHTML = "";
+  const tracks = state.showAllSongs ? b.songs : b.songs.slice(0, 2);
+  tracks.forEach((s, idx) => {
+    const li = document.createElement("li");
+    li.className = "p-2.5 bg-amber-50/50";
+    const spUrl = `https://open.spotify.com/search/${encodeURIComponent(s.title)}`;
+    li.innerHTML = `<a class="spotify-song-link" href="${spUrl}" target="_blank" rel="noopener noreferrer"><span class="spotify-song-icon">♪</span><span><span class="block font-bold">${idx + 1}. ${s.title}</span><span class="block text-xs text-stone-600">${s.note}</span></span></a>`;
+    listEl.appendChild(li);
+  });
+  document.getElementById("songListToggleBtn").textContent = state.showAllSongs ? "Show Top 2 Only" : "Show All Tracks";
+
+  const starsEl = document.getElementById("ratingStars");
+  starsEl.innerHTML = "";
+  const rating = state.ratings[b.id] || 0;
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `text-base ${i <= rating ? "text-amber-500" : "text-stone-300"}`;
+    btn.textContent = "★";
+    btn.onclick = () => { state.ratings[b.id] = i; renderBookBoothAndStory(); };
+    starsEl.appendChild(btn);
+  }
+
+  document.getElementById("receiptTitleLine").textContent = b.title.toUpperCase();
+  document.getElementById("receiptDrinkLine").textContent = state.cup;
+  document.getElementById("receiptSummaryLine").textContent = `p.${prog.cur} / ${prog.tot} (${pct}%)`;
+  document.getElementById("receiptRatingLine").textContent = rating ? `${rating}/5 ★` : "Unrated";
+  document.getElementById("receiptQuoteLine").textContent = `“${b.storyMinute}”`;
+  document.getElementById("currentPageInput").value = prog.cur;
+  document.getElementById("totalPagesInput").value = prog.tot;
+  document.getElementById("pageProgressPercent").textContent = `${pct}%`;
+  document.getElementById("pageProgressBar").style.width = `${pct}%`;
+
+  // Story Notes
+  document.getElementById("storyExplorerHeading").textContent = `${b.title} — Story Notes`;
+  document.getElementById("storyMinute").textContent = b.storyMinute;
+  document.getElementById("whyRead").textContent = b.whyRead;
+  document.getElementById("settingAtmosphere").textContent = b.settingAtmosphere;
+  document.getElementById("keyTakeaways").textContent = b.keyTakeaways;
+  document.getElementById("characterRelations").textContent = b.characterRelations;
+  document.getElementById("writingImagery").textContent = b.writingImagery;
+  document.getElementById("movieConnections").textContent = b.filmNotes;
+
+  const stagesEl = document.getElementById("storyStages");
+  stagesEl.innerHTML = "";
+  b.stages.forEach(st => {
+    const item = document.createElement("li");
+    item.className = "rounded-xl border border-stone-800/20 bg-white/85 px-3 py-2 text-sm";
+    item.textContent = st;
+    stagesEl.appendChild(item);
+  });
+
+  const relEl = document.getElementById("relatedBooks");
+  relEl.innerHTML = "";
+  BOOKS.filter(x => x.id !== b.id).forEach(other => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "sketch-btn bg-white px-3 py-1 text-xs font-semibold";
+    chip.textContent = `${other.title} — ${other.author}`;
+    chip.onclick = () => scanBookById(other.id);
+    relEl.appendChild(chip);
+  });
+
+  renderPostScanState();
+}
+
+function renderCoffeeMenu() {
+  const wrap = document.getElementById("coffeeMenuButtons");
+  wrap.innerHTML = "";
+  COFFEE_PAIRINGS.forEach(item => {
+    const active = item.name === state.cup;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `text-xs px-2.5 py-1 rounded-full border ${active ? "bg-amber-300 text-stone-950 border-amber-200 font-bold" : "bg-white/10 text-amber-100 border-amber-200/25"}`;
+    btn.textContent = item.name;
+    btn.onclick = () => {
+      state.cup = item.name;
+      renderCoffeeMenu();
+      renderBookBoothAndStory();
+    };
+    wrap.appendChild(btn);
+  });
+  const chosen = COFFEE_PAIRINGS.find(c => c.name === state.cup) || COFFEE_PAIRINGS[0];
+  document.getElementById("cafeCupBadge").textContent = chosen.name;
+  document.getElementById("coffeePairingNote").textContent = chosen.note;
+}
+
+function renderShelf() {
+  const shelf = document.getElementById("bookshelfSpines");
+  shelf.className = `wood-shelf ${state.shelfStyle} rounded-2xl p-4 sm:p-6 flex flex-wrap items-end gap-3 min-h-[210px]`;
+  shelf.innerHTML = "";
+  const shelvedBooks = BOOKS.filter(b => state.shelfIds.includes(b.id));
+  document.getElementById("shelfCountLabel").textContent =
+    `${shelvedBooks.length} ${shelvedBooks.length === 1 ? "book" : "books"} on your shelf`;
+
+  if (!shelvedBooks.length) {
+    shelf.innerHTML = `<p class="text-amber-50 text-base">Your shelf is empty—scan a book in the Book Booth and tap “+ Add to Bookshelf”.</p>`;
+    return;
+  }
+
+  shelvedBooks.forEach(b => {
+    const spine = document.createElement("button");
+    spine.type = "button";
+    spine.className = "book-spine text-sm";
+    spine.style.backgroundColor = b.spineColor;
+    spine.style.color = b.textColor;
+    spine.textContent = b.title;
+    spine.onclick = () => scanBookById(b.id, true);
+    shelf.appendChild(spine);
+  });
+}
+
+function renderStudyStudio() {
+  const ul = document.getElementById("studyTaskList");
+  ul.innerHTML = "";
+  state.tasks.forEach(t => {
+    const li = document.createElement("li");
+    li.className = "flex items-center gap-2";
+    li.innerHTML = `<input type="checkbox" ${t.done ? "checked" : ""} class="rounded"><span class="${t.done ? "line-through text-stone-400" : ""}">${t.text}</span>`;
+    li.querySelector("input").onchange = () => { t.done = !t.done; renderStudyStudio(); };
+    ul.appendChild(li);
+  });
+  const card = FLASHCARDS[state.flashIndex % FLASHCARDS.length];
+  document.getElementById("flashcardSideLabel").textContent = state.flashFlipped ? "Reflection (click to flip)" : "Prompt (click to flip)";
+  document.getElementById("flashcardText").textContent = state.flashFlipped ? card.a : card.q;
+  document.getElementById("studyScratchpad").value = state.scratchpad;
+}
+
+function handleScanSubmit(e) {
+  e.preventDefault();
+  const rawInput = document.getElementById("scanTitleInput").value.trim();
+  if (!rawInput) return;
+  const query = rawInput.toLowerCase();
+  let match = BOOKS.find(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query));
+  if (!match) {
+    match = createScannedBookEntry(rawInput);
+  }
+  document.getElementById("scanFeedback").textContent = `Scanned "${match.title}"—tap "+ Add to Bookshelf" to save it to your shelf.`;
+  scanBookById(match.id);
+}
+
+function toggleBookshelfStatus() {
+  const b = currentBook();
+  const exists = state.shelfIds.includes(b.id);
+  state.shelfIds = exists ? state.shelfIds.filter(x => x !== b.id) : [...state.shelfIds, b.id];
+  renderBookBoothAndStory();
+  renderShelf();
+  showBanner(exists ? `Removed "${b.title}" from My Bookshelf.` : `Added "${b.title}" to My Bookshelf!`);
+}
+function toggleReadStatus() {
+  const id = currentBook().id;
+  state.readIds = state.readIds.includes(id) ? state.readIds.filter(x => x !== id) : [...state.readIds, id];
+  renderBookBoothAndStory();
+}
+function toggleNightstandStatus() {
+  const id = currentBook().id;
+  state.nightstandIds = state.nightstandIds.includes(id) ? state.nightstandIds.filter(x => x !== id) : [...state.nightstandIds, id];
+  renderBookBoothAndStory();
+}
+function addBookCorkNote(e) {
+  e.preventDefault();
+  const inp = document.getElementById("boothCorkInput");
+  if (!inp.value.trim()) return;
+  const id = currentBook().id;
+  state.corkNotesByBook[id] = [inp.value.trim(), ...(state.corkNotesByBook[id] || [])];
+  inp.value = "";
+  renderBookBoothAndStory();
+}
+function toggleSongListView() { state.showAllSongs = !state.showAllSongs; renderBookBoothAndStory(); }
+function savePersonalNote() { state.notes[currentBook().id] = document.getElementById("bookPersonalNote").value; }
+function saveBookProgress() {
+  const cur = Math.max(0, Number(document.getElementById("currentPageInput").value) || 0);
+  const tot = Math.max(1, Number(document.getElementById("totalPagesInput").value) || 250);
+  state.progress[currentBook().id] = { cur, tot };
+  renderBookBoothAndStory();
+}
+function copyReadingReceipt() {
+  const text = `${document.getElementById("receiptTitleLine").textContent} | ${document.getElementById("receiptDrinkLine").textContent} | ${document.getElementById("receiptSummaryLine").textContent}`;
+  navigator.clipboard?.writeText(text);
+  showBanner("Copied reading receipt summary.");
+}
+function printReadingReceipt() { window.print(); }
+function toggleFilmTint() {
+  state.goldenTint = !state.goldenTint;
+  document.getElementById("filmOverlay").classList.toggle("bg-amber-400/10", state.goldenTint);
+  document.getElementById("filmTintBtn").textContent = state.goldenTint ? "Golden Hour Cam" : "Natural Film";
+}
+function handleCoverFileUpload(ev) {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+  const img = document.getElementById("snapshotImg");
+  img.src = URL.createObjectURL(file);
+  img.classList.remove("hidden");
+  document.getElementById("idleBoothPlaceholder").classList.add("hidden");
+  if (!state.scannedBookId) scanBookById(state.activeBookId);
+}
+function setShelfStyle(cls) { state.shelfStyle = cls; renderShelf(); }
+function addStudyTask(e) {
+  e.preventDefault();
+  const inp = document.getElementById("studyTaskInput");
+  if (!inp.value.trim()) return;
+  state.tasks.push({ id: Date.now(), text: inp.value.trim(), done: false });
+  inp.value = "";
+  renderStudyStudio();
+}
+function flipFlashcard() { state.flashFlipped = !state.flashFlipped; renderStudyStudio(); }
+function nextFlashcard() { state.flashIndex += 1; state.flashFlipped = false; renderStudyStudio(); }
+function saveScratchpad() { state.scratchpad = document.getElementById("studyScratchpad").value; }
+function updateTimerDisplay() {
+  const m = String(Math.floor(state.timerSeconds / 60)).padStart(2, "0");
+  const s = String(state.timerSeconds % 60).padStart(2, "0");
+  document.getElementById("timerDisplay").textContent = `${m}:${s}`;
+}
+function toggleTimer() {
+  const btn = document.getElementById("startTimerBtn");
+  if (state.timerRunning) {
+    clearInterval(timerInterval);
+    state.timerRunning = false;
+    btn.textContent = "Start";
+  } else {
+    state.timerRunning = true;
+    btn.textContent = "Pause";
+    timerInterval = setInterval(() => {
+      if (state.timerSeconds > 0) {
+        state.timerSeconds -= 1;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timerInterval);
+        state.timerRunning = false;
+        btn.textContent = "Start";
+        showBanner("Focus sprint finished!");
+      }
+    }, 1000);
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval);
+  state.timerRunning = false;
+  state.timerSeconds = 25 * 60;
+  document.getElementById("startTimerBtn").textContent = "Start";
+  updateTimerDisplay();
+}
+function toggleReadAloud() {
+  if (!("speechSynthesis" in window)) return showBanner("Speech synthesis is not supported in this browser.");
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+  speechSynthesis.speak(new SpeechSynthesisUtterance(`${currentBook().title}. ${currentBook().storyMinute}`));
+}
+
+function renderAll() {
+  renderNegrosSpots();
+  renderCoffeeMenu();
+  renderBookBoothAndStory();
+  renderShelf();
+  renderStudyStudio();
+  updateTimerDisplay();
+}
+
+renderAll();
 </script>
 </body>
 </html>
