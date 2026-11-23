@@ -1356,7 +1356,7 @@
       ]
     };
 
-    const AI_CACHE_KEY = "quillfinite_ai_book_v2";
+    const AI_CACHE_KEY = "quillfinite_ai_book_v3";
     const RECENT_SONGS_KEY = "quillfinite_recent_songs_v2";
     const GEMINI_KEY_STORAGE = "quillfinite_gemini_key_v1";
 
@@ -2388,12 +2388,122 @@
       };
     }
 
-    async function enrichBookWithDeepAnalysisAndSongs(book) {
+    function updateGeminiKeyIndicator() {
+      const hasKey = Boolean(getGeminiApiKey());
+      const navLabel = document.getElementById("geminiKeyNavLabel");
+      const inlineBtn = document.getElementById("geminiInlinePromptBtn");
+      if (navLabel) {
+        navLabel.textContent = hasKey ? "✦ Gemini Live" : "✦ Add Gemini Key";
+      }
+      if (inlineBtn) {
+        inlineBtn.textContent = hasKey
+          ? "Gemini active ✓"
+          : "Add Gemini key for full AI answers →";
+      }
+    }
+
+    function openGeminiKeyModal() {
+      const overlay = document.getElementById("geminiKeyModalOverlay");
+      if (!overlay) return;
+      const cur = getGeminiApiKey();
+      document.getElementById("geminiApiKeyInput").value = cur;
+      document.getElementById("geminiKeyModalStatus").textContent = cur
+        ? "A Gemini API key is currently saved in this browser."
+        : "No key saved yet. Get a free key at aistudio.google.com.";
+      overlay.classList.remove("hidden");
+      document.getElementById("geminiApiKeyInput").focus();
+    }
+
+    function closeGeminiKeyModal() {
+      document.getElementById("geminiKeyModalOverlay")?.classList.add("hidden");
+    }
+
+    async function handleSaveGeminiKey(e) {
+      e.preventDefault();
+      const val = document.getElementById("geminiApiKeyInput").value.trim();
+      if (!val) {
+        showBanner("Paste a valid Gemini API key first.");
+        return;
+      }
+      try { localStorage.setItem(GEMINI_KEY_STORAGE, val); } catch (_) {}
+      updateGeminiKeyIndicator();
+      closeGeminiKeyModal();
+      showBanner("Gemini key saved! Generating fresh book analysis...");
+      if (appState.currentBook) {
+        await regenerateCurrentBookAnalysis();
+      }
+    }
+
+    function clearSavedGeminiKey() {
+      try { localStorage.removeItem(GEMINI_KEY_STORAGE); } catch (_) {}
+      document.getElementById("geminiApiKeyInput").value = "";
+      updateGeminiKeyIndicator();
+      closeGeminiKeyModal();
+      showBanner("Removed Gemini API key.");
+    }
+
+    async function regenerateCurrentBookAnalysis() {
+      const book = appState.currentBook;
+      if (!book) return;
+      try {
+        const cache = getAiBookCache();
+        Object.keys(cache).forEach((k) => {
+          if (k.startsWith(`${book.id}::`)) delete cache[k];
+        });
+        localStorage.setItem(AI_CACHE_KEY, JSON.stringify(cache));
+      } catch (_) {}
+
+      document.getElementById("loadingBookCard").classList.remove("hidden");
+      document.getElementById("activeBookReadingCard").classList.add("hidden");
+      document.getElementById("loadingBookSubtext").textContent = `Generating fresh non-repetitive answers for "${book.title}"...`;
+
+      const refreshed = await enrichBookWithDeepAnalysisAndSongs(book, true);
+      document.getElementById("loadingBookCard").classList.add("hidden");
+      displayBook(refreshed);
+    }
+
+    async function callGeminiStructured(apiKey, systemInstruction, prompt) {
+      const models = ["gemini-2.5-flash", "gemini-2.0-flash"];
+      let lastErr = null;
+      for (const model of models) {
+        try {
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemInstruction }] },
+              contents: [{ role: "user", parts: [{ text: prompt }] }],
+              generationConfig: {
+                temperature: 0.85,
+                responseMimeType: "application/json",
+                responseSchema: BOOK_INSIGHT_SCHEMA
+              }
+            })
+          });
+          if (!res.ok) {
+            const errBody = await res.text().catch(() => "");
+            throw new Error(`HTTP ${res.status}: ${errBody.slice(0, 140)}`);
+          }
+          const data = await res.json();
+          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!rawText) throw new Error("Empty candidate response");
+          return JSON.parse(rawText);
+        } catch (err) {
+          lastErr = err;
+        }
+      }
+      throw lastErr || new Error("Gemini request failed");
+    }
+
+    async function enrichBookWithDeepAnalysisAndSongs(book, forceRefresh = false) {
       const apiKey = getGeminiApiKey();
-      const cacheKey = `${book.id}::${apiKey ? "gemini_full" : "substance_v2"}`;
-      const cached = getAiBookCache()[cacheKey];
-      if (cached) {
-        return { ...book, ...cached };
+      const cacheKey = `${book.id}::${apiKey ? "gemini_v3" : "local_v3"}`;
+      if (!forceRefresh) {
+        const cached = getAiBookCache()[cacheKey];
+        if (cached) {
+          return { ...book, ...cached };
+        }
       }
 
       if (!apiKey) {
@@ -2401,20 +2511,38 @@
           tracks: pickDistinctSongsForBook(book)
         };
         saveAiBookCache(cacheKey, localPatch);
+        const statusEl = document.getElementById("lookupStatusLine");
+        if (statusEl) {
+          statusEl.textContent = `Loaded notes for "${book.title}".`;
+        }
         return { ...book, ...localPatch };
       }
 
       const recentSongs = getRecentSongs().slice(0, 30);
       const systemInstruction = `
-You are an expert literary critic, AP/IB literature tutor, and music supervisor.
-Your job is to produce deep, specific, text-grounded literary analysis for the exact book provided—NEVER generic filler templates.
-Strict rules:
-1. Reference actual named characters, specific plot events, settings, symbols, and ending/turning-point stakes from the book.
-2. Never write generic phrases like "gives students strong material for reflection" or "track how the central tension shifts". Be concrete and analytical.
-3. For "characters", list 3 to 4 real named characters from the book with their exact role, inner contradiction, and arc.
-4. For "quotes", provide 2 real, iconic, accurate quotes or memorable lines from the book with close-reading notes.
-5. For "essayAngles", provide 3 sharp, thesis-ready literary analysis prompts specific to this book's symbols, structure, and character choices.
-6. For "songs", choose 4 real, well-matched songs that connect directly to specific scenes, character arcs, or themes in THIS book. Never repeat any song in: [${recentSongs.join("; ") || "None"}].
+You are an insightful, razor-sharp literary critic, AP/IB English teacher, and music supervisor.
+Generate genuine, concrete, non-repetitive answers specifically about the requested book.
+
+CRITICAL ANTI-REPETITION & SUBSTANCE RULES:
+1. NEVER repeat the same sentence, plot point, or phrasing across different fields! Each section has a distinct job:
+   - "synopsis": Concise 3-4 sentence narrative overview of the premise, protagonist's inciting incident, rising conflict, and central stakes (no spoilers of the final twist unless classic, or frame stakes clearly).
+   - "whyRead": 2-3 punchy sentences on what makes this book compelling, emotionally or intellectually provocative, and worth a reader's time today—do NOT restate the plot summary.
+   - "characters": 3 to 4 ACTUAL named characters from this exact book. State their specific role, psychological flaw or desire, and how their choices drive the conflict.
+   - "centralTension": The core ideological, moral, or interpersonal collision in the story (with specific names/events).
+   - "themesAndMotifs": 2-3 concrete recurring symbols, objects, settings, or motifs in the text and what they actually represent.
+   - "characterPsychology": How the protagonist's internal worldview changes from beginning to end.
+   - "teenTakeaway": A sharp, non-cliché connection to real-world power, identity, memory, or human nature.
+   - "takeaways": 3 distinct, specific insights or lessons drawn from concrete events in the book (each must cover a DIFFERENT aspect—never repeat the synopsis).
+   - "quotes": 2 real, accurate, memorable lines from this book, each with a specific close-reading explanation of why that line matters in its scene.
+   - "storyNotes":
+     * "arc": Structural turning points (inciting incident -> midpoint shift -> climax tension).
+     * "themes": Craft techniques the author uses (POV, tone, imagery, pacing, irony).
+     * "pacing": How the book reads (slow-burn vs. fast, chapter rhythm, what to pay attention to while reading).
+   - "essayAngles": 3 distinct, debatable thesis questions referencing specific characters, symbols, or moments in this book.
+   - "recallQuestion": A specific comprehension question testing whether the reader understood a key character motive or plot turning point.
+   - "recallHint": The actual, specific answer to that recall question (with character names and concrete plot facts).
+   - "adaptationText": Specific details about real film/TV/stage adaptations (director, release year, cast, or how it differs from the book)—or if none exist yet, note its adaptation status and cinematic potential.
+   - "songs": 4 real songs that fit specific scenes, character arcs, or emotional beats in THIS book. Never repeat any song in: [${recentSongs.join("; ") || "None"}].
 `.trim();
 
       const prompt = `
@@ -2422,30 +2550,12 @@ Book Title: ${book.title}
 Author: ${book.author}
 Publication Year: ${book.year}
 Subjects / Genre: ${book.primaryTopic}
-Catalog Synopsis: ${book.synopsis}
-Reference Context: ${(book.wikiFullText || "").slice(0, 3500)}
+Catalog Blurb: ${book.synopsis}
+Reference Context: ${(book.wikiFullText || "").slice(0, 4200)}
 `.trim();
 
       try {
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            systemInstruction: { parts: [{ text: systemInstruction }] },
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.75,
-              responseMimeType: "application/json",
-              responseSchema: BOOK_INSIGHT_SCHEMA
-            }
-          })
-        });
-        if (!res.ok) throw new Error(`Gemini request failed (${res.status})`);
-        const data = await res.json();
-        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawText) throw new Error("Empty model response");
-        const parsed = JSON.parse(rawText);
+        const parsed = await callGeminiStructured(apiKey, systemInstruction, prompt);
 
         const formattedTracks = (parsed.songs || []).slice(0, 4).map((s) => ({
           title: `${s.title} — ${s.artist}`,
@@ -2479,12 +2589,14 @@ Reference Context: ${(book.wikiFullText || "").slice(0, 3500)}
           },
           adaptationText: parsed.adaptationText || book.adaptationText,
           moodTitle: parsed.moodTitle || book.moodTitle,
-          tracks: formattedTracks.length ? formattedTracks : book.tracks
+          tracks: formattedTracks.length ? formattedTracks : book.tracks,
+          source: book.source
         };
 
         saveAiBookCache(cacheKey, patch);
         return { ...book, ...patch };
-      } catch (_) {
+      } catch (err) {
+        /* silent fallback */
         return { ...book, tracks: pickDistinctSongsForBook(book) };
       }
     }
@@ -3050,6 +3162,7 @@ Reference Context: ${(book.wikiFullText || "").slice(0, 3500)}
 
     restoreLastSessionAccount();
     updateAccountBadge();
+    updateGeminiKeyIndicator();
     renderCupMenu();
     renderBookshelf();
     renderStudyStudio();
