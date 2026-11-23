@@ -502,6 +502,26 @@
             </div>
           </form>
 
+          <!-- Search Matches Picker (Choose the exact book before opening) -->
+          <div id="searchCandidatesBox" class="hidden rounded-2xl border-2 border-stone-800/20 bg-amber-50/90 p-3.5 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#8b4b32]">
+                Pick the Right Book Match
+              </span>
+              <button
+                type="button"
+                onclick="hideCandidatesBox()"
+                class="text-xs font-bold underline text-stone-600"
+              >
+                Hide
+              </button>
+            </div>
+            <p class="text-xs text-stone-700">
+              Tap a match below so you don't end up with the wrong edition or title:
+            </p>
+            <div id="searchCandidatesList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
+          </div>
+
           <!-- Quick Sample Searches -->
           <div class="space-y-1.5">
             <span class="block text-xs font-bold uppercase tracking-wider text-stone-600">
@@ -1939,6 +1959,670 @@
       initOrUpdateHinigaranMap(mapSpots);
     }
 
+
+    // =========================================================================
+    // CURATED SUBSTANCE LIBRARY (GUARANTEES RICH DETAILS FOR POPULAR BOOKS)
+    // =========================================================================
+    const CURATED_SUBSTANCE_BOOKS = [
+      {
+        title: "The Alchemist",
+        subtitle: "A Fable About Following Your Dream",
+        author: "Paulo Coelho",
+        year: "1988",
+        pages: 208,
+        isbn: "9780062315007",
+        subjects: ["Philosophy", "Quest & Destiny", "Spiritual Fiction"],
+        description: "Santiago, a young Andalusian shepherd, leaves his familiar flock behind after recurring dreams point toward hidden treasure near the Egyptian pyramids. Along the journey through Spain and across the Sahara, he meets an old king, a crystal merchant, an Englishman seeking the Philosopher's Stone, and an alchemist who teaches him to listen to his heart and read signs in the world around him.",
+        takeaways: [
+          "Paying attention to omens and small turns in a journey often reveals direction before the final destination is clear.",
+          "Fear of failure and attachment to comfort can hold people back longer than external obstacles.",
+          "Listening to your own heart helps separate genuine purpose from borrowed expectations."
+        ],
+        quotes: [
+          {
+            tag: "Core Motif • Personal Legend",
+            quote: "And, when you want something, all the universe conspires in helping you to achieve it.",
+            note: "Test this idea against Santiago's setbacks—notice how opportunities only matter when you're ready to act."
+          },
+          {
+            tag: "Present Moment",
+            quote: "The secret of life, though, is to fall seven times and to get up eight times.",
+            note: "Good lens for how Santiago handles losing his money and starting over."
+          }
+        ],
+        storyNotes: {
+          arc: "Opens with Santiago choosing a shepherd's freedom over seminary expectations, then builds a parabolic road journey from Andalusia to the desert—each stop tests what he values most.",
+          themes: "Fable structure keeps characters archetypal and clear around 'Personal Legend,' omens, and the language of the world. Notice how parable works best when every detour mirrors an inner question.",
+          pacing: "Short, brisk scenes (~208 pages total) read almost like folk tales stitched together. Great for 20–30 page cafe sittings where you pause after each mentor or setback."
+        },
+        adaptationText: "Stage adaptations and illustrated editions exist worldwide; compare how a sparse parable translates when staged or drawn visually without a narrator's commentary.",
+        moodTitle: "Desert & Acoustic",
+        spotifyQuery: "The Alchemist acoustic folk reading",
+        tracks: [
+          { title: "The Wind — PJ Harvey", note: "Sparse & reflective" },
+          { title: "Hoppípolla — Sigur Rós", note: "Hopeful & sweeping" },
+          { title: "Into the West — Annie Lennox", note: "Journey & farewell" },
+          { title: "Holocene — Bon Iver", note: "Quiet open space" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/works/OL15626917W"
+      },
+      {
+        title: "The Witch of Portobello",
+        subtitle: "A Novel",
+        author: "Paulo Coelho",
+        year: "2006",
+        pages: 336,
+        isbn: "9780061339252",
+        subjects: ["Identity & Belonging", "Spiritual Fiction", "Voices & Perspective"],
+        description: "Told through a mosaic of interviews with people who knew Athena—born Sherine Khalil in Transylvania, adopted in Beirut, raised in London, and later known in Portobello Road—this novel traces how an unconventional woman who embraces dance, trance, and spiritual guidance sparks both devotion and suspicion in her community.",
+        takeaways: [
+          "Different witnesses remember the exact same person in sharply contrasting ways depending on their own needs and fears.",
+          "Community judgment often turns quickly on people who refuse neat social labels."
+        ],
+        quotes: [
+          {
+            tag: "Voice & Freedom",
+            quote: "Don't let the noise of other people's opinions drown out your own inner voice.",
+            note: "Trace how Athena's supporters and critics interpret the same actions differently."
+          }
+        ],
+        storyNotes: {
+          arc: "Structured as an oral collage of voices rather than a single linear diary, letting mystery and character build through contradictions.",
+          themes: "Explores chosen identity, feminine spiritual expression, and how rumor vs. lived experience shapes a reputation.",
+          pacing: "Short interview fragments make it easy to read a few testimonies at a time and track who is speaking."
+        },
+        adaptationText: "Has been adapted for stage in several productions; pay attention to how multi-voice testimony works when spoken aloud by multiple performers.",
+        moodTitle: "Velvet & Candlelight",
+        spotifyQuery: "Paulo Coelho dramatic acoustic reading",
+        tracks: [
+          { title: "Skinny Love — Bon Iver", note: "Raw & intimate" },
+          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Steady piano" },
+          { title: "Landslide — Fleetwood Mac", note: "Reflective & warm" },
+          { title: "Nocturne in E-flat Major — Chopin", note: "Quiet evening mood" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780061339252-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=The+Witch+of+Portobello+Paulo+Coelho"
+      },
+      {
+        title: "Veronika Decides to Die",
+        subtitle: "A Novel",
+        author: "Paulo Coelho",
+        year: "1998",
+        pages: 210,
+        isbn: "9780060932725",
+        subjects: ["Mental Health & Renewal", "Existential Fiction", "Clarity Through Crisis"],
+        description: "Twenty-four-year-old Veronika in Ljubljana decides to end her life, only to wake up in Villete, a psychiatric clinic, and learn that the overdose left her heart damaged with only days left to live. Facing a countdown she never planned for, she starts noticing small joys, friendships, and truths she had tuned out.",
+        takeaways: [
+          "A sudden shift in perspective—like an unexpected deadline—can expose what you actually care about.",
+          "Connection with outsiders and misfits often brings unexpected honesty."
+        ],
+        quotes: [
+          {
+            tag: "Madness & Normality",
+            quote: "Whenever we love, we always strive to become better than we are.",
+            note: "Compare how 'normal' society vs. the patients inside Villete define sanity."
+          }
+        ],
+        storyNotes: {
+          arc: "Tight premise driven by a short ticking clock inside a confined setting, turning an ending into a forced re-evaluation of every day.",
+          themes: "Examines conformity, emotional numbness, and what makes life feel vivid again.",
+          pacing: "Compact ~210 pages with short chapters—reads quickly with strong emotional contrast."
+        },
+        adaptationText: "Adapted into a 2009 feature film starring Sarah Michelle Gellar; compare how the film handles the clinic setting and internal monologue.",
+        moodTitle: "Rainy Window & Piano",
+        spotifyQuery: "melancholic piano reading playlist",
+        tracks: [
+          { title: "River Flows in You — Yiruma", note: "Gentle & steady" },
+          { title: "Experience — Ludovico Einaudi", note: "Emotional build" },
+          { title: "Breathe Me — Sia", note: "Quiet & raw" },
+          { title: "Vienna — Billy Joel", note: "Grounded & calm" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780060932725-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=Veronika+Decides+to+Die+Paulo+Coelho"
+      },
+      {
+        title: "Brida",
+        subtitle: "A Novel",
+        author: "Paulo Coelho",
+        year: "1990",
+        pages: 224,
+        isbn: "9780061578939",
+        subjects: ["Tradition & Intuition", "Coming of Age", "Spiritual Quest"],
+        description: "A young Irish woman named Brida seeks deeper understanding of love, destiny, and mystical wisdom, studying under two very different teachers: a folklorist/magus in the forest and a Wiccan teacher who guides her in intuition and courage.",
+        takeaways: [
+          "Learning often requires balancing disciplined study with trusting your own intuition.",
+          "Real growth usually asks you to risk losing certainty before finding a truer path."
+        ],
+        quotes: [
+          {
+            tag: "Trusting the Leap",
+            quote: "Love is a trap. When it appears, take it in.",
+            note: "Notice how Brida has to weigh caution against openness."
+          }
+        ],
+        storyNotes: {
+          arc: "Follows an apprenticeship structure with two contrasting mentors, building toward a personal test of readiness.",
+          themes: "Contrasts analytical tradition with intuitive wisdom and personal agency.",
+          pacing: "Around 224 pages with clear dialogue-driven scenes—easy to read in steady evening blocks."
+        },
+        adaptationText: "Look up stage or reading discussions on Brida to see how its two mentor traditions are contrasted.",
+        moodTitle: "Celtic Mist & Acoustic",
+        spotifyQuery: "celtic acoustic reading playlist",
+        tracks: [
+          { title: "The Shire — Howard Shore", note: "Warm folk melody" },
+          { title: "Landslide — Fleetwood Mac", note: "Soft acoustic" },
+          { title: "Holocene — Bon Iver", note: "Calm & airy" },
+          { title: "To Build a Home — The Cinematic Orchestra", note: "Reflective strings" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780061578939-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=Brida+Paulo+Coelho"
+      },
+      {
+        title: "Eleven Minutes",
+        subtitle: "A Novel",
+        author: "Paulo Coelho",
+        year: "2003",
+        pages: 273,
+        isbn: "9780060587291",
+        subjects: ["Intimacy & Desire", "Self-Discovery", "Exile & Return"],
+        description: "Maria leaves a small town in Brazil hoping adventure awaits in Rio, gets sidetracked in Geneva, and ends up working in adult entertainment while keeping a private journal about love, physical intimacy, and the gap between desire and true connection.",
+        takeaways: [
+          "Separating physical transaction from emotional intimacy shapes how a character views herself and others.",
+          "Journals often show the gap between the outward role a person plays and what they actually long for."
+        ],
+        quotes: [
+          {
+            tag: "Journal Reflection",
+            quote: "Sex is a path—one of many—that can lead us to the sacred.",
+            note: "Track how Maria's journal entries shift as she meets someone who treats her as a whole person."
+          }
+        ],
+        storyNotes: {
+          arc: "Structured around diary entries woven into Maria's life abroad, contrasting daily routine with inner reflection.",
+          themes: "Examines vulnerability, dignity, and why connection requires letting go of armor.",
+          pacing: "~273 pages divided into short, sharp diary-style beats."
+        },
+        adaptationText: "Explore reader essays and theater adaptations comparing Maria's public role with her private journal voice.",
+        moodTitle: "Late-Night Strings & Café",
+        spotifyQuery: "late night acoustic cafe reading",
+        tracks: [
+          { title: "Nocturne in E-flat Major — Chopin", note: "Quiet & intimate" },
+          { title: "Vienna — Billy Joel", note: "Steady & reflective" },
+          { title: "Landslide — Fleetwood Mac", note: "Acoustic warmth" },
+          { title: "River Flows in You — Yiruma", note: "Soft piano" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780060587291-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=Eleven+Minutes+Paulo+Coelho"
+      },
+      {
+        title: "The Zahir",
+        subtitle: "A Novel of Obsession",
+        author: "Paulo Coelho",
+        year: "2005",
+        pages: 316,
+        isbn: "9780060820367",
+        subjects: ["Obsession & Love", "Journey & Memory", "Fiction"],
+        description: "A successful writer in Paris finds his life upended when his war-correspondent wife Esther disappears without explanation, leaving him consumed by what 'Zahir' means—something that takes over your thoughts until you can focus on nothing else.",
+        takeaways: [
+          "Obsession can disguise itself as devotion when you try to control someone or freeze a relationship in the past.",
+          "Letting go of an old story is often necessary before you can see what is right in front of you."
+        ],
+        quotes: [
+          {
+            tag: "The Idea of the Zahir",
+            quote: "Love is a force more formidable than any other. It is invisible—it cannot be seen or measured, yet it is powerful enough to transform you in a moment.",
+            note: "Ask whether the narrator loves Esther as she is or loves the mystery of her absence."
+          }
+        ],
+        storyNotes: {
+          arc: "Begins with a sudden disappearance and moves from Paris toward Central Asia as the narrator chases answers and self-honesty.",
+          themes: "Explores obsession, freedom vs. possession, and how grief reshapes memory.",
+          pacing: "~316 pages with reflective conversations driving the plot forward."
+        },
+        adaptationText: "Look up author interviews and book club discussions on how Coelho uses the 'Zahir' concept.",
+        moodTitle: "Open Road & Ambient",
+        spotifyQuery: "ambient journey piano reading",
+        tracks: [
+          { title: "Time — Hans Zimmer", note: "Slow & sweeping" },
+          { title: "Holocene — Bon Iver", note: "Quiet & distant" },
+          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Steady piano" },
+          { title: "Experience — Ludovico Einaudi", note: "Gradual build" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780060820367-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=The+Zahir+Paulo+Coelho"
+      },
+      {
+        title: "The Pilgrimage",
+        subtitle: "A Contemporary Quest for a New Way of Life",
+        author: "Paulo Coelho",
+        year: "1987",
+        pages: 256,
+        isbn: "9780062502186",
+        subjects: ["Camino de Santiago", "Spiritual Quest", "Discipline & Practice"],
+        description: "After failing a test to earn a sword in the RAM tradition, Paulo walks the road to Santiago de Compostela with a guide named Petrus, completing practical exercises meant to strip away ego and routine.",
+        takeaways: [
+          "Repetitive physical exercises often reveal impatience and ego faster than abstract theory.",
+          "Small daily practices matter more than dramatic promises."
+        ],
+        quotes: [
+          {
+            tag: "The Road Exercise",
+            quote: "An ordinary man is always looking for extraordinary things.",
+            note: "Notice which road exercises feel easy vs. frustrating for the narrator."
+          }
+        ],
+        storyNotes: {
+          arc: "Follows step-by-step trials along the Camino pilgrimage route, pairing physical endurance with practical lessons.",
+          themes: "Focuses on humility, discipline, and overcoming self-doubt on a long trek.",
+          pacing: "~256 pages structured around distinct exercises and stages of the walk."
+        },
+        adaptationText: "Compare this early pilgrimage account with modern Camino de Santiago travelogues and documentaries.",
+        moodTitle: "Footsteps & Acoustic",
+        spotifyQuery: "camino de santiago acoustic reading",
+        tracks: [
+          { title: "Landslide — Fleetwood Mac", note: "Gentle acoustic" },
+          { title: "The Shire — Howard Shore", note: "Walking pace" },
+          { title: "Vienna — Billy Joel", note: "Steady & calm" },
+          { title: "Holocene — Bon Iver", note: "Quiet reflection" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780062502186-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=The+Pilgrimage+Paulo+Coelho"
+      },
+      {
+        title: "The Spy",
+        subtitle: "A Novel",
+        author: "Paulo Coelho",
+        year: "2016",
+        pages: 192,
+        isbn: "9780385352809",
+        subjects: ["Historical Fiction", "Biography & Memory", "Freedom & Scandal"],
+        description: "Set in 1917 Paris during World War I, this compact novel looks at Mata Hari—Margaretha Zelle—through a letter written from her cell shortly before her execution, reflecting on her life as a dancer, outsider, and scapegoat.",
+        takeaways: [
+          "In times of war and panic, public scapegoats are often judged by rumor rather than proof.",
+          "Writing in hindsight can reclaim a voice that others tried to define."
+        ],
+        quotes: [
+          {
+            tag: "Letter from Prison",
+            quote: "I was never a traitor; I was a woman who lived on her own terms.",
+            note: "Examine how Margaretha frames her choices against wartime suspicion."
+          }
+        ],
+        storyNotes: {
+          arc: "Framed as a final confession/letter looking back across an unconventional life from a prison cell.",
+          themes: "Explores independence, public scandal, and how history remembers women who step outside norms.",
+          pacing: "Short (~192 pages) and focused—can be read in one or two focused sittings."
+        },
+        adaptationText: "Compare this fictionalized letter with historical accounts and film adaptations of Mata Hari's life.",
+        moodTitle: "Parisian Dusk & Piano",
+        spotifyQuery: "vintage french piano reading",
+        tracks: [
+          { title: "Nocturne in E-flat Major — Chopin", note: "Classic & moody" },
+          { title: "River Flows in You — Yiruma", note: "Soft piano" },
+          { title: "Breathe Me — Sia", note: "Quiet & poignant" },
+          { title: "Moonlight Sonata — Beethoven", note: "Evening calm" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780385352809-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=The+Spy+Paulo+Coelho"
+      },
+      {
+        title: "Manuscript Found in Accra",
+        subtitle: "A Novel",
+        author: "Paulo Coelho",
+        year: "2012",
+        pages: 192,
+        isbn: "9780385350652",
+        subjects: ["Wisdom & Parable", "Community & Fear", "Philosophy"],
+        description: "On the eve of an invasion in 1099 Jerusalem, a mysterious figure known as the Copt gathers residents of all faiths and backgrounds in the town square to answer questions about fear, defeat, solitude, love, and beauty.",
+        takeaways: [
+          "Fear makes people turn inward, while shared perspective helps a community face uncertainty together.",
+          "Short, direct answers to big questions work best when paired with real stakes."
+        ],
+        quotes: [
+          {
+            tag: "Before the Storm",
+            quote: "Defeat is not the worst of failures. Not to have tried is the true failure.",
+            note: "Notice how the looming threat shapes the questions people ask."
+          }
+        ],
+        storyNotes: {
+          arc: "Built around a single gathering on the night before a siege, turning big human questions into a collective conversation.",
+          themes: "Focuses on courage, solidarity, and holding onto meaning when outcomes are uncertain.",
+          pacing: "~192 pages of short, aphoristic passages—great for highlighting one line at a time."
+        },
+        adaptationText: "Read alongside Coelho's other aphoristic works to see how a single setting holds multiple philosophical threads.",
+        moodTitle: "Quiet Lantern & Strings",
+        spotifyQuery: "peaceful acoustic strings reading",
+        tracks: [
+          { title: "To Build a Home — The Cinematic Orchestra", note: "Warm & steady" },
+          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Gentle piano" },
+          { title: "Holocene — Bon Iver", note: "Quiet & reflective" },
+          { title: "Experience — Ludovico Einaudi", note: "Thoughtful arc" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780385350652-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/search?q=Manuscript+Found+in+Accra+Paulo+Coelho"
+      }
+    ];
+
+    function findCuratedMatches(query, scope = "all") {
+      const q = String(query || "").trim().toLowerCase();
+      if (!q) return [];
+      const isbnClean = extractIsbn(q);
+
+      return CURATED_SUBSTANCE_BOOKS.filter((item) => {
+        const titleMatch = item.title.toLowerCase().includes(q) || (item.subtitle || "").toLowerCase().includes(q);
+        const authorMatch = item.author.toLowerCase().includes(q);
+        const isbnMatch = isbnClean && item.isbn.replace(/[^0-9Xx]/g, "").toUpperCase() === isbnClean;
+        const subjectMatch = (item.subjects || []).some((s) => s.toLowerCase().includes(q));
+
+        if (scope === "title") return titleMatch;
+        if (scope === "author") return authorMatch;
+        if (scope === "isbn") return isbnMatch;
+        return titleMatch || authorMatch || isbnMatch || subjectMatch;
+      });
+    }
+
+    async function searchCandidateBooks(query, scope = "all") {
+      const trimmed = String(query || "").trim();
+      const isbn = extractIsbn(trimmed);
+      const curated = findCuratedMatches(trimmed, scope);
+
+      const candidates = curated.map((c) => ({
+        ...c,
+        _isCurated: true
+      }));
+
+      const seenKeys = new Set(
+        candidates.map((c) => `${c.title.toLowerCase()}::${c.author.toLowerCase()}`)
+      );
+
+      // Pull multiple Open Library matches so user can pick the right one
+      try {
+        if (isbn || scope === "isbn") {
+          const code = isbn || trimmed.replace(/[^0-9Xx]/g, "");
+          const single = await queryOpenLibrary(code, "isbn");
+          if (single) {
+            const k = `${single.title.toLowerCase()}::${single.author.toLowerCase()}`;
+            if (!seenKeys.has(k)) {
+              seenKeys.add(k);
+              candidates.push(single);
+            }
+          }
+        } else {
+          const params = new URLSearchParams({ limit: "6" });
+          if (scope === "title") params.set("title", trimmed);
+          else if (scope === "author") params.set("author", trimmed);
+          else params.set("q", trimmed);
+
+          const res = await fetch(`https://openlibrary.org/search.json?${params.toString()}`);
+          if (res.ok) {
+            const data = await res.json();
+            const docs = Array.isArray(data.docs) ? data.docs.slice(0, 6) : [];
+            docs.forEach((doc) => {
+              if (!doc || !doc.title) return;
+              const authorStr = Array.isArray(doc.author_name) && doc.author_name.length
+                ? doc.author_name.slice(0, 2).join(", ")
+                : "Unknown Author";
+              const k = `${doc.title.toLowerCase()}::${authorStr.toLowerCase()}`;
+              if (seenKeys.has(k)) return;
+              seenKeys.add(k);
+
+              const isbnGuess = Array.isArray(doc.isbn) && doc.isbn.length ? doc.isbn[0] : "";
+              const coverUrl = doc.cover_i
+                ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+                : isbnGuess
+                  ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbnGuess)}-M.jpg`
+                  : "";
+
+              candidates.push({
+                title: doc.title,
+                subtitle: doc.subtitle || "",
+                author: authorStr,
+                year: doc.first_publish_year ? String(doc.first_publish_year) : "",
+                pages: doc.number_of_pages_median || null,
+                isbn: isbnGuess,
+                subjects: Array.isArray(doc.subject) ? doc.subject.slice(0, 5) : [],
+                description: "",
+                coverUrl,
+                source: "Open Library",
+                catalogUrl: doc.key ? `https://openlibrary.org${doc.key}` : "https://openlibrary.org"
+              });
+            });
+          }
+        }
+      } catch (_) {}
+
+      // Also fetch Google Books volume candidates for richer matches
+      try {
+        let gq = trimmed;
+        if (isbn || scope === "isbn") gq = `isbn:${isbn || trimmed.replace(/[^0-9Xx]/g, "")}`;
+        else if (scope === "title") gq = `intitle:${trimmed}`;
+        else if (scope === "author") gq = `inauthor:${trimmed}`;
+
+        const gRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(gq)}&maxResults=5`);
+        if (gRes.ok) {
+          const gData = await gRes.json();
+          const items = Array.isArray(gData.items) ? gData.items : [];
+          items.forEach((item) => {
+            const info = item && item.volumeInfo ? item.volumeInfo : null;
+            if (!info || !info.title) return;
+            const authorStr = Array.isArray(info.authors) && info.authors.length
+              ? info.authors.slice(0, 2).join(", ")
+              : "Unknown Author";
+            const k = `${info.title.toLowerCase()}::${authorStr.toLowerCase()}`;
+            if (seenKeys.has(k)) return;
+            seenKeys.add(k);
+
+            const ids = Array.isArray(info.industryIdentifiers) ? info.industryIdentifiers : [];
+            const isbn13 = ids.find((x) => x.type === "ISBN_13")?.identifier;
+            const isbn10 = ids.find((x) => x.type === "ISBN_10")?.identifier;
+            const thumb = info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "";
+
+            candidates.push({
+              title: info.title,
+              subtitle: info.subtitle || "",
+              author: authorStr,
+              year: info.publishedDate ? String(info.publishedDate).slice(0, 4) : "",
+              pages: info.pageCount || null,
+              isbn: isbn13 || isbn10 || isbn || "",
+              subjects: Array.isArray(info.categories) ? info.categories.slice(0, 5) : [],
+              description: cleanHtml(info.description || ""),
+              coverUrl: thumb.replace(/^http:\/\//i, "https://"),
+              source: "Google Books",
+              catalogUrl: info.infoLink || "https://books.google.com"
+            });
+          });
+        }
+      } catch (_) {}
+
+      return candidates.slice(0, 8);
+    }
+
+    function hideCandidatesBox() {
+      document.getElementById("searchCandidatesBox")?.classList.add("hidden");
+    }
+
+    function renderSearchCandidates(candidates, previewImageUrl = "") {
+      const box = document.getElementById("searchCandidatesBox");
+      const list = document.getElementById("searchCandidatesList");
+      if (!box || !list) return;
+
+      list.innerHTML = "";
+      if (!candidates || candidates.length <= 1) {
+        box.classList.add("hidden");
+        return;
+      }
+
+      candidates.forEach((cand, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "w-full text-left rounded-xl bg-white hover:bg-amber-100/70 p-2.5 border border-stone-800/20 flex items-start justify-between gap-2 transition";
+        const metaParts = [cand.author, cand.year, cand.pages ? `${cand.pages} pp.` : ""].filter(Boolean).join(" • ");
+        const badgeLabel = cand._isCurated ? "Full Notes" : (cand.source || "Catalog");
+
+        btn.innerHTML = `
+          <div class="min-w-0">
+            <span class="block text-sm font-bold text-stone-900 truncate">${cand.title}</span>
+            <span class="block text-xs text-stone-600 truncate">${metaParts || "Edition match"}</span>
+          </div>
+          <span class="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full ${cand._isCurated ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-stone-800"}">
+            ${badgeLabel}
+          </span>
+        `;
+        btn.onclick = () => {
+          selectCandidateBook(candidates[index], previewImageUrl);
+        };
+        list.appendChild(btn);
+      });
+
+      box.classList.remove("hidden");
+    }
+
+    async function selectCandidateBook(cand, previewImageUrl = "") {
+      if (!cand) return;
+      document.getElementById("loadingBookCard").classList.remove("hidden");
+      document.getElementById("emptyBookCard").classList.add("hidden");
+      document.getElementById("activeBookReadingCard").classList.add("hidden");
+      document.getElementById("loadingBookSubtext").textContent = `Loading "${cand.title}"...`;
+
+      // Enrich ANY book with Wikipedia summary + Open Library + Google Books substance
+      let enriched = await enrichAnyBookRecord(cand);
+
+      if (previewImageUrl && !enriched.coverUrl) {
+        enriched.coverUrl = previewImageUrl;
+      }
+
+      document.getElementById("loadingBookCard").classList.add("hidden");
+      const book = buildDynamicCompanion(enriched);
+      displayBook(book);
+      document.getElementById("lookupStatusLine").textContent =
+        `Selected "${book.title}" by ${book.author} (${book.source}).`;
+    }
+
+
+    // =========================================================================
+    // UNIVERSAL SUBSTANCE ENGINE (WORKS FOR ANY BOOK IN THE WORLD)
+    // =========================================================================
+    async function fetchWikipediaBookSubstance(title, author = "") {
+      const cleanT = String(title || "").trim();
+      if (!cleanT) return null;
+      const cleanA = author && author !== "Unknown Author" ? String(author).trim() : "";
+
+      const candidatesToTry = [];
+      if (cleanA) {
+        candidatesToTry.push(`${cleanT} (${cleanA} novel)`);
+        candidatesToTry.push(`${cleanT} (novel)`);
+        candidatesToTry.push(`${cleanT} (${cleanA})`);
+        candidatesToTry.push(`${cleanT} (book)`);
+      } else {
+        candidatesToTry.push(`${cleanT} (novel)`);
+        candidatesToTry.push(`${cleanT} (book)`);
+      }
+      candidatesToTry.push(cleanT);
+
+      for (const pageTitle of candidatesToTry) {
+        try {
+          const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`;
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (data && data.type === "standard" && data.extract && data.extract.length > 80) {
+            const lowerExt = data.extract.toLowerCase();
+            // Skip disambiguation pages or non-book entries unless no book match exists
+            if (lowerExt.includes("may refer to:") || lowerExt.includes("most commonly refers to")) {
+              continue;
+            }
+            return {
+              extract: cleanHtml(data.extract),
+              wikiUrl: data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(pageTitle.replace(/\s+/g, "_"))}`,
+              thumbUrl: data.thumbnail?.source ? data.thumbnail.source.replace(/^http:\/\//i, "https://") : ""
+            };
+          }
+        } catch (_) {}
+      }
+
+      // Fallback search via MediaWiki opensearch
+      try {
+        const searchTerm = cleanA ? `${cleanT} ${cleanA} novel` : `${cleanT} novel`;
+        const sUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(searchTerm)}&limit=3&namespace=0&format=json&origin=*`;
+        const sRes = await fetch(sUrl);
+        if (sRes.ok) {
+          const sJson = await sRes.json();
+          const titles = Array.isArray(sJson[1]) ? sJson[1] : [];
+          for (const wt of titles) {
+            const pRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wt)}`);
+            if (!pRes.ok) continue;
+            const pData = await pRes.json();
+            if (pData && pData.type === "standard" && pData.extract && pData.extract.length > 80) {
+              return {
+                extract: cleanHtml(pData.extract),
+                wikiUrl: pData.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(wt.replace(/\s+/g, "_"))}`,
+                thumbUrl: pData.thumbnail?.source ? pData.thumbnail.source.replace(/^http:\/\//i, "https://") : ""
+              };
+            }
+          }
+        }
+      } catch (_) {}
+
+      return null;
+    }
+
+    async function enrichAnyBookRecord(record) {
+      let enriched = { ...record };
+
+      // 1. Fetch Wikipedia book summary for real plot/overview depth on ANY book
+      const wiki = await fetchWikipediaBookSubstance(enriched.title, enriched.author);
+      if (wiki) {
+        enriched.wikiSummary = wiki.extract;
+        enriched.wikiUrl = wiki.wikiUrl;
+        if (!enriched.description || enriched.description.length < wiki.extract.length) {
+          enriched.description = wiki.extract;
+        }
+        if (!enriched.coverUrl && wiki.thumbUrl) {
+          enriched.coverUrl = wiki.thumbUrl;
+        }
+      }
+
+      // 2. Also query Open Library & Google Books if description/pages/subjects are still sparse
+      if (!enriched.description || enriched.description.length < 70 || !enriched.pages || !enriched.subjects?.length) {
+        try {
+          const [olExtra, gbExtra] = await Promise.allSettled([
+            queryOpenLibrary(enriched.isbn || enriched.title, enriched.isbn ? "isbn" : "title"),
+            queryGoogleBooks(enriched.isbn ? `isbn:${enriched.isbn}` : `${enriched.title} ${enriched.author || ""}`.trim(), "all")
+          ]);
+          const olV = olExtra.status === "fulfilled" ? olExtra.value : null;
+          const gbV = gbExtra.status === "fulfilled" ? gbExtra.value : null;
+          const combined = combineRecords(olV, gbV);
+          if (combined) {
+            enriched = {
+              ...enriched,
+              description:
+                (enriched.description && enriched.description.length >= 70 ? enriched.description : "") ||
+                combined.description ||
+                enriched.description,
+              pages: enriched.pages || combined.pages,
+              year: enriched.year || combined.year,
+              subjects: enriched.subjects?.length ? enriched.subjects : combined.subjects,
+              coverUrl: enriched.coverUrl || combined.coverUrl,
+              catalogUrl: combined.catalogUrl || enriched.catalogUrl
+            };
+          }
+        } catch (_) {}
+      }
+
+      return enriched;
+    }
+
     // =========================================================================
     // UNIVERSAL BOOK API LOOKUP (OPEN LIBRARY + GOOGLE BOOKS)
     // =========================================================================
@@ -2129,16 +2813,32 @@
     // DYNAMIC BOOK SYNTHESIS (WORKS FOR ANY BOOK)
     // =========================================================================
     function buildDynamicCompanion(record) {
-      const title = cleanHtml(record.title) || "Untitled Book";
-      const subtitle = cleanHtml(record.subtitle);
-      const author = cleanHtml(record.author) || "Unknown Author";
-      const year = cleanHtml(record.year) || "Edition Listed";
-      const pages = record.pages && Number(record.pages) > 0 ? Number(record.pages) : 250;
-      const subjects = Array.isArray(record.subjects) && record.subjects.length
-        ? record.subjects.map(cleanHtml).filter(Boolean)
-        : ["General"];
+      const matchedCurated = record._isCurated
+        ? record
+        : CURATED_SUBSTANCE_BOOKS.find(
+            (c) =>
+              c.title.toLowerCase() === String(record.title || "").trim().toLowerCase() &&
+              (!record.author ||
+                record.author === "Unknown Author" ||
+                c.author.toLowerCase().includes(String(record.author).trim().toLowerCase().split(" ")[0]))
+          );
+
+      const title = cleanHtml(matchedCurated?.title || record.title) || "Untitled Book";
+      const subtitle = cleanHtml(matchedCurated?.subtitle || record.subtitle);
+      const author = cleanHtml(
+        record.author && record.author !== "Unknown Author"
+          ? record.author
+          : (matchedCurated?.author || "Unknown Author")
+      );
+      const year = cleanHtml(matchedCurated?.year || record.year) || "Edition Listed";
+      const pages = (matchedCurated?.pages) || (record.pages && Number(record.pages) > 0 ? Number(record.pages) : 250);
+      const subjects = Array.isArray(matchedCurated?.subjects) && matchedCurated.subjects.length
+        ? matchedCurated.subjects.map(cleanHtml).filter(Boolean)
+        : Array.isArray(record.subjects) && record.subjects.length
+          ? record.subjects.map(cleanHtml).filter(Boolean)
+          : ["General"];
       const primaryTopic = subjects[0] || "General";
-      const rawDesc = cleanHtml(record.description);
+      const rawDesc = cleanHtml(matchedCurated?.description || record.description);
 
       const synopsis = rawDesc
         ? rawDesc
@@ -2152,36 +2852,44 @@
       const leadSentence = sentences[0] || `"${title}" sets up its main situation early on.`;
       const followSentence = sentences.slice(1, 3).join(" ") || "Watch how the main characters react when plans change.";
 
-      const takeaways = [
-        `Topic: ${primaryTopic}.`,
-        author !== "Unknown Author"
-          ? `Written by ${author}${year !== "Edition Listed" ? ` (${year})` : ""}.`
-          : `Published: ${year}.`,
-        `About ${pages} pages—good for short or long sessions.`
-      ];
+      const topicText = subjects.slice(0, 2).join(" & ") || primaryTopic;
+      const authorLabel = author !== "Unknown Author" ? author : "its author";
+      const yearLabel = year && year !== "Edition Listed" ? ` (${year})` : "";
 
-      const quotes = [
-        {
-          tag: "Opening Line / Setup",
-          quote: leadSentence,
-          note: "Does this hold up later in the book?"
-        },
-        {
-          tag: "Next Up",
-          quote: followSentence,
-          note: "Note any detail here that comes back later."
-        }
-      ];
+      const takeaways = matchedCurated?.takeaways?.length
+        ? matchedCurated.takeaways
+        : [
+            `Core focus: ${topicText} in "${title}" by ${authorLabel}${yearLabel}.`,
+            sentences.length > 1
+              ? `Key plot/idea thread: ${sentences[1]}`
+              : `Read how "${title}" develops its central situation across ~${pages} pages.`,
+            `Reading takeaway: Track how the central tension shifts from the opening setup to the middle turning point.`
+          ];
 
-      const storyNotes = {
-        arc: `${leadSentence} ${followSentence} (Hook check: notice how the opening sets up a concrete situation or question right away instead of a long throat-clearing intro.)`.slice(0, 420),
-        themes: subjects.length
-          ? `Repeated ideas around ${subjects.slice(0, 3).join(", ").toLowerCase()} give the book a backbone—watch how a small detail early on carries bigger weight later.`
-          : "Notice what details or images keep returning—recurring motifs are one of the easiest ways a writer builds depth.",
-        pacing: `~${pages} pages. Try 15–25 pages a sitting, and watch where the writer speeds up with short action/dialogue vs. slows down for scene or reflection.`
-      };
+      const quotes = matchedCurated?.quotes?.length
+        ? matchedCurated.quotes
+        : [
+            {
+              tag: "Opening Setup / Premise",
+              quote: leadSentence,
+              note: `Ask what question or expectation "${title}" sets up right here.`
+            },
+            {
+              tag: "Developing Thread",
+              quote: followSentence || leadSentence,
+              note: `Watch how ${authorLabel} builds stakes or evidence around ${primaryTopic.toLowerCase()}.`
+            }
+          ];
 
-      const studyKit = buildStudyKit({ title, author, year, pages, primaryTopic, subjects, leadSentence });
+      const storyNotes = matchedCurated?.storyNotes
+        ? matchedCurated.storyNotes
+        : {
+            arc: `${leadSentence} ${followSentence}`.trim().slice(0, 440),
+            themes: `Centered on ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}—pay attention to recurring motifs, choices, or arguments that evolve across the book.`,
+            pacing: `Roughly ${pages} pages${year && year !== "Edition Listed" ? ` (${year})` : ""}. Aim for ~15–25 pages per sitting and note where scenes or chapters accelerate vs. pause for reflection.`
+          };
+
+            const studyKit = buildStudyKit({ title, author, year, pages, primaryTopic, subjects, leadSentence });
 
       const moodBlob = `${title} ${subjects.join(" ")} ${synopsis}`.toLowerCase();
       let moodTitle = "Acoustic & Café";
@@ -2375,17 +3083,11 @@
       }
 
       try {
-        const [olRes, gbRes] = await Promise.allSettled([
-          queryOpenLibrary(q, scope),
-          queryGoogleBooks(q, scope)
-        ]);
-        const olData = olRes.status === "fulfilled" ? olRes.value : null;
-        const gbData = gbRes.status === "fulfilled" ? gbRes.value : null;
-        const merged = combineRecords(olData, gbData);
-
+        const candidates = await searchCandidateBooks(q, scope);
         document.getElementById("loadingBookCard").classList.add("hidden");
 
-        if (!merged) {
+        if (!candidates || !candidates.length) {
+          hideCandidatesBox();
           document.getElementById("emptyBookCard").classList.remove("hidden");
           document.getElementById("emptyBookReason").textContent =
             `No direct catalog match came back for "${q}" right now. You can still generate a complete book card and Story Notes.`;
@@ -2401,14 +3103,17 @@
           return;
         }
 
-        if (previewImageUrl && !merged.coverUrl) {
-          merged.coverUrl = previewImageUrl;
+        renderSearchCandidates(candidates, previewImageUrl);
+
+        if (candidates.length > 1) {
+          document.getElementById("lookupStatusLine").textContent =
+            `Found ${candidates.length} matches for "${q}" — pick the right book in "Pick the Right Book Match" (showing top match below).`;
+        } else {
+          document.getElementById("lookupStatusLine").textContent =
+            `Loaded "${candidates[0].title}" by ${candidates[0].author} (${candidates[0].source}).`;
         }
 
-        const book = buildDynamicCompanion(merged);
-        displayBook(book);
-        document.getElementById("lookupStatusLine").textContent =
-          `Loaded "${book.title}" by ${book.author} (${book.source}).`;
+        await selectCandidateBook(candidates[0], previewImageUrl);
       } catch (_) {
         document.getElementById("loadingBookCard").classList.add("hidden");
         document.getElementById("emptyBookCard").classList.remove("hidden");
@@ -2560,6 +3265,10 @@
           label: `${book.source || "Book Catalog"} — Record for "${book.title}"`,
           url: book.catalogUrl || `https://openlibrary.org/search?q=${encodeURIComponent(book.title)}`
         },
+        ...(book.wikiUrl ? [{
+          label: `Wikipedia — Overview & Context for "${book.title}"`,
+          url: book.wikiUrl
+        }] : []),
         {
           label: "Philippine Statistics Authority (PSA) — 2024 Functional Literacy, Education, and Mass Media Survey (FLEMMS)",
           url: "https://psa.gov.ph/"
