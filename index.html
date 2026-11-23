@@ -40,14 +40,62 @@
   .wood-shelf-matcha{background:linear-gradient(180deg,#8a9064,#4c6048);border-color:#344433}
   .book-spine{writing-mode:vertical-rl;transform:rotate(180deg);min-height:150px;max-height:210px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #2b1d14;border-radius:4px 2px 5px 3px!important;box-shadow:2px 3px 0 #24150f88;padding:10px 6px;font-family:"Patrick Hand",cursive!important;font-weight:700;transition:transform .15s}
   .book-spine:hover{transform:rotate(180deg) translateY(5px)}
+
+  /* Authentic Corkboard & Polaroid Picture Pins */
+  .corkboard-surface{
+    background-color:#b88352!important;
+    background-image:
+      radial-gradient(rgba(72,41,18,.22) 1px,transparent 1px),
+      radial-gradient(rgba(245,212,171,.28) 1px,transparent 1px),
+      linear-gradient(160deg,#c5905e 0%,#b47d4b 55%,#9f6b3c 100%)!important;
+    background-size:9px 9px,13px 13px,100% 100%!important;
+    border:6px solid #5a3821!important;
+  }
+  .cork-pin-card{
+    background:#fffdf5;
+    border:2px solid #38281f!important;
+    border-radius:8px 6px 9px 7px!important;
+    box-shadow:3px 4px 0 rgba(43,26,14,.32)!important;
+    transition:transform .15s ease;
+  }
+  .cork-pin-card:hover{transform:translateY(-2px) rotate(0deg)!important}
   .pushpin-head{width:14px;height:14px;border-radius:9999px;border:2px solid #2b1d14;box-shadow:1px 2px 2px #0006,inset -2px -2px 3px #0004}
+
+  /* Vinyl Rack & Record Styling */
+  .vinyl-rack-box{
+    background:linear-gradient(180deg,#4a3223 0%,#352217 100%)!important;
+    border:4px solid #26170f!important;
+    color:#fff8e9;
+  }
+  .vinyl-slot{
+    background:#fffaf0;
+    color:#38281f;
+    border:2px solid #38281f!important;
+    border-radius:14px 11px 15px 12px!important;
+    box-shadow:2px 3px 0 rgba(20,11,6,.45)!important;
+  }
+  .vinyl-disc{
+    width:40px;
+    height:40px;
+    flex:0 0 auto;
+    border-radius:9999px;
+    border:2px solid #26170f;
+    background:
+      radial-gradient(circle at center,#f3dcc2 0 5px,#38281f 6px 8px,transparent 9px),
+      repeating-radial-gradient(circle at center,#241914 0 2px,#3a2a22 3px 4px);
+    box-shadow:1px 2px 0 rgba(0,0,0,.35);
+    transition:transform .25s ease;
+  }
+  .vinyl-slot:hover .vinyl-disc{transform:rotate(35deg)}
+
   .thermal-receipt{background:#fffdf5;color:#261a12;border:1.5px dashed #2b1d14!important}
-  .spotify-song-link{display:flex;color:inherit;text-decoration:none;align-items:center;gap:12px;width:100%;min-width:0}
-  .spotify-song-icon{flex:0 0 auto;width:29px;height:29px;border:1.5px solid #38281f;border-radius:50%;display:grid;place-items:center;background:#dce9d7;color:#245c3a;font-size:15px}
+  .spotify-song-link{display:flex;color:inherit;text-decoration:none;align-items:center;gap:10px;width:100%;min-width:0}
   .page-view.hidden{display:none!important}
   .doodle-book{width:34px;height:34px;display:block;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-4deg)}
   @media print{body *{visibility:hidden!important}#printableReceiptCard,#printableReceiptCard *{visibility:visible!important}#printableReceiptCard{position:fixed!important;left:0!important;top:0!important;width:100%!important;max-width:420px!important;margin:0 auto!important}.no-print{display:none!important}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
 </head>
 <body class="min-h-screen flex flex-col">
 <header class="sticky top-0 z-30 bg-[#fbf6ee]/95 backdrop-blur no-print">
@@ -61,7 +109,7 @@
       </div>
       <div>
         <a class="font-display text-xl sm:text-2xl font-bold" href="#home" onclick="showPage('home')">Quillfinite</a>
-        <p class="text-sm text-stone-700 hidden sm:block">Hand-drawn café nook • scan a book, pin notes, and shelve your favorites</p>
+        <p class="text-sm text-stone-700 hidden sm:block">Hand-drawn café nook • scan a book, pin notes &amp; photos, and shelve your favorites</p>
       </div>
     </div>
     <nav class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium">
@@ -83,9 +131,9 @@
   <!-- HOME -->
   <section class="page-view space-y-8" data-page="home" id="page-home">
     <div class="sketch-box bg-[#fffaf2] p-6 sm:p-10 text-center">
-      <p class="text-lg text-stone-600">A little corner for readers, dreamers, and students</p>
+      <p class="text-lg text-stone-600">A little corner for readers, thinkers, and students</p>
       <h1 class="font-display text-4xl sm:text-6xl font-bold mt-2">Welcome to Quillfinite</h1>
-      <p class="max-w-2xl mx-auto text-lg sm:text-xl text-stone-700 mt-4">Scan any book in the Book Booth to open its post-scan card—with its Nightstand pin, Corkboard notes, and an option to add it straight to your Bookshelf.</p>
+      <p class="max-w-2xl mx-auto text-lg sm:text-xl text-stone-700 mt-4">Scan any book in the Book Booth to unlock class-aligned reading guides, pin quotes &amp; photos to your corkboard, flip through vinyl racks, and check into Hinigaran study &amp; coffee spots.</p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -93,15 +141,15 @@
         <div>
           <p class="text-sm text-stone-600">SCAN &amp; UNLOCK</p>
           <h2 class="font-display text-2xl font-bold mt-2">Book Booth</h2>
-          <p class="text-sm text-stone-700 mt-2">Scan a book to open its post-scan card, Nightstand &amp; Corkboard, and add it to your shelf.</p>
+          <p class="text-sm text-stone-700 mt-2">Scan any title, pin quotes or photos on the corkboard, spin vinyl tracks, and add to your shelf.</p>
         </div>
         <div class="text-base font-bold mt-5">Step inside →</div>
       </button>
       <button class="sketch-box bg-[#f3dcc2] p-5 text-left hover:-translate-y-1 transition-transform min-h-[185px] flex flex-col justify-between" onclick="showPage('story-explorer')" type="button">
         <div>
-          <p class="text-sm text-stone-600">READ DEEPER</p>
+          <p class="text-sm text-stone-600">CLASS &amp; ESSAY GUIDE</p>
           <h2 class="font-display text-2xl font-bold mt-2">Story Notes</h2>
-          <p class="text-sm text-stone-700 mt-2">Explore summaries, themes, characters, story arcs, and soundtrack links.</p>
+          <p class="text-sm text-stone-700 mt-2">Connect themes, character arcs, and motifs to school essays, debates, and literary analysis.</p>
         </div>
         <div class="text-base font-bold mt-5">Step inside →</div>
       </button>
@@ -109,7 +157,7 @@
         <div>
           <p class="text-sm text-stone-600">FOCUS DESK</p>
           <h2 class="font-display text-2xl font-bold mt-2">Study Studio</h2>
-          <p class="text-sm text-stone-700 mt-2">Plan assignments, focus with a timer, make flashcards, and save notes.</p>
+          <p class="text-sm text-stone-700 mt-2">Plan school tasks, run a focus timer, study reading flashcards, and draft thesis notes.</p>
         </div>
         <div class="text-base font-bold mt-5">Step inside →</div>
       </button>
@@ -117,23 +165,23 @@
         <div>
           <p class="text-sm text-stone-600">YOUR COLLECTION</p>
           <h2 class="font-display text-2xl font-bold mt-2">My Bookshelf</h2>
-          <p class="text-sm text-stone-700 mt-2">Browse the books you’ve added to your shelf and pull any spine into the booth.</p>
+          <p class="text-sm text-stone-700 mt-2">Browse your shelved books and pull any spine back into the Book Booth.</p>
         </div>
         <div class="text-base font-bold mt-5">Step inside →</div>
       </button>
     </div>
 
-    <!-- CAFÉS & LIBRARIES ACROSS NEGROS OCCIDENTAL -->
+    <!-- CAFÉS & LIBRARIES IN HINIGARAN -->
     <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5">
       <div class="flex flex-wrap items-end justify-between gap-3 border-b-2 border-dashed border-stone-800/20 pb-4">
         <div>
-          <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Negros Occidental Nook Map</span>
-          <h2 class="font-display text-2xl sm:text-3xl font-bold mt-1.5">Cafés &amp; Libraries Across Negros Occidental</h2>
-          <p class="text-base text-stone-700 mt-0.5">Quiet study tables, heritage reading rooms, and cozy coffee corners around the province.</p>
+          <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Hinigaran, Negros Occidental • Map Directory</span>
+          <h2 class="font-display text-2xl sm:text-3xl font-bold mt-1.5">Cafés &amp; Libraries in Hinigaran</h2>
+          <p class="text-base text-stone-700 mt-0.5">Local study hubs, campus reading spaces, and coffee stops around Hinigaran—every spot links directly to Google Maps.</p>
         </div>
-        <div class="flex flex-wrap gap-1.5" id="negrosFilterButtons"></div>
+        <div class="flex flex-wrap gap-1.5" id="hinigaranFilterButtons"></div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="negrosSpotsGrid"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="hinigaranSpotsGrid"></div>
     </div>
   </section>
 
@@ -141,7 +189,7 @@
   <div class="page-view hidden" data-page="scanner-booth" id="page-scanner-booth">
     <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-sm text-stone-600">Scan a book to reveal its Nightstand &amp; Corkboard and add it to your Bookshelf.</p>
+        <p class="text-sm text-stone-600">Scan any book to view school-aligned notes, pin quotes &amp; photos on the corkboard, and spin vinyl racks.</p>
         <h1 class="font-display text-2xl sm:text-3xl font-bold">Book Booth</h1>
       </div>
       <div class="flex items-center gap-2">
@@ -155,9 +203,9 @@
       <div class="lg:col-span-5 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5">
         <div class="flex items-start justify-between gap-2">
           <div>
-            <span class="inline-block text-xs px-2.5 py-0.5 sketch-pill bg-amber-100" id="boothSpotBadge">Corner Table Booth • 2:3 Sketch Frame</span>
+            <span class="inline-block text-xs px-2.5 py-0.5 sketch-pill bg-amber-100" id="boothSpotBadge">Hinigaran Study Corner • 2:3 Sketch Frame</span>
             <h2 class="font-display text-xl sm:text-2xl font-bold mt-1.5">Book Scan Booth</h2>
-            <p class="text-base text-stone-700 mt-0.5">Type any book title or upload a cover to scan and add it to your shelf.</p>
+            <p class="text-base text-stone-700 mt-0.5">Search any title or author—or upload a cover—to load real book details.</p>
           </div>
           <button class="shrink-0 text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50" id="filmTintBtn" onclick="toggleFilmTint()" type="button">Golden Hour Cam</button>
         </div>
@@ -169,9 +217,9 @@
               <div class="text-center">
                 <div class="mx-auto mb-3 w-14 h-20 rounded-md border border-dashed border-amber-300/60 flex items-center justify-center text-amber-200 text-xl">✧</div>
                 <p class="font-display font-bold">Scan Any Book</p>
-                <p class="text-sm text-amber-200/80 mt-1">Type a title below or try a quick scan.</p>
+                <p class="text-sm text-amber-200/80 mt-1">Type any book title or author below.</p>
               </div>
-              <div class="w-full border-t border-amber-200/15 pt-2 flex justify-between text-[10px] text-amber-200/70"><span>POST-SCAN</span><span>SHELF + CORK</span></div>
+              <div class="w-full border-t border-amber-200/15 pt-2 flex justify-between text-[10px] text-amber-200/70"><span>LIVE LOOKUP</span><span>CORK + VINYL</span></div>
             </div>
             <img alt="Book booth preview" class="hidden absolute inset-0 w-full h-full object-contain bg-stone-900" id="snapshotImg"/>
             <div class="pointer-events-none absolute inset-0 bg-amber-400/10" id="filmOverlay"></div>
@@ -179,18 +227,26 @@
         </div>
 
         <div class="flex flex-wrap justify-center gap-2">
+          <button class="px-3.5 py-2 sketch-btn bg-[#4f6d58] text-white text-xs sm:text-sm font-semibold" id="liveCamScanBtn" onclick="toggleLiveCameraScan()" type="button">📷 Live Camera Scan</button>
+          <button class="hidden px-3.5 py-2 sketch-btn bg-amber-200 text-stone-950 text-xs sm:text-sm font-semibold" id="captureFrameScanBtn" onclick="captureCameraAndScan()" type="button">✦ Scan Frame Now</button>
           <label class="px-3.5 py-2 sketch-btn bg-white text-xs sm:text-sm font-semibold cursor-pointer">
-            Upload Cover
-            <input accept="image/*" class="hidden" id="coverFileInput" onchange="handleCoverFileUpload(event)" type="file"/>
+            Scan Cover / Barcode Photo
+            <input accept="image/*" capture="environment" class="hidden" id="coverFileInput" onchange="handleCoverFileUpload(event)" type="file"/>
           </label>
-          <button class="px-3.5 py-2 sketch-btn bg-amber-100 text-xs sm:text-sm font-semibold" onclick="scanBookById('flipped')" type="button">Quick Scan: Flipped</button>
-          <button class="px-3.5 py-2 sketch-btn bg-emerald-100 text-xs sm:text-sm font-semibold" onclick="scanBookById('piranesi')" type="button">Quick Scan: Piranesi</button>
+        </div>
+
+        <div class="hidden rounded-2xl border-2 border-stone-900 bg-stone-950 p-2.5 space-y-2" id="liveCameraBox">
+          <div class="flex items-center justify-between text-xs text-amber-200 px-1">
+            <span>Point camera at book cover, title, or ISBN barcode</span>
+            <button class="underline text-rose-300 font-bold" onclick="stopLiveCameraScan()" type="button">Stop Cam</button>
+          </div>
+          <video class="w-full aspect-[4/3] rounded-xl object-cover bg-black" id="liveScannerVideo" muted="" playsinline=""></video>
         </div>
 
         <form class="space-y-2.5 pt-1" onsubmit="handleScanSubmit(event)">
           <label class="block text-xs font-semibold text-stone-700" for="scanTitleInput">Any Book Title or Author to Scan</label>
           <div class="flex flex-col sm:flex-row gap-2">
-            <input class="flex-1 rounded-xl bg-white px-3.5 py-2.5 text-sm" id="scanTitleInput" placeholder="e.g., Flipped, Frankenstein, Little Women..." required="" type="text"/>
+            <input class="flex-1 rounded-xl bg-white px-3.5 py-2.5 text-sm" id="scanTitleInput" placeholder="Search any book title or author..." required="" type="text"/>
             <button class="px-4 py-2.5 sketch-btn bg-[#b85d3b] text-white text-sm font-semibold" type="submit">Scan Book</button>
           </div>
           <p class="text-base text-stone-700 min-h-5" id="scanFeedback"></p>
@@ -214,7 +270,7 @@
         <div class="sketch-box bg-[#fffaf2] p-8 text-center space-y-2" id="preScanPromptCard">
           <p class="text-sm uppercase tracking-wider text-stone-500">Waiting for Scan</p>
           <h2 class="font-display text-2xl font-bold">Nothing Scanned Yet</h2>
-          <p class="text-base text-stone-700 max-w-md mx-auto">Scan any book on the left (or tap a spine in My Bookshelf) to open its post-scan card—where you can add it to your <strong>Bookshelf</strong>, toggle <strong>Nightstand</strong>, and pin notes to its <strong>Corkboard</strong>.</p>
+          <p class="text-base text-stone-700 max-w-md mx-auto">Scan any book on the left (or tap a spine in My Bookshelf) to open its post-scan guide—with school connections, a <strong>Corkboard</strong> for quotes &amp; pictures, and <strong>Vinyl Racks</strong> for reading songs.</p>
         </div>
 
         <div class="hidden sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-6" id="postScanBookCard">
@@ -223,6 +279,7 @@
               <div class="flex flex-wrap items-center gap-2">
                 <span class="text-xs font-semibold px-2.5 py-1 sketch-pill bg-amber-100 text-amber-900" id="bookGenreBadge">Genre</span>
                 <span class="text-xs text-stone-600" id="bookMetaBadge">Year • Pages</span>
+                <span class="text-xs px-2.5 py-1 sketch-pill bg-sky-100 text-sky-950" id="bookSchoolSubjectBadge">School Link</span>
                 <span class="hidden text-xs px-2.5 py-1 sketch-pill bg-emerald-100 text-emerald-900" id="readStatusBadge">Finished ✓</span>
               </div>
               <h2 class="font-display text-2xl sm:text-4xl font-bold" id="bookTitle">Book Title</h2>
@@ -236,23 +293,64 @@
             </div>
           </div>
 
-          <!-- Built-in Post-Scan Nightstand + Corkboard -->
-          <div class="rounded-2xl border-2 border-stone-800/20 bg-[#f6ead8]/75 p-4 sm:p-5 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-stone-800/25 pb-3">
+          <!-- School Learning Hook -->
+          <div class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/70 p-4 space-y-1.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-950">Why It Matters for School &amp; Why Read It</h3>
+              <button class="text-xs font-semibold underline text-[#8b4b32]" onclick="showPage('story-explorer')" type="button">Open Full Story Notes →</button>
+            </div>
+            <p class="text-sm leading-relaxed text-stone-800" id="bookSchoolHook"></p>
+          </div>
+
+          <!-- Actual Corkboard (Pin Quotes & Pictures) + Nightstand -->
+          <div class="corkboard-surface rounded-2xl p-4 sm:p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#fffdf5]/95 p-3.5 border-2 border-stone-900">
               <div>
-                <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">Post-Scan Nightstand &amp; Corkboard</span>
-                <h3 class="font-display text-lg font-bold mt-1" id="postScanBookCornerTitle">Nightstand &amp; Corkboard</h3>
+                <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">Corkboard &amp; Nightstand</span>
+                <h3 class="font-display text-lg font-bold mt-1" id="postScanBookCornerTitle">Corkboard &amp; Nightstand</h3>
                 <p class="text-sm text-stone-700" id="postScanBookCornerStatus"></p>
               </div>
               <button class="sketch-btn bg-[#4f6d58] text-white px-3.5 py-2 text-xs font-semibold" id="nightstandBtn" onclick="toggleNightstandStatus()" type="button">Pin to Nightstand</button>
             </div>
 
-            <form class="flex flex-col sm:flex-row gap-2" onsubmit="addBookCorkNote(event)">
-              <input class="flex-1 rounded-xl bg-[#fffdf5] px-3.5 py-2 text-sm" id="boothCorkInput" placeholder="Pin a quote, scene, or note to this book's corkboard..." required="" type="text"/>
-              <button class="sketch-btn bg-amber-200 px-4 py-2 text-xs font-semibold" type="submit">Pin to Corkboard</button>
+            <form class="rounded-xl bg-[#fffdf5]/95 p-3.5 border-2 border-stone-900 space-y-3" onsubmit="addBookCorkPin(event)">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-stone-700">Pin a Quote or Picture to This Book's Corkboard</span>
+                <label class="sketch-btn bg-amber-100 px-3 py-1 text-xs font-semibold cursor-pointer">
+                  + Attach Picture
+                  <input accept="image/*" class="hidden" id="corkPhotoInput" onchange="handleCorkPhotoUpload(event)" type="file"/>
+                </label>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <input class="sm:col-span-3 rounded-xl bg-white px-3.5 py-2 text-sm" id="boothCorkInput" placeholder="Pin a quote, scene detail, or study takeaway..." type="text"/>
+                <input class="rounded-xl bg-white px-3 py-2 text-sm" id="boothCorkPageInput" placeholder="Page (e.g., p. 42)" type="text"/>
+              </div>
+              <div class="hidden flex items-center justify-between gap-3 bg-amber-50 p-2 rounded-xl border border-stone-800/20" id="pendingCorkPhotoBar">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <img alt="Selected corkboard photo" class="w-12 h-12 object-cover rounded-lg border border-stone-800" id="pendingCorkPhotoPreview"/>
+                  <span class="text-xs text-stone-700 truncate" id="pendingCorkPhotoName">Photo ready to pin</span>
+                </div>
+                <button class="text-xs font-semibold underline text-rose-700 shrink-0" onclick="clearPendingCorkPhoto()" type="button">Remove Photo</button>
+              </div>
+              <div class="flex justify-end">
+                <button class="sketch-btn bg-amber-200 px-4 py-2 text-xs font-semibold" type="submit">Pushpin to Corkboard 📌</button>
+              </div>
             </form>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="boothBookCorkList"></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5" id="boothBookCorkList"></div>
+          </div>
+
+          <!-- Vinyl Racks with Full Tracklists -->
+          <div class="vinyl-rack-box rounded-2xl p-4 sm:p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-dashed border-amber-200/30 pb-3">
+              <div>
+                <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-200 text-stone-950">Vinyl Racks • Reading Soundtrack</span>
+                <h3 class="font-display text-lg font-bold mt-1 text-amber-50" id="vinylRackHeading">Crate &amp; Shelf Vinyls</h3>
+                <p class="text-sm text-amber-100/85" id="bookSongMood"></p>
+              </div>
+              <button class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-100 text-stone-950" id="songListToggleBtn" onclick="toggleSongListView()" type="button">Show Compact View</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="bookSongsList"></div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -270,17 +368,6 @@
             </div>
           </div>
 
-          <div class="rounded-2xl border-2 border-stone-800/15 bg-white p-4 sm:p-5 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 class="font-display text-lg font-bold">Reading Queue Soundtrack</h3>
-                <p class="text-base text-stone-600" id="bookSongMood"></p>
-              </div>
-              <button class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50" id="songListToggleBtn" onclick="toggleSongListView()" type="button">Show Top 2 Only</button>
-            </div>
-            <ol class="space-y-2.5 text-sm" id="bookSongsList"></ol>
-          </div>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/50 p-4 space-y-2.5">
               <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Adaptation &amp; Visual Notes</h3>
@@ -292,7 +379,7 @@
                 <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Your Rating &amp; Hot Take</h3>
                 <div aria-label="Book rating" class="flex items-center gap-1" id="ratingStars"></div>
               </div>
-              <textarea class="w-full rounded-xl border-2 border-stone-800/20 bg-white p-2.5 text-base" id="bookPersonalNote" oninput="savePersonalNote()" placeholder="Drop your hot take, favorite scene, or reaction..." rows="3"></textarea>
+              <textarea class="w-full rounded-xl border-2 border-stone-800/20 bg-white p-2.5 text-base" id="bookPersonalNote" oninput="savePersonalNote()" placeholder="Drop your hot take, favorite scene, or essay angle..." rows="3"></textarea>
             </div>
           </div>
 
@@ -336,7 +423,7 @@
   <div class="page-view hidden" data-page="story-explorer" id="page-story-explorer">
     <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-sm text-stone-600">Your reading companion and story guide.</p>
+        <p class="text-sm text-stone-600">School-aligned reading companion for essays, discussions, and deep comprehension.</p>
         <h1 class="font-display text-2xl sm:text-3xl font-bold">Story Notes</h1>
       </div>
       <button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick="showPage('home')" type="button">← Home</button>
@@ -344,19 +431,23 @@
     <section class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5" id="storyInnerSection">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <span class="text-sm px-2.5 py-0.5 sketch-pill bg-amber-100">The reading room • story notes</span>
+          <span class="text-sm px-2.5 py-0.5 sketch-pill bg-amber-100">The reading room • school &amp; story guide</span>
           <h2 class="font-display text-2xl font-bold mt-1.5" id="storyExplorerHeading">Your Next Read, Understood</h2>
         </div>
         <button class="sketch-btn bg-amber-900 text-amber-50 px-3.5 py-2 text-xs font-semibold" onclick="toggleReadAloud()" type="button">Read Aloud</button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">The Story in a Minute</h3><p class="text-base leading-relaxed mt-1" id="storyMinute"></p></article>
-        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Why Read It?</h3><p class="text-base leading-relaxed mt-1" id="whyRead"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Why Read It? &amp; Classroom Value</h3><p class="text-base leading-relaxed mt-1" id="whyRead"></p></article>
         <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Setting &amp; Atmosphere</h3><p class="text-base leading-relaxed mt-1" id="settingAtmosphere"></p></article>
         <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">Core Themes &amp; Key Takeaways</h3><p class="text-base leading-relaxed mt-1" id="keyTakeaways"></p></article>
         <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">Characters &amp; Relationships</h3><p class="text-base leading-relaxed mt-1" id="characterRelations"></p></article>
         <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Writing, Imagery &amp; Symbolism</h3><p class="text-base leading-relaxed mt-1" id="writingImagery"></p></article>
       </div>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/70 p-4 space-y-2">
+        <h3 class="font-display text-lg font-bold">School Essay, Debate &amp; Reflection Prompts</h3>
+        <ul class="space-y-1.5 text-base list-disc pl-5" id="schoolPromptsList"></ul>
+      </article>
       <article class="rounded-2xl border-2 border-stone-800/20 bg-[#f6ead8] p-4 space-y-3">
         <h3 class="font-display text-lg font-bold">Follow the Story Stages</h3>
         <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2" id="storyStages"></ol>
@@ -376,7 +467,7 @@
   <div class="page-view hidden" data-page="student-corner" id="page-student-corner">
     <div class="sketch-box bg-[#fffaf2] p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
       <div>
-        <p class="text-sm text-stone-600">Quiet desk space for essays, research, and deep focus.</p>
+        <p class="text-sm text-stone-600">Quiet desk space for essays, research, reading sprints, and focus.</p>
         <h1 class="font-display text-2xl sm:text-3xl font-bold">Study Studio</h1>
       </div>
       <button class="sketch-btn bg-white px-4 py-2 text-sm font-semibold" onclick="showPage('home')" type="button">← Home</button>
@@ -444,78 +535,82 @@
 <script>
 const SPINE_PALETTE = ["#c76e4b", "#71856a", "#5b4034", "#8b5a3c", "#4f6d58", "#9c523b"];
 
-const NEGROS_SPOTS = [
+function mapsUrl(queryText) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryText)}`;
+}
+
+const HINIGARAN_SPOTS = [
   {
-    name: "Negros Occidental Provincial Library",
-    city: "Bacolod",
-    type: "Library",
-    area: "Gatuslao St., Bacolod City",
-    vibe: "Quiet study tables, Filipiniana & local Negrense archives, and cool reading halls.",
-    cup: "Cold Brew"
+    name: "Hinigaran Municipal Public Library & Learning Hub",
+    category: "Library",
+    area: "Poblacion / Municipal Grounds, Hinigaran, Negros Occidental",
+    schoolFit: "Great for quiet reading, homework sprints, and local research.",
+    vibe: "Community reading tables in town proper for calm afternoon study sessions.",
+    cup: "Cold Brew",
+    mapQuery: "Hinigaran Municipal Library Negros Occidental"
   },
   {
-    name: "Bacolod City Public Library",
-    city: "Bacolod",
-    type: "Library",
-    area: "Araneta–Hernaez St., Bacolod City",
-    vibe: "Student-friendly reading room ideal for afternoon reviews and research notes.",
-    cup: "Oat Latte"
+    name: "Central Philippines State University — Hinigaran Campus Library",
+    category: "Campus Library",
+    area: "Hinigaran, Negros Occidental 6106",
+    schoolFit: "Academic study atmosphere suited for coursework, reports, and group review.",
+    vibe: "Campus learning environment focused on academic reading and research.",
+    cup: "Matcha Latte",
+    mapQuery: "Central Philippines State University Hinigaran Negros Occidental"
   },
   {
-    name: "Coffee Culture Roastery",
-    city: "Bacolod",
-    type: "Café",
-    area: "Alijis / Lacson, Bacolod City",
-    vibe: "Local specialty pours, warm wood tables, and creative journaling energy.",
-    cup: "Spanish Latte"
+    name: "Hinigaran National High School Reading & Study Corner",
+    category: "School Hub",
+    area: "Hinigaran, Negros Occidental",
+    schoolFit: "Aligned with senior high & secondary reading, speech/debate prep, and campus publications.",
+    vibe: "Student leadership, campus journalism, and study-hall energy.",
+    cup: "Oat Latte",
+    mapQuery: "Hinigaran National High School Hinigaran Negros Occidental"
   },
   {
-    name: "Bean Brewing Café",
-    city: "Bacolod",
-    type: "Café",
-    area: "Villamonte / La Salle Area, Bacolod City",
-    vibe: "Cozy student hangout near campus with mellow playlists and long study sessions.",
-    cup: "Oat Latte"
+    name: "Nexpresso Coffee Co.",
+    category: "Café",
+    area: "Aguinaldo St., Hinigaran, 6106 Negros Occidental",
+    schoolFit: "Steady coffee table spot for outlining essays and chapter summaries.",
+    vibe: "Inviting coffee bar along Aguinaldo Street for focused reading breaks.",
+    cup: "Spanish Latte",
+    mapQuery: "Nexpresso Coffee Co Aguinaldo St Hinigaran Negros Occidental"
   },
   {
-    name: "Silay City Public Library",
-    city: "Silay",
-    type: "Library",
-    area: "Rizal St., Silay City",
-    vibe: "Heritage town calm just steps away from ancestral houses and quiet plazas.",
-    cup: "Matcha Latte"
+    name: "Bonnies Café",
+    category: "Café",
+    area: "Quezon Street, Brgy. 4, Hinigaran, Negros Occidental",
+    schoolFit: "Cozy town stop for casual reading circles and afternoon book notes.",
+    vibe: "Neighborhood café feel along Quezon Street in Barangay 4.",
+    cup: "Oat Latte",
+    mapQuery: "Bonnies Cafe Quezon Street Hinigaran Negros Occidental"
   },
   {
-    name: "Damgo Coffee",
-    city: "Silay",
-    type: "Café",
-    area: "Silay Heritage Zone",
-    vibe: "Slow-paced afternoon brews, vintage charm, and unhurried poetry or novel reading.",
-    cup: "Spanish Latte"
+    name: "Hacienda Cafe",
+    category: "Café",
+    area: "Barangay Pilar, Hinigaran, Negros Occidental",
+    schoolFit: "Relaxed spot to unwind after school while annotating chapters.",
+    vibe: "Warm café setting in Barangay Pilar with room to sit and read.",
+    cup: "Spanish Latte",
+    mapQuery: "Hacienda Cafe Barangay Pilar Hinigaran Negros Occidental"
   },
   {
-    name: "Talisay City Public Library",
-    city: "Talisay",
-    type: "Library",
-    area: "Talisay City Proper",
-    vibe: "Peaceful community reading corner for weekend homework and quiet chapters.",
-    cup: "Cold Brew"
+    name: "Nomads Coffee Shop",
+    category: "Café",
+    area: "Hinigaran, Negros Occidental",
+    schoolFit: "Budget-friendly student hangout for group meetups and light reading.",
+    vibe: "Lively local kapehan with casual student energy in Hinigaran.",
+    cup: "Cold Brew",
+    mapQuery: "Nomads Coffee Shop Hinigaran Negros Occidental"
   },
   {
-    name: "Hinigaran Municipal Library & Town Plaza Cafés",
-    city: "Hinigaran",
-    type: "Library & Café",
-    area: "Poblacion, Hinigaran",
-    vibe: "Hometown study tables and breezy afternoon iced coffee stops between classes.",
-    cup: "Spanish Latte"
-  },
-  {
-    name: "Kabankalan City Public Library",
-    city: "Kabankalan",
-    type: "Library",
-    area: "Kabankalan City Proper",
-    vibe: "Southern Negros reading hub for students prepping reports and book notes.",
-    cup: "Matcha Latte"
+    name: "Milas Restaurant & Café",
+    category: "Café",
+    area: "Rizal Street, Hinigaran, Negros Occidental",
+    schoolFit: "Classic Rizal Street stop for snack-and-read breaks in town.",
+    vibe: "Familiar Hinigaran staple along Rizal Street for quick pauses.",
+    cup: "Matcha Latte",
+    mapQuery: "Milas Restaurant Rizal Street Hinigaran Negros Occidental"
   }
 ];
 
@@ -525,26 +620,36 @@ const BOOKS = [
     title: "Flipped",
     author: "Wendelin Van Draanen",
     genre: "Coming-of-Age Fiction",
+    schoolSubject: "English / Literature & POV",
     year: "2001",
     pages: "212",
     spineColor: "#c76e4b",
     textColor: "#fff8e9",
     vibe: "Golden-hour sycamore trees, alternating voices, and shifting first impressions",
+    schoolHook: "Ideal for studying unreliable or limited narrators, bias, and character growth—students can compare how Bryce and Juli interpret the exact same events.",
     synopsis: "Told from alternating viewpoints between Juli Baker and Bryce Loski across six years, Flipped traces how childhood assumptions unravel and give way to genuine empathy.",
     characters: "Juli Baker (curious, loyal, tree-loving) • Bryce Loski (cautious, conflicted, growing into honesty)",
     themes: "Perspective shifts, moral courage, family roots, and seeing people beyond surface judgments.",
     storyMinute: "Two neighbors grow up seeing each other through completely different lenses until small moments of honesty and sacrifice reshape what they value.",
-    whyRead: "Quick, warm, and perceptive—great for exploring dual POV storytelling and how growing up changes what you notice.",
+    whyRead: "Quick, warm, and perceptive—great for exploring dual POV storytelling, bias, and how growing up changes what you notice.",
     settingAtmosphere: "Suburban neighborhoods, a beloved sycamore tree, and everyday school milestones.",
     keyTakeaways: "A whole person rarely fits into a first impression; integrity shows up in quiet choices.",
     characterRelations: "Juli's tight-knit family contrasts with Bryce's quieter household dynamics, testing both kids as they mature.",
     writingImagery: "The sycamore tree anchors Juli's sense of wonder and belonging throughout the shifting perspectives.",
+    schoolPrompts: [
+      "How does alternating first-person POV force the reader to question Bryce's early judgments?",
+      "What does the sycamore tree symbolize in terms of standing up for what matters?",
+      "Write a short reflection on a time your first impression of a person or idea changed."
+    ],
     stages: ["1. Childhood Lenses", "2. Growing Friction", "3. The Turning Point", "4. Clearer Sight"],
     filmNotes: "Adapted into a 2010 film directed by Rob Reiner with warm nostalgia and memorable visual framing.",
     songs: [
-      { title: "Invisible String — Taylor Swift", note: "Threads of connection over time" },
-      { title: "Here Comes the Sun — The Beatles", note: "Bright morning reset" },
-      { title: "Landslide — Fleetwood Mac", note: "Growing up and changing views" }
+      { title: "Invisible String — Taylor Swift", vinyl: "LP 01 • Side A", note: "Threads of connection over time" },
+      { title: "Here Comes the Sun — The Beatles", vinyl: "LP 01 • Side A", note: "Bright morning reset" },
+      { title: "Landslide — Fleetwood Mac", vinyl: "LP 01 • Side B", note: "Growing up and changing views" },
+      { title: "The Story — Brandi Carlile", vinyl: "LP 01 • Side B", note: "Honesty and standing tall" },
+      { title: "Put Your Records On — Corinne Bailey Rae", vinyl: "LP 02 • Side A", note: "Warm sunlit confidence" },
+      { title: "Better Together — Jack Johnson", vinyl: "LP 02 • Side B", note: "Gentle everyday warmth" }
     ]
   },
   {
@@ -552,26 +657,36 @@ const BOOKS = [
     title: "Piranesi",
     author: "Susanna Clarke",
     genre: "Speculative Mystery",
+    schoolSubject: "Creative Writing & Symbolism",
     year: "2020",
     pages: "245",
     spineColor: "#71856a",
     textColor: "#fff8e9",
     vibe: "Tidal halls, marble statues, quiet wonder, and pieced-together memory",
+    schoolHook: "Great for learning how journal structure, motif tracking, and clues build mystery without action clichés—great practice for close reading and annotation.",
     synopsis: "In a vast house of endless halls, tides, and classical statues, a careful journal-keeper documents the rhythm of the ocean while uncovering clues about who he really is.",
     characters: "Piranesi (observant, gentle, devoted to the House) • The Other (ambitious, secretive, seeking hidden knowledge)",
     themes: "Wonder versus obsession, memory, kindness, and finding beauty in stillness.",
     storyMinute: "A gentle scholar maps tides and statues in an infinite labyrinth until subtle anomalies reveal a deeper truth about his past.",
-    whyRead: "Atmospheric, concise, and emotionally resonant—ideal if you love slow-burn mystery and lyrical worldbuilding.",
+    whyRead: "Atmospheric, concise, and emotionally resonant—ideal if you love slow-burn mystery, close reading, and lyrical worldbuilding.",
     settingAtmosphere: "Sunlit upper halls, roaring lower tides, seabirds, and thousands of named statues.",
     keyTakeaways: "Curiosity grounded in care heals more than ambition driven by control.",
     characterRelations: "Piranesi's trusting nature collides with The Other's guarded agenda, slowly shifting the balance of the House.",
     writingImagery: "Journal entries, ocean spray, and marble figures create a meditative, dreamlike rhythm.",
+    schoolPrompts: [
+      "How do Piranesi's journal entries shape what the reader notices—and misses?",
+      "Contrast Piranesi's attitude toward the House with The Other's approach to knowledge.",
+      "Pick one recurring motif (tides, statues, birds) and trace how its meaning shifts."
+    ],
     stages: ["1. Journals & Tides", "2. Missing Entries", "3. Shifting Currents", "4. Return to Light"],
     filmNotes: "No feature film release yet; widely praised for its painterly, architectural mood.",
     songs: [
-      { title: "Nuvole Bianche — Ludovico Einaudi", note: "Calm, rippling piano movement" },
-      { title: "Holocene — Bon Iver", note: "Vast landscapes and quiet realization" },
-      { title: "To Build a Home — The Cinematic Orchestra", note: "Memory and longing" }
+      { title: "Nuvole Bianche — Ludovico Einaudi", vinyl: "LP 01 • Side A", note: "Calm, rippling piano movement" },
+      { title: "Holocene — Bon Iver", vinyl: "LP 01 • Side A", note: "Vast landscapes and quiet realization" },
+      { title: "To Build a Home — The Cinematic Orchestra", vinyl: "LP 01 • Side B", note: "Memory and longing" },
+      { title: "Avril 14th — Aphex Twin", vinyl: "LP 01 • Side B", note: "Quiet, delicate reflection" },
+      { title: "Weightless — Marconi Union", vinyl: "LP 02 • Side A", note: "Stillness and deep focus" },
+      { title: "Sunset Lover — Petit Biscuit", vinyl: "LP 02 • Side B", note: "Soft evening drift" }
     ]
   },
   {
@@ -579,26 +694,36 @@ const BOOKS = [
     title: "Pachinko",
     author: "Min Jin Lee",
     genre: "Historical Saga",
+    schoolSubject: "History, Society & Humanities",
     year: "2017",
     pages: "490",
     spineColor: "#5b4034",
     textColor: "#fff8e9",
     vibe: "Generational resilience, boardinghouses, quiet endurance, and family legacy",
+    schoolHook: "Helpful for connecting personal family stories to historical context, migration, and social structure—strong model for humanities and social science essays.",
     synopsis: "Spanning four generations of a Korean family living in Japan, Pachinko follows everyday choices made under heavy historical pressure and the quiet strength that carries a family forward.",
     characters: "Sunja (resilient, resourceful, anchor of the family) • Solomon (navigating identity and modern ambition)",
     themes: "Belonging, sacrifice, survival, dignity, and intergenerational memory.",
     storyMinute: "One bold decision sets a family's path across decades of migration, hardship, and adaptation.",
-    whyRead: "Sweeping yet deeply personal—rewards readers who enjoy character-driven historical fiction.",
+    whyRead: "Sweeping yet deeply personal—rewards readers who enjoy character-driven historical fiction and real-world context.",
     settingAtmosphere: "Yeongdo coastal life, Osaka boardinghouses, and postwar cities.",
     keyTakeaways: "Endurance isn't loud; it lives in how people show up for one another over time.",
     characterRelations: "Parents, siblings, and descendants negotiate duty, love, and selfhood across changing eras.",
     writingImagery: "Food, boardinghouse routines, and recurring motifs tie decades together seamlessly.",
+    schoolPrompts: [
+      "How do larger historical events shape individual choices in the opening chapters?",
+      "Compare how earlier and later generations experience identity and belonging.",
+      "What makes everyday resilience a central theme across the novel?"
+    ],
     stages: ["1. A Fateful Choice", "2. New Shores", "3. Enduring Seasons", "4. Inherited Threads"],
     filmNotes: "Adapted into a serialized screen adaptation on Apple TV+.",
     songs: [
-      { title: "Spring Day — BTS", note: "Longing, memory, and seasons turning" },
-      { title: "River Flows in You — Yiruma", note: "Reflective and tender" },
-      { title: "Vienna — Billy Joel", note: "Patience and taking life one step at a time" }
+      { title: "Spring Day — BTS", vinyl: "LP 01 • Side A", note: "Longing, memory, and seasons turning" },
+      { title: "River Flows in You — Yiruma", vinyl: "LP 01 • Side A", note: "Reflective and tender" },
+      { title: "Vienna — Billy Joel", vinyl: "LP 01 • Side B", note: "Patience and taking life one step at a time" },
+      { title: "Fix You — Coldplay", vinyl: "LP 01 • Side B", note: "Carrying weight and hope" },
+      { title: "Landslide — Fleetwood Mac", vinyl: "LP 02 • Side A", note: "Changing seasons and family ties" },
+      { title: "Breathe Me — Sia", vinyl: "LP 02 • Side B", note: "Quiet perseverance" }
     ]
   }
 ];
@@ -620,8 +745,8 @@ const state = {
   scannedBookId: null,
   activeBookId: BOOKS[0].id,
   shelfIds: ["flipped", "piranesi"],
-  negrosFilter: "All",
-  checkedInSpot: "Corner Table Booth • 2:3 Sketch Frame",
+  hinigaranFilter: "All",
+  checkedInSpot: "Hinigaran Study Corner • 2:3 Sketch Frame",
   cup: COFFEE_PAIRINGS[0].name,
   showAllSongs: true,
   readIds: [],
@@ -629,13 +754,18 @@ const state = {
   ratings: {},
   notes: {},
   progress: {},
-  corkNotesByBook: {
-    flipped: ["Juli and the sycamore tree—first impressions shift when you see the whole picture."],
-    piranesi: ["Keep track of the tides and the missing journal entries."]
+  pendingCorkPhoto: null,
+  corkPinsByBook: {
+    flipped: [
+      { text: "Juli and the sycamore tree—first impressions shift when you see the whole picture.", page: "Ch. 1–3", photo: "" }
+    ],
+    piranesi: [
+      { text: "Track the tides and the missing journal entries as clues.", page: "Early Journals", photo: "" }
+    ]
   },
   tasks: [
     { id: 1, text: "Read 20 pages before checking phone", done: false },
-    { id: 2, text: "Pull 2 quotes for Story Notes", done: false }
+    { id: 2, text: "Pin 2 quotes + 1 school takeaway on corkboard", done: false }
   ],
   scratchpad: "",
   flashIndex: 0,
@@ -669,57 +799,58 @@ function showPage(pageId) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function renderNegrosSpots() {
-  const filters = ["All", "Bacolod", "Silay", "Talisay", "Hinigaran", "Kabankalan"];
-  const btnWrap = document.getElementById("negrosFilterButtons");
+function renderHinigaranSpots() {
+  const filters = ["All", "Library", "Campus Library", "School Hub", "Café"];
+  const btnWrap = document.getElementById("hinigaranFilterButtons");
   btnWrap.innerHTML = "";
-  filters.forEach(city => {
-    const active = state.negrosFilter === city;
+  filters.forEach(cat => {
+    const active = state.hinigaranFilter === cat;
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `px-3 py-1 sketch-btn text-xs font-semibold ${active ? "bg-amber-900 text-amber-50" : "bg-white"}`;
-    btn.textContent = city;
+    btn.textContent = cat;
     btn.onclick = () => {
-      state.negrosFilter = city;
-      renderNegrosSpots();
+      state.hinigaranFilter = cat;
+      renderHinigaranSpots();
     };
     btnWrap.appendChild(btn);
   });
 
-  const grid = document.getElementById("negrosSpotsGrid");
+  const grid = document.getElementById("hinigaranSpotsGrid");
   grid.innerHTML = "";
-  const list = state.negrosFilter === "All"
-    ? NEGROS_SPOTS
-    : NEGROS_SPOTS.filter(s => s.city === state.negrosFilter);
+  const list = state.hinigaranFilter === "All"
+    ? HINIGARAN_SPOTS
+    : HINIGARAN_SPOTS.filter(s => s.category === state.hinigaranFilter);
 
   list.forEach(spot => {
-    const isLibrary = spot.type.includes("Library");
+    const isLibrary = spot.category.includes("Library") || spot.category.includes("School");
     const card = document.createElement("article");
     card.className = `rounded-2xl p-4 flex flex-col justify-between gap-3 ${isLibrary ? "bg-emerald-50/70" : "bg-amber-50/75"}`;
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${spot.name} ${spot.city} Negros Occidental`)}`;
+    const url = mapsUrl(spot.mapQuery);
     card.innerHTML = `
       <div class="space-y-1.5">
         <div class="flex flex-wrap items-center justify-between gap-1.5">
-          <span class="text-xs px-2 py-0.5 sketch-pill ${isLibrary ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-amber-950"}">${spot.type}</span>
-          <span class="text-xs font-bold text-stone-600">${spot.city}</span>
+          <span class="text-xs px-2 py-0.5 sketch-pill ${isLibrary ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-amber-950"}">${spot.category}</span>
+          <span class="text-xs font-bold text-stone-600">Hinigaran</span>
         </div>
         <h3 class="font-display text-lg font-bold leading-snug">${spot.name}</h3>
         <p class="text-xs text-stone-600">${spot.area}</p>
         <p class="text-sm text-stone-800 pt-1">${spot.vibe}</p>
+        <p class="text-xs text-emerald-950 bg-white/80 rounded-lg px-2.5 py-1.5 border border-stone-800/15"><strong>School &amp; Study Fit:</strong> ${spot.schoolFit}</p>
       </div>
       <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-dashed border-stone-800/20">
-        <a class="text-xs font-semibold underline text-[#8b4b32]" href="${mapUrl}" target="_blank" rel="noopener noreferrer">Open Map ↗</a>
+        <a class="text-xs font-semibold underline text-[#8b4b32]" href="${url}" target="_blank" rel="noopener noreferrer">Google Maps ↗</a>
         <button type="button" class="sketch-btn bg-white px-3 py-1 text-xs font-semibold">Read Here →</button>
       </div>
     `;
     card.querySelector("button").onclick = () => {
-      state.checkedInSpot = `${spot.name} (${spot.city})`;
+      state.checkedInSpot = `${spot.name} (Hinigaran)`;
       state.cup = spot.cup;
       document.getElementById("boothSpotBadge").textContent = state.checkedInSpot;
       renderCoffeeMenu();
       renderBookBoothAndStory();
       showPage("scanner-booth");
-      showBanner(`Checked into ${spot.name}, ${spot.city} with a ${spot.cup}.`);
+      showBanner(`Checked into ${spot.name} in Hinigaran with a ${spot.cup}.`);
     };
     grid.appendChild(card);
   });
@@ -729,38 +860,122 @@ function currentBook() {
   return BOOKS.find(b => b.id === state.activeBookId) || BOOKS[0];
 }
 
-function createScannedBookEntry(titleText) {
-  const cleanTitle = titleText.trim().replace(/\w/g, c => c.toUpperCase());
-  const slug = `${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`;
+function stripHtmlTags(str) {
+  return String(str || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function buildBookFromMetadata(rawQuery, meta) {
+  const title = (meta && meta.title ? meta.title : rawQuery).trim();
+  const author = (meta && meta.author ? meta.author : "Unknown Author").trim();
+  const year = (meta && meta.year ? String(meta.year) : "—");
+  const pages = (meta && meta.pages && Number(meta.pages) > 0 ? String(meta.pages) : "250");
+  const genre = (meta && meta.genre ? meta.genre : "Literature & Study").trim();
+  const coverUrl = meta && meta.coverUrl ? meta.coverUrl : "";
+  const descriptionText = meta && meta.description
+    ? stripHtmlTags(meta.description)
+    : `"${title}" by ${author}. Use the corkboard above to pin quotes, pictures, and study notes as you read.`;
+
+  const shortDesc = descriptionText.length > 260 ? `${descriptionText.slice(0, 257).trim()}...` : descriptionText;
+  const slug = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${author.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 20)}-${Date.now().toString(36)}`;
   const color = SPINE_PALETTE[BOOKS.length % SPINE_PALETTE.length];
-  const book = {
+
+  return {
     id: slug,
-    title: cleanTitle,
-    author: "Scanned Edition",
-    genre: "Scanned Read",
-    year: "2026",
-    pages: "260",
+    title,
+    author,
+    genre,
+    schoolSubject: `${genre} • Class Study`,
+    year,
+    pages,
+    coverUrl,
     spineColor: color,
     textColor: "#fff8e9",
-    vibe: "Freshly scanned at the corner booth—ready for your notes, pins, and cuppa",
-    synopsis: `Scanned "${cleanTitle}" at Quillfinite. Use the Nightstand & Corkboard panel above to save favorite quotes, jot down character impressions, or shelve it on your Bookshelf.`,
-    characters: "Add your own character notes and POV observations in the Hot Take box below.",
-    themes: "Personal takeaways, favorite passages, and chapter-by-chapter reflections.",
-    storyMinute: `A newly scanned edition of ${cleanTitle} waiting for your reading receipt and margin notes.`,
-    whyRead: "Captured directly in the Book Booth so you can keep its pins, nightstand status, and progress in one cozy place.",
-    settingAtmosphere: "Warm café table light, freshly brewed coffee, and open margins.",
-    keyTakeaways: "Every book becomes richer once you pin the lines that stay with you.",
-    characterRelations: "Track how relationships evolve as you log pages on your bookmark receipt.",
-    writingImagery: "Pin memorable motifs and quotes onto this book's corkboard as you read.",
-    stages: ["1. First Pages", "2. Rising Questions", "3. Turning Point", "4. Final Reflection"],
-    filmNotes: "Search clips, trailers, or visual inspirations using the link below.",
+    vibe: `${genre} • ${author}${year !== "—" ? ` (${year})` : ""}`,
+    schoolHook: `Read "${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} to build strong evidence, quotes, and critical takeaways for class discussions, reaction papers, and essays.`,
+    synopsis: descriptionText,
+    characters: `Featured work by ${author}. Pin character motivations, relationships, and key moments onto the corkboard above.`,
+    themes: `Focus area: ${genre}. Track central arguments, recurring imagery, and lesson takeaways as you read.`,
+    storyMinute: shortDesc,
+    whyRead: `Helps you practice active reading, quote-gathering, and connecting ideas from "${title}" to school assignments.`,
+    settingAtmosphere: `Reading session for "${title}" (${pages} pp.).`,
+    keyTakeaways: `Pull one key quote or claim per chapter in "${title}" so essays and recitations become much easier.`,
+    characterRelations: `Note how main characters or viewpoints interact and change over time in "${title}".`,
+    writingImagery: `Pin images, quotes, and page references to the corkboard above as you spot meaningful details.`,
+    schoolPrompts: [
+      `What is the main message or thesis a student can take away from "${title}"?`,
+      `Which passage or scene stood out most, and how does it connect to a real-world issue?`,
+      `How would you explain why a classmate should read "${title}" in 3 sentences?`
+    ],
+    stages: ["1. Opening & Context", "2. Core Development", "3. Turning Point", "4. Resolution & Takeaways"],
+    filmNotes: `Search adaptations, interviews, or book discussions for "${title}" by ${author}.`,
     songs: [
-      { title: `${cleanTitle} Reading Ambience`, note: "Custom soundtrack search on Spotify" },
-      { title: "Paper Rings — Taylor Swift", note: "Page-turning energy" }
+      { title: `${title} — ${author}`, vinyl: "LP 01 • Side A", note: "Main theme & reading soundtrack" },
+      { title: `${genre} Study Ambience`, vinyl: "LP 01 • Side A", note: "Steady focus for reading chapters" },
+      { title: "Acoustic Guitar Reading Mix", vinyl: "LP 01 • Side B", note: "Warm, unhurried page turns" },
+      { title: "Lo-Fi Study Beats", vinyl: "LP 01 • Side B", note: "Note-taking & outlining groove" },
+      { title: "Cinematic Piano & Strings", vinyl: "LP 02 • Side A", note: "Dramatic scenes & turning points" },
+      { title: "Late Night Café Jazz", vinyl: "LP 02 • Side B", note: "Evening reflection & summary" }
     ]
   };
-  BOOKS.push(book);
-  return book;
+}
+
+async function lookupBookOnline(queryText) {
+  const q = encodeURIComponent(queryText.trim());
+  try {
+    const gbRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1`);
+    if (gbRes.ok) {
+      const gbData = await gbRes.json();
+      const item = gbData.items && gbData.items[0];
+      const info = item && item.volumeInfo;
+      if (info && info.title) {
+        const imgs = info.imageLinks || {};
+        const rawThumb = imgs.thumbnail || imgs.smallThumbnail || "";
+        const secureThumb = rawThumb.replace(/^http:\/\//i, "https://");
+        return {
+          title: info.title,
+          author: Array.isArray(info.authors) && info.authors.length ? info.authors.join(", ") : "Unknown Author",
+          year: info.publishedDate ? String(info.publishedDate).slice(0, 4) : "—",
+          pages: info.pageCount ? String(info.pageCount) : "250",
+          genre: Array.isArray(info.categories) && info.categories.length ? info.categories[0] : "Book Lookup",
+          description: info.description || "",
+          coverUrl: secureThumb
+        };
+      }
+    }
+  } catch (_) {}
+
+  try {
+    const olRes = await fetch(`https://openlibrary.org/search.json?q=${q}&limit=1`);
+    if (olRes.ok) {
+      const olData = await olRes.json();
+      const doc = olData.docs && olData.docs[0];
+      if (doc && doc.title) {
+        const coverId = doc.cover_i;
+        return {
+          title: doc.title,
+          author: Array.isArray(doc.author_name) && doc.author_name.length ? doc.author_name.join(", ") : "Unknown Author",
+          year: doc.first_publish_year ? String(doc.first_publish_year) : "—",
+          pages: doc.number_of_pages_median ? String(doc.number_of_pages_median) : "250",
+          genre: Array.isArray(doc.subject) && doc.subject.length ? doc.subject[0] : "Book Lookup",
+          description: "",
+          coverUrl: coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : ""
+        };
+      }
+    }
+  } catch (_) {}
+
+  return null;
+}
+
+function applyBookCoverToBooth(book) {
+  const img = document.getElementById("snapshotImg");
+  const idle = document.getElementById("idleBoothPlaceholder");
+  if (book && book.coverUrl) {
+    img.src = book.coverUrl;
+    img.alt = `${book.title} cover`;
+    img.classList.remove("hidden");
+    idle.classList.add("hidden");
+  }
 }
 
 function scanBookById(id, openBooth = false) {
@@ -768,14 +983,17 @@ function scanBookById(id, openBooth = false) {
   if (!found) return;
   state.activeBookId = found.id;
   state.scannedBookId = found.id;
+  applyBookCoverToBooth(found);
   renderAll();
   if (openBooth) showPage("scanner-booth");
-  showBanner(`Scanned "${found.title}"—you can now add it to your Bookshelf or pin notes.`);
+  showBanner(`Scanned "${found.title}"—pin quotes or pictures on the corkboard, spin vinyl tracks, or add to your shelf.`);
 }
 
 function clearScannedBook() {
   state.scannedBookId = null;
   document.getElementById("scanFeedback").textContent = "";
+  document.getElementById("snapshotImg").classList.add("hidden");
+  document.getElementById("idleBoothPlaceholder").classList.remove("hidden");
   renderPostScanState();
   showBanner("Cleared scanned book. Scan again to open its card.");
 }
@@ -787,6 +1005,60 @@ function renderPostScanState() {
   document.getElementById("clearScanBtn").classList.toggle("hidden", !hasScanned);
 }
 
+function handleCorkPhotoUpload(ev) {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.pendingCorkPhoto = { dataUrl: reader.result, name: file.name };
+    document.getElementById("pendingCorkPhotoPreview").src = reader.result;
+    document.getElementById("pendingCorkPhotoName").textContent = file.name;
+    document.getElementById("pendingCorkPhotoBar").classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPendingCorkPhoto() {
+  state.pendingCorkPhoto = null;
+  const inp = document.getElementById("corkPhotoInput");
+  if (inp) inp.value = "";
+  document.getElementById("pendingCorkPhotoBar").classList.add("hidden");
+}
+
+function addBookCorkPin(e) {
+  e.preventDefault();
+  const textInp = document.getElementById("boothCorkInput");
+  const pageInp = document.getElementById("boothCorkPageInput");
+  const textVal = textInp.value.trim();
+  const pageVal = pageInp.value.trim();
+  const photoVal = state.pendingCorkPhoto ? state.pendingCorkPhoto.dataUrl : "";
+
+  if (!textVal && !photoVal) {
+    showBanner("Type a quote/note or attach a picture to pin to the corkboard.");
+    return;
+  }
+
+  const id = currentBook().id;
+  const newPin = {
+    text: textVal || "Pinned picture note",
+    page: pageVal,
+    photo: photoVal
+  };
+  state.corkPinsByBook[id] = [newPin, ...(state.corkPinsByBook[id] || [])];
+  textInp.value = "";
+  pageInp.value = "";
+  clearPendingCorkPhoto();
+  renderBookBoothAndStory();
+  showBanner("Pinned item onto the corkboard!");
+}
+
+function removeCorkPin(index) {
+  const id = currentBook().id;
+  const list = state.corkPinsByBook[id] || [];
+  state.corkPinsByBook[id] = list.filter((_, idx) => idx !== index);
+  renderBookBoothAndStory();
+}
+
 function renderBookBoothAndStory() {
   const b = currentBook();
   const prog = state.progress[b.id] || { cur: 0, tot: Number(b.pages) || 250 };
@@ -794,13 +1066,16 @@ function renderBookBoothAndStory() {
 
   document.getElementById("bookGenreBadge").textContent = b.genre;
   document.getElementById("bookMetaBadge").textContent = `${b.year} • ${b.pages} pp.`;
+  document.getElementById("bookSchoolSubjectBadge").textContent = b.schoolSubject || "School Study";
   document.getElementById("bookTitle").textContent = b.title;
   document.getElementById("bookAuthor").textContent = `by ${b.author}`;
   document.getElementById("bookVibe").textContent = b.vibe;
+  document.getElementById("bookSchoolHook").textContent = b.schoolHook || b.whyRead;
   document.getElementById("bookSynopsis").textContent = b.synopsis;
   document.getElementById("bookCharacters").textContent = b.characters;
   document.getElementById("bookThemes").textContent = b.themes;
-  document.getElementById("bookSongMood").textContent = `Tracks for "${b.title}" — ${b.vibe}`;
+  document.getElementById("vinylRackHeading").textContent = `${b.title} • Vinyl Racks (${b.songs.length} Songs)`;
+  document.getElementById("bookSongMood").textContent = `Spin tracks along the rack for "${b.title}" — click any record to open on Spotify`;
   document.getElementById("bookFilmNotes").textContent = b.filmNotes;
   document.getElementById("bookPersonalNote").value = state.notes[b.id] || "";
 
@@ -815,40 +1090,68 @@ function renderBookBoothAndStory() {
   document.getElementById("markReadBtn").textContent = isRead ? "Finished ✓" : "Finished It";
 
   const onNightstand = state.nightstandIds.includes(b.id);
-  const pins = state.corkNotesByBook[b.id] || [];
+  const pins = state.corkPinsByBook[b.id] || [];
   document.getElementById("nightstandBtn").textContent = onNightstand ? "On Nightstand ✓" : "Pin to Nightstand";
-  document.getElementById("postScanBookCornerTitle").textContent = `${b.title} • Nightstand & Corkboard`;
+  document.getElementById("postScanBookCornerTitle").textContent = `${b.title} • Corkboard & Nightstand`;
   document.getElementById("postScanBookCornerStatus").textContent =
-    `${onNightstand ? "Pinned to your Nightstand" : "Not on Nightstand"} • ${pins.length} corkboard ${pins.length === 1 ? "pin" : "pins"}`;
+    `${onNightstand ? "Pinned to Nightstand" : "Not on Nightstand"} • ${pins.length} corkboard ${pins.length === 1 ? "pin" : "pins"}`;
 
   const corkList = document.getElementById("boothBookCorkList");
   corkList.innerHTML = "";
   if (!pins.length) {
-    corkList.innerHTML = `<p class="sm:col-span-2 text-sm text-stone-600">No pins for "${b.title}" yet.</p>`;
+    corkList.innerHTML = `<p class="sm:col-span-2 text-sm bg-[#fffdf5]/90 rounded-xl p-3 border border-stone-900">No pins on "${b.title}"'s corkboard yet—add a quote or picture above.</p>`;
   } else {
-    pins.forEach(text => {
+    const tilts = ["-rotate-1", "rotate-1", "rotate-2", "-rotate-2"];
+    pins.forEach((pin, idx) => {
       const card = document.createElement("div");
-      card.className = "rounded-xl bg-[#fffdf5] border-2 border-stone-900 p-3 pt-5 relative shadow-sm";
-      card.innerHTML = `<span class="pushpin-head bg-rose-500 absolute top-2 left-1/2 -translate-x-1/2"></span><p class="text-sm text-stone-800">${text}</p>`;
+      card.className = `cork-pin-card p-3.5 pt-6 relative ${tilts[idx % tilts.length]}`;
+      const pinColors = ["bg-rose-500", "bg-amber-400", "bg-emerald-600", "bg-sky-500"];
+      const photoHtml = pin.photo
+        ? `<img src="${pin.photo}" alt="Pinned corkboard photo" class="w-full h-36 object-cover rounded-lg border border-stone-800/30 mb-2.5"/>`
+        : "";
+      const pageHtml = pin.page
+        ? `<span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-stone-800 border border-stone-800/20 mb-1.5">${pin.page}</span>`
+        : "";
+      card.innerHTML = `
+        <span class="pushpin-head ${pinColors[idx % pinColors.length]} absolute top-2 left-1/2 -translate-x-1/2"></span>
+        <button type="button" class="absolute top-1.5 right-2.5 text-xs font-bold text-stone-500 hover:text-rose-700" title="Remove pin">✕</button>
+        ${photoHtml}
+        ${pageHtml}
+        <p class="text-sm text-stone-800 leading-snug">${pin.text}</p>
+      `;
+      card.querySelector("button").onclick = () => removeCorkPin(idx);
       corkList.appendChild(card);
     });
   }
 
-  const q = encodeURIComponent(`${b.title} ${b.author === "Scanned Edition" ? "" : b.author}`.trim());
+  const q = encodeURIComponent(`${b.title} ${b.author === "Unknown Author" ? "" : b.author}`.trim());
   document.getElementById("activeBookSearchLink").href = `https://www.google.com/search?tbm=bks&q=${q}`;
   document.getElementById("bookTrailerLink").href = `https://www.youtube.com/results?search_query=${q}+adaptation+trailer`;
 
+  // Vinyl Racks
   const listEl = document.getElementById("bookSongsList");
   listEl.innerHTML = "";
   const tracks = state.showAllSongs ? b.songs : b.songs.slice(0, 2);
   tracks.forEach((s, idx) => {
-    const li = document.createElement("li");
-    li.className = "p-2.5 bg-amber-50/50";
+    const slot = document.createElement("div");
+    slot.className = "vinyl-slot p-3";
     const spUrl = `https://open.spotify.com/search/${encodeURIComponent(s.title)}`;
-    li.innerHTML = `<a class="spotify-song-link" href="${spUrl}" target="_blank" rel="noopener noreferrer"><span class="spotify-song-icon">♪</span><span><span class="block font-bold">${idx + 1}. ${s.title}</span><span class="block text-xs text-stone-600">${s.note}</span></span></a>`;
-    listEl.appendChild(li);
+    slot.innerHTML = `
+      <a class="spotify-song-link" href="${spUrl}" target="_blank" rel="noopener noreferrer">
+        <span class="vinyl-disc" aria-hidden="true"></span>
+        <span class="min-w-0 flex-1">
+          <span class="block text-[11px] font-bold uppercase tracking-wider text-[#8b4b32]">${s.vinyl || `Vinyl Rack • Track ${idx + 1}`}</span>
+          <span class="block font-bold text-sm truncate">${idx + 1}. ${s.title}</span>
+          <span class="block text-xs text-stone-600">${s.note}</span>
+        </span>
+        <span class="text-xs font-bold text-[#4f6d58] shrink-0">Play ↗</span>
+      </a>
+    `;
+    listEl.appendChild(slot);
   });
-  document.getElementById("songListToggleBtn").textContent = state.showAllSongs ? "Show Top 2 Only" : "Show All Tracks";
+  document.getElementById("songListToggleBtn").textContent = state.showAllSongs
+    ? `Show Top 2 Only (${b.songs.length} total)`
+    : `Show All ${b.songs.length} Vinyl Tracks`;
 
   const starsEl = document.getElementById("ratingStars");
   starsEl.innerHTML = "";
@@ -873,14 +1176,25 @@ function renderBookBoothAndStory() {
   document.getElementById("pageProgressBar").style.width = `${pct}%`;
 
   // Story Notes
-  document.getElementById("storyExplorerHeading").textContent = `${b.title} — Story Notes`;
+  document.getElementById("storyExplorerHeading").textContent = `${b.title} — Story & School Notes`;
   document.getElementById("storyMinute").textContent = b.storyMinute;
-  document.getElementById("whyRead").textContent = b.whyRead;
+  document.getElementById("whyRead").textContent = `${b.whyRead} ${b.schoolHook || ""}`.trim();
   document.getElementById("settingAtmosphere").textContent = b.settingAtmosphere;
   document.getElementById("keyTakeaways").textContent = b.keyTakeaways;
   document.getElementById("characterRelations").textContent = b.characterRelations;
   document.getElementById("writingImagery").textContent = b.writingImagery;
   document.getElementById("movieConnections").textContent = b.filmNotes;
+
+  const promptsEl = document.getElementById("schoolPromptsList");
+  promptsEl.innerHTML = "";
+  (b.schoolPrompts || [
+    `What central theme in "${b.title}" connects to a topic you study in class?`,
+    `Pin a key quote and explain how it supports a point in a reaction paper or essay.`
+  ]).forEach(pr => {
+    const li = document.createElement("li");
+    li.textContent = pr;
+    promptsEl.appendChild(li);
+  });
 
   const stagesEl = document.getElementById("storyStages");
   stagesEl.innerHTML = "";
@@ -967,17 +1281,35 @@ function renderStudyStudio() {
   document.getElementById("studyScratchpad").value = state.scratchpad;
 }
 
-function handleScanSubmit(e) {
+async function handleScanSubmit(e) {
   e.preventDefault();
-  const rawInput = document.getElementById("scanTitleInput").value.trim();
+  const inputEl = document.getElementById("scanTitleInput");
+  const feedbackEl = document.getElementById("scanFeedback");
+  const rawInput = inputEl.value.trim();
   if (!rawInput) return;
-  const query = rawInput.toLowerCase();
-  let match = BOOKS.find(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query));
-  if (!match) {
-    match = createScannedBookEntry(rawInput);
+
+  const normalized = rawInput.toLowerCase();
+  const existingPreset = BOOKS.find(
+    b => b.title.toLowerCase() === normalized || b.author.toLowerCase() === normalized
+  );
+  if (existingPreset) {
+    feedbackEl.textContent = `Found "${existingPreset.title}" by ${existingPreset.author}.`;
+    scanBookById(existingPreset.id);
+    return;
   }
-  document.getElementById("scanFeedback").textContent = `Scanned "${match.title}"—tap "+ Add to Bookshelf" to save it to your shelf.`;
-  scanBookById(match.id);
+
+  feedbackEl.textContent = `Searching books for "${rawInput}"...`;
+  const meta = await lookupBookOnline(rawInput);
+  const newBook = buildBookFromMetadata(rawInput, meta);
+  BOOKS.push(newBook);
+
+  if (meta) {
+    feedbackEl.textContent = `Loaded "${newBook.title}" by ${newBook.author} — tap "+ Add to Bookshelf" to save it.`;
+  } else {
+    feedbackEl.textContent = `Opened "${newBook.title}" — add notes anytime or tap "+ Add to Bookshelf".`;
+  }
+
+  scanBookById(newBook.id);
 }
 
 function toggleBookshelfStatus() {
@@ -996,15 +1328,6 @@ function toggleReadStatus() {
 function toggleNightstandStatus() {
   const id = currentBook().id;
   state.nightstandIds = state.nightstandIds.includes(id) ? state.nightstandIds.filter(x => x !== id) : [...state.nightstandIds, id];
-  renderBookBoothAndStory();
-}
-function addBookCorkNote(e) {
-  e.preventDefault();
-  const inp = document.getElementById("boothCorkInput");
-  if (!inp.value.trim()) return;
-  const id = currentBook().id;
-  state.corkNotesByBook[id] = [inp.value.trim(), ...(state.corkNotesByBook[id] || [])];
-  inp.value = "";
   renderBookBoothAndStory();
 }
 function toggleSongListView() { state.showAllSongs = !state.showAllSongs; renderBookBoothAndStory(); }
@@ -1026,14 +1349,214 @@ function toggleFilmTint() {
   document.getElementById("filmOverlay").classList.toggle("bg-amber-400/10", state.goldenTint);
   document.getElementById("filmTintBtn").textContent = state.goldenTint ? "Golden Hour Cam" : "Natural Film";
 }
-function handleCoverFileUpload(ev) {
+let liveCameraStream = null;
+let barcodePollTimer = null;
+
+function cleanIsbnString(raw) {
+  const digits = String(raw || "").replace(/[^0-9Xx]/g, "").toUpperCase();
+  if (digits.length === 13 || digits.length === 10) return digits;
+  return "";
+}
+
+function extractBookQueryFromOcrText(ocrText) {
+  const lines = String(ocrText || "")
+    .split(/\r?\n/)
+    .map(l => l.replace(/[^\w\s'’:-]/g, " ").replace(/\s+/g, " ").trim())
+    .filter(l => l.length >= 3);
+
+  const ignoredWords = new Set([
+    "novel", "bestseller", "new york times", "author", "edition", "copyright",
+    "translated", "translation", "introduction", "preface", "chapter", "book",
+    "the", "and", "with", "from", "into", "by", "of"
+  ]);
+
+  const ranked = lines
+    .map(line => {
+      const words = line.split(/\s+/).filter(Boolean);
+      const meaningful = words.filter(w => !ignoredWords.has(w.toLowerCase()) && w.length > 1);
+      const titleCaseCount = words.filter(w => /^[A-Z][a-z]+/.test(w)).length;
+      const score = meaningful.length * 2 + titleCaseCount * 1.5 - (words.length > 9 ? 3 : 0);
+      return { line, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  if (ranked.length && ranked[0].score > 0) {
+    return ranked[0].line.slice(0, 80).trim();
+  }
+  return lines.slice(0, 2).join(" ").slice(0, 80).trim();
+}
+
+async function detectBarcodeFromSource(sourceEl) {
+  const isbnFromText = cleanIsbnString(sourceEl && sourceEl.value ? sourceEl.value : "");
+  if (isbnFromText) return isbnFromText;
+
+  if ("BarcodeDetector" in window) {
+    try {
+      const detector = new BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128"] });
+      const codes = await detector.detect(sourceEl);
+      for (const c of codes) {
+        const cleaned = cleanIsbnString(c.rawValue);
+        if (cleaned) return cleaned;
+      }
+    } catch (_) {}
+  }
+
+  if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
+    try {
+      const reader = new window.ZXing.BrowserMultiFormatReader();
+      if (sourceEl && sourceEl.tagName === "IMG") {
+        const res = await reader.decodeFromImageElement(sourceEl);
+        const cleaned = cleanIsbnString(res && res.getText ? res.getText() : "");
+        if (cleaned) return cleaned;
+      }
+    } catch (_) {}
+  }
+
+  return "";
+}
+
+async function recognizeTextFromCanvas(canvas) {
+  if (!window.Tesseract || !window.Tesseract.recognize) return "";
+  try {
+    const result = await window.Tesseract.recognize(canvas, "eng");
+    return (result && result.data && result.data.text) || "";
+  } catch (_) {
+    return "";
+  }
+}
+
+async function performRealBookScanFromSource(sourceEl, previewDataUrl) {
+  const feedbackEl = document.getElementById("scanFeedback");
+  const inputEl = document.getElementById("scanTitleInput");
+
+  if (previewDataUrl) {
+    const img = document.getElementById("snapshotImg");
+    img.src = previewDataUrl;
+    img.classList.remove("hidden");
+    document.getElementById("idleBoothPlaceholder").classList.add("hidden");
+  }
+
+  feedbackEl.textContent = "Scanning barcode & cover text...";
+  let detectedQuery = await detectBarcodeFromSource(sourceEl);
+
+  if (!detectedQuery && window.Tesseract) {
+    feedbackEl.textContent = "Reading book cover text with OCR...";
+    const canvas = document.createElement("canvas");
+    const w = sourceEl.videoWidth || sourceEl.naturalWidth || sourceEl.width || 640;
+    const h = sourceEl.videoHeight || sourceEl.naturalHeight || sourceEl.height || 480;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(sourceEl, 0, 0, w, h);
+    const ocrText = await recognizeTextFromCanvas(canvas);
+    detectedQuery = extractBookQueryFromOcrText(ocrText);
+  }
+
+  if (!detectedQuery) {
+    feedbackEl.textContent = "Couldn't read clear text or barcode from that image—try a closer, well-lit cover photo or type the title below.";
+    return;
+  }
+
+  if (inputEl) inputEl.value = detectedQuery;
+  feedbackEl.textContent = `Detected "${detectedQuery}"—looking up book...`;
+
+  const meta = await lookupBookOnline(detectedQuery);
+  const newBook = buildBookFromMetadata(detectedQuery, meta);
+  BOOKS.push(newBook);
+
+  feedbackEl.textContent = meta
+    ? `Scanned "${newBook.title}" by ${newBook.author} — tap "+ Add to Bookshelf" to save it.`
+    : `Opened "${newBook.title}" — tap "+ Add to Bookshelf" to save it.`;
+
+  scanBookById(newBook.id);
+}
+
+async function handleCoverFileUpload(ev) {
   const file = ev.target.files?.[0];
   if (!file) return;
-  const img = document.getElementById("snapshotImg");
-  img.src = URL.createObjectURL(file);
-  img.classList.remove("hidden");
-  document.getElementById("idleBoothPlaceholder").classList.add("hidden");
-  if (!state.scannedBookId) scanBookById(state.activeBookId);
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const img = document.getElementById("snapshotImg");
+    img.src = reader.result;
+    img.classList.remove("hidden");
+    document.getElementById("idleBoothPlaceholder").classList.add("hidden");
+    img.onload = async () => {
+      img.onload = null;
+      await performRealBookScanFromSource(img, reader.result);
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+function stopLiveCameraScan() {
+  if (barcodePollTimer) {
+    clearInterval(barcodePollTimer);
+    barcodePollTimer = null;
+  }
+  if (liveCameraStream) {
+    liveCameraStream.getTracks().forEach(t => t.stop());
+    liveCameraStream = null;
+  }
+  const video = document.getElementById("liveScannerVideo");
+  if (video) video.srcObject = null;
+  document.getElementById("liveCameraBox").classList.add("hidden");
+  document.getElementById("captureFrameScanBtn").classList.add("hidden");
+  document.getElementById("liveCamScanBtn").textContent = "📷 Live Camera Scan";
+}
+
+async function toggleLiveCameraScan() {
+  if (liveCameraStream) {
+    stopLiveCameraScan();
+    return;
+  }
+  const feedbackEl = document.getElementById("scanFeedback");
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    feedbackEl.textContent = "Camera stream isn't available here—use 'Scan Cover / Barcode Photo' or type a title.";
+    return;
+  }
+
+  try {
+    liveCameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    });
+    const video = document.getElementById("liveScannerVideo");
+    video.srcObject = liveCameraStream;
+    await video.play();
+
+    document.getElementById("liveCameraBox").classList.remove("hidden");
+    document.getElementById("captureFrameScanBtn").classList.remove("hidden");
+    document.getElementById("liveCamScanBtn").textContent = "Stop Camera";
+    feedbackEl.textContent = "Live camera active—auto-checking for ISBN barcodes or tap 'Scan Frame Now' for cover text.";
+
+    barcodePollTimer = setInterval(async () => {
+      if (!liveCameraStream || video.readyState < 2) return;
+      const isbn = await detectBarcodeFromSource(video);
+      if (isbn) {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+        const snapUrl = canvas.toDataURL("image/jpeg", 0.85);
+        stopLiveCameraScan();
+        await performRealBookScanFromSource({ value: isbn }, snapUrl);
+      }
+    }, 900);
+  } catch (_) {
+    feedbackEl.textContent = "Camera permission was denied or unavailable—use 'Scan Cover / Barcode Photo' or type a title.";
+  }
+}
+
+async function captureCameraAndScan() {
+  const video = document.getElementById("liveScannerVideo");
+  if (!liveCameraStream || !video || video.readyState < 2) return;
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+  const snapUrl = canvas.toDataURL("image/jpeg", 0.9);
+  stopLiveCameraScan();
+  await performRealBookScanFromSource(canvas, snapUrl);
 }
 function setShelfStyle(cls) { state.shelfStyle = cls; renderShelf(); }
 function addStudyTask(e) {
@@ -1088,7 +1611,7 @@ function toggleReadAloud() {
 }
 
 function renderAll() {
-  renderNegrosSpots();
+  renderHinigaranSpots();
   renderCoffeeMenu();
   renderBookBoothAndStory();
   renderShelf();
