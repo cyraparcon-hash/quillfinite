@@ -11,7 +11,6 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=Patrick+Hand&display=swap"
     rel="stylesheet"
   />
-  <!-- Leaflet CSS for interactive Hinigaran map -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -173,7 +172,34 @@
     }
 
     .cork-pin-card:hover {
-      transform: translateY(-2px) rotate(0deg) !important;
+      transform: translateY(-2px);
+    }
+
+    .cork-size-compact {
+      padding: 10px !important;
+    }
+
+    .cork-size-compact .polaroid-frame img {
+      max-height: 92px;
+    }
+
+    .cork-size-standard .polaroid-frame img {
+      max-height: 155px;
+    }
+
+    .cork-size-feature {
+      grid-column: span 2 / span 2;
+      background: #fffef8 !important;
+    }
+
+    .cork-size-feature .polaroid-frame img {
+      max-height: 250px;
+    }
+
+    @media (max-width: 639px) {
+      .cork-size-feature {
+        grid-column: span 1 / span 1;
+      }
     }
 
     .pushpin-head {
@@ -256,7 +282,7 @@
       stroke: currentColor;
       stroke-width: 2.1;
       stroke-linecap: round;
-      stroke-linejoin:round;
+      stroke-linejoin: round;
       transform: rotate(-4deg);
     }
 
@@ -280,33 +306,9 @@
         display: none !important;
       }
     }
-  
-    .cork-size-compact .polaroid-frame img {
-      max-height: 92px;
-    }
-    .cork-size-compact {
-      padding: 10px 10px 10px 10px !important;
-    }
-    .cork-size-standard .polaroid-frame img {
-      max-height: 155px;
-    }
-    .cork-size-feature {
-      grid-column: span 2 / span 2;
-      background: #fffef8 !important;
-    }
-    .cork-size-feature .polaroid-frame img {
-      max-height: 250px;
-    }
-    @media (max-width: 639px) {
-      .cork-size-feature {
-        grid-column: span 1 / span 1;
-      }
-    }
-
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
-  <!-- Top Cafe Reading Room Header (No standalone Story Notes tab) -->
   <header class="sticky top-0 z-30 bg-[#fff8e9]/95 backdrop-blur no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
       <button type="button" onclick="showSection('booth')" class="flex items-center gap-3 text-left">
@@ -325,52 +327,22 @@
       </button>
 
       <nav class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium" aria-label="Main navigation">
-        <button
-          type="button"
-          data-nav="booth"
-          onclick="showSection('booth')"
-          class="px-3.5 py-2 sketch-btn bg-amber-900 text-amber-50"
-        >
+        <button type="button" data-nav="booth" onclick="showSection('booth')" class="px-3.5 py-2 sketch-btn bg-amber-900 text-amber-50">
           Book Booth
         </button>
-        <button
-          type="button"
-          data-nav="shelf"
-          onclick="showSection('shelf')"
-          class="px-3.5 py-2 sketch-btn bg-white"
-        >
+        <button type="button" data-nav="shelf" onclick="showSection('shelf')" class="px-3.5 py-2 sketch-btn bg-white">
           My Bookshelf (<span id="headerShelfCount">0</span>)
         </button>
-        <button
-          type="button"
-          data-nav="study"
-          onclick="showSection('study')"
-          class="px-3.5 py-2 sketch-btn bg-white"
-        >
+        <button type="button" data-nav="study" onclick="showSection('study')" class="px-3.5 py-2 sketch-btn bg-white">
           Study Studio
         </button>
-        <button
-          type="button"
-          data-nav="spots"
-          onclick="showSection('spots')"
-          class="px-3.5 py-2 sketch-btn bg-white"
-        >
+        <button type="button" data-nav="spots" onclick="showSection('spots')" class="px-3.5 py-2 sketch-btn bg-white">
           Hinigaran Spots
         </button>
-        <button
-          type="button"
-          data-nav="paper"
-          onclick="showSection('paper')"
-          class="px-3.5 py-2 sketch-btn bg-white"
-        >
+        <button type="button" data-nav="paper" onclick="showSection('paper')" class="px-3.5 py-2 sketch-btn bg-white">
           School Paper
         </button>
-        <button
-          type="button"
-          id="accountOpenBtn"
-          onclick="openAccountModal()"
-          class="px-3.5 py-2 sketch-btn bg-amber-100"
-        >
+        <button type="button" id="accountOpenBtn" onclick="openAccountModal()" class="px-3.5 py-2 sketch-btn bg-amber-100">
           <span id="accountBtnLabel">Account (Name + 4-Digit)</span>
         </button>
       </nav>
@@ -378,7 +350,6 @@
   </header>
 
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
-    <!-- Status Banner -->
     <div id="statusBanner" class="hidden sketch-box bg-amber-100 px-4 py-3 text-sm flex items-center justify-between gap-3" role="status">
       <span id="statusBannerText">Ready.</span>
       <button type="button" onclick="hideBanner()" class="text-xs font-bold px-2.5 py-1 sketch-btn bg-white">
@@ -386,14 +357,14 @@
       </button>
     </div>
 
-    <!-- SECTION 1: UNIVERSAL BOOK BOOTH & INTEGRATED STORY NOTES -->
+    <!-- SECTION 1: UNIVERSAL BOOK BOOTH -->
     <section id="section-booth" class="space-y-6">
       <div class="sketch-box bg-[#fffaf2] p-5 sm:p-8 flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-3 max-w-3xl">
           <p class="text-sm uppercase tracking-wider text-stone-600">Any Book • Open Library &amp; Google Books</p>
           <h1 class="font-display text-3xl sm:text-5xl font-bold">Quillfinite Book Booth</h1>
           <p class="text-base sm:text-lg text-stone-700">
-            Look up or scan a book by title, author, or ISBN. Regular reading builds comprehension, vocabulary, focus, and independent thinking—skills that matter in school and everyday life.
+            Look up or scan any book by title, author, or ISBN. Regular reading builds comprehension, vocabulary, focus, and independent thinking—skills that matter in school and everyday life.
           </p>
 
           <div class="space-y-1">
@@ -412,7 +383,7 @@
             <h2 class="text-xs font-bold uppercase tracking-wider text-stone-700">Why We Made This App</h2>
             <ul class="list-disc pl-5 space-y-1 text-sm sm:text-base text-stone-700">
               <li>
-                To give students an easy place to look up any book, pick up story and writing-craft notes right inside the book card, and build steady reading habits.
+                To give students an easy place to look up any book, pick up character &amp; story notes right inside the book card, and build steady reading habits.
               </li>
               <li>
                 To connect reading with practical study tools, local Hinigaran reading spots, and Hinigaran National High School’s school publications (<em>The Voice</em> and <em>Ang Tinig</em>).
@@ -430,7 +401,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        <!-- Left Column: Universal Search + 2:3 Sketch Frame + Chalkboard Cuppa -->
         <div class="lg:col-span-5 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5">
           <div class="flex items-start justify-between gap-2">
             <div>
@@ -452,7 +422,6 @@
             </button>
           </div>
 
-          <!-- 2:3 Sketch Frame Preview -->
           <div class="flex justify-center">
             <div class="relative w-full max-w-[240px] aspect-[2/3] rounded-2xl border-[5px] border-stone-900 bg-stone-950 overflow-hidden shadow-xl">
               <div id="boothIdlePlaceholder" class="w-full h-full bg-gradient-to-b from-stone-900 via-[#2a1d15] to-stone-950 flex flex-col items-center justify-between p-4 text-amber-50">
@@ -486,7 +455,6 @@
             </div>
           </div>
 
-          <!-- Universal Search Form -->
           <form onsubmit="handleUniversalSearch(event)" class="space-y-2.5">
             <div class="flex flex-col sm:flex-row gap-2">
               <label for="universalBookInput" class="sr-only">Book title, author, or ISBN</label>
@@ -525,27 +493,21 @@
             </div>
           </form>
 
-          <!-- Search Matches Picker (Choose the exact book before opening) -->
           <div id="searchCandidatesBox" class="hidden rounded-2xl border-2 border-stone-800/20 bg-amber-50/90 p-3.5 space-y-2">
             <div class="flex items-center justify-between gap-2">
               <span class="text-xs font-bold uppercase tracking-wider text-[#8b4b32]">
                 Pick the Right Book Match
               </span>
-              <button
-                type="button"
-                onclick="hideCandidatesBox()"
-                class="text-xs font-bold underline text-stone-600"
-              >
+              <button type="button" onclick="hideCandidatesBox()" class="text-xs font-bold underline text-stone-600">
                 Hide
               </button>
             </div>
             <p class="text-xs text-stone-700">
-              Tap a match below so you don't end up with the wrong edition or title:
+              Tap a match below to load that edition's card &amp; notes:
             </p>
             <div id="searchCandidatesList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
           </div>
 
-          <!-- Quick Sample Searches -->
           <div class="space-y-1.5">
             <span class="block text-xs font-bold uppercase tracking-wider text-stone-600">
               Quick Picks
@@ -560,15 +522,14 @@
               <button type="button" onclick="runQuickSearch('The Hobbit')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">
                 The Hobbit
               </button>
-              <button type="button" onclick="runQuickSearch('9780142424179')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">
-                ISBN 9780142424179
+              <button type="button" onclick="runQuickSearch('The Alchemist')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">
+                The Alchemist
               </button>
             </div>
           </div>
 
           <p id="lookupStatusLine" class="text-sm text-stone-700 min-h-5"></p>
 
-          <!-- Chalkboard Counter Special -->
           <div class="chalk-board rounded-2xl p-4 text-amber-50 space-y-3">
             <div class="flex items-center justify-between border-b border-dashed border-amber-200/20 pb-2">
               <div>
@@ -584,32 +545,23 @@
           </div>
         </div>
 
-        <!-- Right Column: Active Book Card with Integrated Story Notes -->
         <div class="lg:col-span-7 space-y-6">
-          <!-- Loading State -->
           <div id="loadingBookCard" class="hidden sketch-box bg-[#fffaf2] p-8 text-center space-y-2">
             <p class="font-display text-xl font-bold">Checking Catalogs...</p>
             <p id="loadingBookSubtext" class="text-sm text-stone-700">
-              Pulling book details and story notes...
+              Pulling book details, characters, and deep analysis...
             </p>
           </div>
 
-          <!-- Empty / Fallback State -->
           <div id="emptyBookCard" class="hidden sketch-box bg-[#fffaf2] p-8 text-center space-y-3">
             <h2 class="font-display text-2xl font-bold">No Catalog Match</h2>
             <p id="emptyBookReason" class="text-sm text-stone-700 max-w-md mx-auto"></p>
-            <button
-              type="button"
-              id="buildCustomCardBtn"
-              class="sketch-btn bg-[#c76e4b] text-white px-4 py-2 text-sm font-semibold"
-            >
+            <button type="button" id="buildCustomCardBtn" class="sketch-btn bg-[#c76e4b] text-white px-4 py-2 text-sm font-semibold">
               Make a Blank Card Anyway
             </button>
           </div>
 
-          <!-- Main Book Reading Card -->
           <article id="activeBookReadingCard" class="hidden sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-6">
-            <!-- Top Title & Actions -->
             <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-stone-800/20 pb-5">
               <div class="space-y-1.5 max-w-2xl">
                 <div class="flex flex-wrap items-center gap-2">
@@ -628,41 +580,23 @@
               </div>
 
               <div class="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  id="toggleShelfBtn"
-                  onclick="toggleCurrentBookShelf()"
-                  class="px-3.5 py-2 sketch-btn bg-[#b85d3b] text-white text-xs font-semibold"
-                >
+                <button type="button" id="toggleShelfBtn" onclick="toggleCurrentBookShelf()" class="px-3.5 py-2 sketch-btn bg-[#b85d3b] text-white text-xs font-semibold">
                   + Add to Bookshelf
                 </button>
-                <button
-                  type="button"
-                  id="toggleFinishedBtn"
-                  onclick="toggleCurrentBookFinished()"
-                  class="px-3.5 py-2 sketch-btn bg-white text-xs font-semibold"
-                >
+                <button type="button" id="toggleFinishedBtn" onclick="toggleCurrentBookFinished()" class="px-3.5 py-2 sketch-btn bg-white text-xs font-semibold">
                   Finished It
                 </button>
-                <a
-                  id="bookCatalogLink"
-                  href="https://openlibrary.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="px-3.5 py-2 sketch-btn bg-amber-100 text-xs font-semibold"
-                >
+                <a id="bookCatalogLink" href="https://openlibrary.org" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 sketch-btn bg-amber-100 text-xs font-semibold">
                   Catalog Record ↗
                 </a>
               </div>
             </div>
 
-            <!-- Synopsis -->
             <div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-4 space-y-1.5">
               <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Synopsis</h3>
               <p id="bookSynopsisBody" class="text-sm sm:text-base leading-relaxed text-stone-800"></p>
             </div>
 
-            <!-- Why Should You Read It -->
             <div class="rounded-2xl border-2 border-stone-800/20 bg-[#fffaf0] p-4 sm:p-5 space-y-2">
               <div class="flex items-center justify-between gap-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-[#8b4b32]">Why Should You Read It?</h3>
@@ -671,7 +605,6 @@
               <p id="bookWhyReadBody" class="text-sm sm:text-base leading-relaxed text-stone-800"></p>
             </div>
 
-            <!-- Characters & Deep Student Analysis -->
             <div class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/45 p-4 sm:p-5 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-dashed border-stone-800/20 pb-2">
                 <div>
@@ -689,7 +622,6 @@
               </div>
             </div>
 
-            <!-- Key Takeaways & Notable Quotes -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="rounded-2xl border-2 border-stone-800/15 bg-[#fffaf0] p-4 space-y-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Key Takeaways</h3>
@@ -702,7 +634,6 @@
               </div>
             </div>
 
-            <!-- INCORPORATED STORY NOTES (Always inside scanned/loaded book view—no standalone toggle) -->
             <div class="rounded-2xl border-2 border-stone-800/20 bg-[#f7efe0] p-4 sm:p-5 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-dashed border-stone-800/25 pb-2.5">
                 <div>
@@ -744,7 +675,6 @@
               </div>
             </div>
 
-            <!-- STUDY & CITATION KIT (Citations, Thesis Angles & Quick Self-Check) -->
             <div class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/45 p-4 sm:p-5 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-dashed border-stone-800/20 pb-2.5">
                 <div>
@@ -801,7 +731,6 @@
               </div>
             </div>
 
-            <!-- Corkboard Pinning (Quotes & Pictures) -->
             <div class="corkboard-surface rounded-2xl p-4 sm:p-5 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[#fffdf5]/95 p-3 border-2 border-stone-900">
                 <div>
@@ -863,7 +792,6 @@
               <div id="bookCorkboardGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
             </div>
 
-            <!-- Film / TV Adaptation & Curated Spotify Playlist -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/60 p-4 space-y-2.5">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Film &amp; TV Adaptation</h3>
@@ -899,7 +827,6 @@
               </div>
             </div>
 
-            <!-- Printable / Copyable Cafe Reading Receipt -->
             <div id="printableReceiptCard" class="thermal-receipt p-4 sm:p-5 space-y-3 max-w-xl mx-auto w-full">
               <div class="text-center border-b border-dashed border-stone-800/40 pb-2.5">
                 <p class="text-[11px] font-mono tracking-widest text-stone-600">★ QUILLFINITE CAFÉ &amp; PAGE NOOK ★</p>
@@ -948,7 +875,6 @@
               </div>
             </div>
 
-            <!-- Sources at the End of Every Scanned / Looked-Up Book Card -->
             <div id="bookSourcesFooter" class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/70 p-4 space-y-2">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Sources &amp; Reference Notes</h3>
@@ -1043,7 +969,6 @@
         </div>
       </div>
 
-      <!-- Page-Pace & Reading Schedule Calculator -->
       <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
@@ -1077,7 +1002,7 @@
       </div>
     </section>
 
-    <!-- SECTION 4: HINIGARAN READING SPOTS & CAFÉS (WITH LITTLE READING SPOT AT THE END) -->
+    <!-- SECTION 4: HINIGARAN READING SPOTS -->
     <section id="section-spots" class="hidden space-y-6">
       <div class="sketch-box bg-[#fffaf2] p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-1 max-w-2xl">
@@ -1097,7 +1022,6 @@
         </div>
       </div>
 
-      <!-- Filter Bar + Interactive Leaflet Map -->
       <div class="sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap gap-2" role="group" aria-label="Filter Hinigaran reading spots">
@@ -1122,14 +1046,11 @@
         </div>
       </div>
 
-      <!-- Cafés & Outdoor Spots Grid -->
       <div id="hinigaranSpotsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-
-      <!-- Featured Little Reading Spot at the End -->
       <div id="littleReadingSpotFeatured" class="sketch-box bg-[#f7efe0] p-5 sm:p-7 space-y-4"></div>
     </section>
 
-    <!-- SECTION 5: HINIGARAN NATIONAL HIGH SCHOOL PAPER (THE VOICE & ANG TINIG) -->
+    <!-- SECTION 5: SCHOOL PAPER -->
     <section id="section-paper" class="hidden space-y-6">
       <div class="sketch-box bg-[#fffaf2] p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-1 max-w-2xl">
@@ -1147,18 +1068,10 @@
       <div class="sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-2.5">
         <h2 class="font-display text-xl font-bold">Why School Publications &amp; Journalists Matter</h2>
         <ul class="list-disc pl-5 space-y-1.5 text-sm sm:text-base text-stone-800">
-          <li>
-            <strong>Accurate campus information:</strong> School publications keep students, teachers, and families informed about school events, policies, and community happenings.
-          </li>
-          <li>
-            <strong>Student voice and accountability:</strong> Student journalists highlight real student concerns, creative work, and everyday stories that might otherwise go unheard.
-          </li>
-          <li>
-            <strong>Fact-checking and clear writing:</strong> Reporting teaches students to verify details, ask careful questions, and write clearly in both English and Filipino.
-          </li>
-          <li>
-            <strong>Civic habits early on:</strong> Practicing fair, responsible journalism builds critical thinking and active citizenship that last beyond high school.
-          </li>
+          <li><strong>Accurate campus information:</strong> School publications keep students, teachers, and families informed about school events, policies, and community happenings.</li>
+          <li><strong>Student voice and accountability:</strong> Student journalists highlight real student concerns, creative work, and everyday stories that might otherwise go unheard.</li>
+          <li><strong>Fact-checking and clear writing:</strong> Reporting teaches students to verify details, ask careful questions, and write clearly in both English and Filipino.</li>
+          <li><strong>Civic habits early on:</strong> Practicing fair, responsible journalism builds critical thinking and active citizenship that last beyond high school.</li>
         </ul>
       </div>
 
@@ -1174,19 +1087,10 @@
             </p>
           </div>
           <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-dashed border-stone-800/20">
-            <a
-              href="https://www.facebook.com/TheVoiceHinigaranNHS"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-xs font-semibold"
-            >
+            <a href="https://www.facebook.com/TheVoiceHinigaranNHS" target="_blank" rel="noopener noreferrer" class="sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-xs font-semibold">
               Visit The Voice on Facebook ↗
             </a>
-            <button
-              type="button"
-              onclick="addSchoolPaperTask('Read recent posts from The Voice — English school publication (Hinigaran NHS)')"
-              class="sketch-btn bg-amber-100 px-3 py-1.5 text-xs font-semibold"
-            >
+            <button type="button" onclick="addSchoolPaperTask('Read recent posts from The Voice — English school publication (Hinigaran NHS)')" class="sketch-btn bg-amber-100 px-3 py-1.5 text-xs font-semibold">
               + Add to Checklist
             </button>
           </div>
@@ -1203,19 +1107,10 @@
             </p>
           </div>
           <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-dashed border-stone-800/20">
-            <a
-              href="https://www.facebook.com/profile.php?id=100064191901428"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="sketch-btn bg-[#4f6d58] text-white px-4 py-2 text-xs font-semibold"
-            >
+            <a href="https://www.facebook.com/profile.php?id=100064191901428" target="_blank" rel="noopener noreferrer" class="sketch-btn bg-[#4f6d58] text-white px-4 py-2 text-xs font-semibold">
               Visit Ang Tinig on Facebook ↗
             </a>
-            <button
-              type="button"
-              onclick="addSchoolPaperTask('Check Ang Tinig — Filipino school publication (Hinigaran NHS)')"
-              class="sketch-btn bg-amber-100 px-3 py-1.5 text-xs font-semibold"
-            >
+            <button type="button" onclick="addSchoolPaperTask('Check Ang Tinig — Filipino school publication (Hinigaran NHS)')" class="sketch-btn bg-amber-100 px-3 py-1.5 text-xs font-semibold">
               + Add to Checklist
             </button>
           </div>
@@ -1224,167 +1119,78 @@
     </section>
   </main>
 
-  <!-- QUILLFINITE ACCOUNT MODAL (Name + 4-Digit Code) -->
-  <div
-    id="accountModalOverlay"
-    class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-[2px] flex items-center justify-center p-4 no-print"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="accountModalTitle"
-  >
+  <!-- ACCOUNT MODAL -->
+  <div id="accountModalOverlay" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-[2px] flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
     <div class="sketch-box bg-[#fffdf9] max-w-md w-full p-5 sm:p-6 space-y-4">
       <div class="flex items-start justify-between gap-2">
         <div>
           <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Quillfinite Pass</span>
           <h2 id="accountModalTitle" class="font-display text-xl font-bold mt-1">Name &amp; 4-Number Code</h2>
         </div>
-        <button
-          type="button"
-          onclick="closeAccountModal()"
-          class="sketch-btn bg-white px-2.5 py-1 text-xs font-bold"
-          aria-label="Close account modal"
-        >
-          ✕
-        </button>
+        <button type="button" onclick="closeAccountModal()" class="sketch-btn bg-white px-2.5 py-1 text-xs font-bold" aria-label="Close account modal">✕</button>
       </div>
-
       <p class="text-sm text-stone-700">
         Enter your name and a 4-number code to save and load your bookshelf, page progress, margin notes, and corkboard pins on this browser.
       </p>
-
       <form onsubmit="handleAccountSaveOrLoad(event)" class="space-y-3">
         <div>
-          <label for="accountNameInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">
-            Your Name
-          </label>
-          <input
-            id="accountNameInput"
-            type="text"
-            required
-            placeholder="e.g. Cyra or Maya"
-            class="w-full rounded-xl bg-white px-3 py-2 text-sm"
-          />
+          <label for="accountNameInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Your Name</label>
+          <input id="accountNameInput" type="text" required placeholder="e.g. Cyra or Maya" class="w-full rounded-xl bg-white px-3 py-2 text-sm" />
         </div>
-
         <div>
-          <label for="accountPinInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">
-            4-Number Code
-          </label>
-          <input
-            id="accountPinInput"
-            type="text"
-            inputmode="numeric"
-            pattern="\d{4}"
-            maxlength="4"
-            required
-            placeholder="4 digits (e.g. 1024)"
-            class="w-full rounded-xl bg-white px-3 py-2 text-sm font-mono tracking-widest"
-          />
+          <label for="accountPinInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">4-Number Code</label>
+          <input id="accountPinInput" type="text" inputmode="numeric" pattern="\d{4}" maxlength="4" required placeholder="4 digits (e.g. 1024)" class="w-full rounded-xl bg-white px-3 py-2 text-sm font-mono tracking-widest" />
         </div>
-
         <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-          <button
-            type="submit"
-            class="flex-1 sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-sm font-semibold"
-          >
-            Save / Load Account
-          </button>
-          <button
-            type="button"
-            onclick="signOutQuillAccount()"
-            class="sketch-btn bg-amber-100 px-3 py-2 text-xs font-semibold"
-          >
-            Sign Out
-          </button>
+          <button type="submit" class="flex-1 sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-sm font-semibold">Save / Load Account</button>
+          <button type="button" onclick="signOutQuillAccount()" class="sketch-btn bg-amber-100 px-3 py-2 text-xs font-semibold">Sign Out</button>
         </div>
       </form>
-
       <div id="savedAccountsListWrap" class="pt-3 border-t border-dashed border-stone-800/20 space-y-2">
-        <span class="block text-[11px] font-bold uppercase tracking-wider text-stone-600">
-          Saved Profiles on This Device
-        </span>
+        <span class="block text-[11px] font-bold uppercase tracking-wider text-stone-600">Saved Profiles on This Device</span>
         <div id="savedAccountsButtons" class="flex flex-wrap gap-1.5"></div>
       </div>
     </div>
   </div>
 
-  <!-- SCAN PANEL MODAL (Barcode / ISBN / Title / Image File / Sample Scans) -->
-  <div
-    id="scanModalOverlay"
-    class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-[2px] flex items-center justify-center p-4 no-print"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="scanModalTitle"
-  >
+  <!-- SCAN MODAL -->
+  <div id="scanModalOverlay" class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-[2px] flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="scanModalTitle">
     <div class="sketch-box bg-[#fffdf9] max-w-md w-full p-5 sm:p-6 space-y-4">
       <div class="flex items-start justify-between gap-2">
         <div>
           <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Scan &amp; Quick Lookup</span>
           <h2 id="scanModalTitle" class="font-display text-xl font-bold mt-1">Scan Barcode, ISBN, or Cover</h2>
         </div>
-        <button
-          type="button"
-          onclick="closeScanModal()"
-          class="sketch-btn bg-white px-2.5 py-1 text-xs font-bold"
-          aria-label="Close scan panel"
-        >
-          ✕
-        </button>
+        <button type="button" onclick="closeScanModal()" class="sketch-btn bg-white px-2.5 py-1 text-xs font-bold" aria-label="Close scan panel">✕</button>
       </div>
-
       <form onsubmit="handleScanModalSubmit(event)" class="space-y-2.5">
-        <label for="scanModalCodeInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700">
-          ISBN-10 / ISBN-13 / Title
-        </label>
+        <label for="scanModalCodeInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700">ISBN-10 / ISBN-13 / Title</label>
         <div class="flex gap-2">
-          <input
-            id="scanModalCodeInput"
-            type="text"
-            placeholder="e.g. 9780385732550 or Piranesi"
-            class="flex-1 rounded-xl bg-white px-3 py-2 text-sm"
-          />
-          <button type="submit" class="sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-xs font-semibold">
-            Scan
-          </button>
+          <input id="scanModalCodeInput" type="text" placeholder="e.g. 9780385732550 or Piranesi" class="flex-1 rounded-xl bg-white px-3 py-2 text-sm" />
+          <button type="submit" class="sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-xs font-semibold">Scan</button>
         </div>
       </form>
-
       <div class="space-y-1.5">
-        <span class="block text-xs font-bold uppercase tracking-wider text-stone-700">
-          Upload Cover or Barcode Image
-        </span>
+        <span class="block text-xs font-bold uppercase tracking-wider text-stone-700">Upload Cover or Barcode Image</span>
         <label class="sketch-btn bg-amber-100 px-3.5 py-2 text-xs font-semibold inline-flex items-center gap-2 cursor-pointer">
           <span>Choose Image File</span>
           <input type="file" accept="image/*" onchange="handleScanModalImage(event)" class="hidden" />
         </label>
       </div>
-
       <div class="space-y-1.5 pt-2 border-t border-dashed border-stone-800/20">
-        <span class="block text-xs font-bold uppercase tracking-wider text-stone-600">
-          Sample Scans
-        </span>
+        <span class="block text-xs font-bold uppercase tracking-wider text-stone-600">Sample Scans</span>
         <div class="flex flex-wrap gap-1.5">
-          <button type="button" onclick="triggerSampleScan('9780385732550')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">
-            The Giver (ISBN)
-          </button>
-          <button type="button" onclick="triggerSampleScan('Piranesi')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">
-            Piranesi
-          </button>
-          <button type="button" onclick="triggerSampleScan('9780547928227')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">
-            The Hobbit (ISBN)
-          </button>
+          <button type="button" onclick="triggerSampleScan('9780385732550')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">The Giver (ISBN)</button>
+          <button type="button" onclick="triggerSampleScan('Piranesi')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">Piranesi</button>
+          <button type="button" onclick="triggerSampleScan('9780547928227')" class="sketch-btn bg-amber-50 px-2.5 py-1 text-xs">The Hobbit (ISBN)</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-    // =========================================================================
-    // PALETTE & CAFE DEFAULTS
-    // =========================================================================
     const SPINE_COLORS = ["#c76e4b", "#71856a", "#5b4034", "#8b5a3c", "#4f6d58", "#9c523b"];
 
     const HINIGARAN_SPOTS = [
@@ -1523,6 +1329,77 @@
       "What line or scene stuck with you today?"
     ];
 
+    const CURATED_SUBSTANCE_BOOKS = [
+      {
+        title: "The Alchemist",
+        subtitle: "A Fable About Following Your Dream",
+        author: "Paulo Coelho",
+        year: "1988",
+        pages: 208,
+        isbn: "9780062315007",
+        subjects: ["Philosophy", "Quest & Destiny", "Spiritual Fiction"],
+        description: "Santiago, a young Andalusian shepherd, leaves his familiar flock behind after recurring dreams point toward hidden treasure near the Egyptian pyramids. Along the journey through Spain and across the Sahara, he meets an old king, a crystal merchant, an Englishman seeking the Philosopher's Stone, and an alchemist who teaches him to listen to his heart and read signs in the world around him.",
+        whyRead: "If you are standing at a crossroads—deciding on a strand, college path, or big leap while worrying about what people expect—this short fable feels like a clear, encouraging conversation about courage, setbacks, and starting over when plans fall apart.",
+        characters: [
+          {
+            name: "Santiago",
+            role: "Andalusian Shepherd & Seeker",
+            breakdown: "Starts out valuing travel and freedom over seminary rules, then learns that real growth takes patience, humility, and recovering after losing everything."
+          },
+          {
+            name: "Melchizedek (The Old King of Salem)",
+            role: "Catalyst & Mentor",
+            breakdown: "Represents the nudge that turns a daydream into action—reminding Santiago that fear of failure and 'personal legends' are tied together."
+          },
+          {
+            name: "The Crystal Merchant",
+            role: "Caution vs. Comfort",
+            breakdown: "A foil to Santiago: he dreams of Mecca but stays put because pursuing the dream might ruin the hope of it."
+          },
+          {
+            name: "The Alchemist",
+            role: "Guide in the Desert",
+            breakdown: "Shifts Santiago's focus from chasing gold to understanding presence, listening to the heart, and seeing how inner calm affects action."
+          }
+        ],
+        deepAnalysis: "Rather than building complex psychological realism, Coelho writes a philosophical parable where characters embody choices and attitudes toward risk. Notice a key tension in the book: Santiago's journey treats obstacles as 'tests' and omens as meaningful, which can feel inspiring and motivating—yet students reading critically can also ask whether 'the universe conspiring' ever overlooks structural luck, privilege, or hard labor. Tracing how Santiago earns his resilience through work (like rebuilding the crystal shop) gives you a strong, grounded angle for essays and discussions.",
+        takeaways: [
+          "Paying attention to omens and small turns in a journey often reveals direction before the final destination is clear.",
+          "Fear of failure and attachment to comfort can hold people back longer than external obstacles.",
+          "Listening to your own heart helps separate genuine purpose from borrowed expectations."
+        ],
+        quotes: [
+          {
+            tag: "Core Motif • Personal Legend",
+            quote: "And, when you want something, all the universe conspires in helping you to achieve it.",
+            note: "Test this idea against Santiago's setbacks—notice how opportunities only matter when you're ready to act."
+          },
+          {
+            tag: "Present Moment",
+            quote: "The secret of life, though, is to fall seven times and to get up eight times.",
+            note: "Good lens for how Santiago handles losing his money and starting over."
+          }
+        ],
+        storyNotes: {
+          arc: "Opens with Santiago choosing a shepherd's freedom over seminary expectations, then builds a parabolic road journey from Andalusia to the desert—each stop tests what he values most.",
+          themes: "Fable structure keeps characters archetypal and clear around 'Personal Legend,' omens, and the language of the world. Notice how parable works best when every detour mirrors an inner question.",
+          pacing: "Short, brisk scenes (~208 pages total) read almost like folk tales stitched together. Great for 20–30 page cafe sittings where you pause after each mentor or setback."
+        },
+        adaptationText: "Stage adaptations and illustrated editions exist worldwide; compare how a sparse parable translates when staged or drawn visually without a narrator's commentary.",
+        moodTitle: "Desert & Acoustic",
+        spotifyQuery: "The Alchemist acoustic folk reading",
+        tracks: [
+          { title: "The Cave — Mumford & Sons", note: "Restless quest & forward drive" },
+          { title: "Hoppípolla — Sigur Rós", note: "Hopeful & sweeping" },
+          { title: "Home — Edward Sharpe & The Magnetic Zeros", note: "Road-trip warmth & companionship" },
+          { title: "Holocene — Bon Iver", note: "Quiet open space" }
+        ],
+        coverUrl: "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+        source: "Quillfinite Curated + Catalog",
+        catalogUrl: "https://openlibrary.org/works/OL15626917W"
+      }
+    ];
+
     const appState = {
       currentBook: null,
       lastQuery: "",
@@ -1539,7 +1416,6 @@
         { id: 1, text: "Read 20 pages with a warm cuppa", done: false },
         { id: 2, text: "Pin a favorite quote to the book's corkboard", done: false }
       ],
-      studioTaskList: [],
       promptIdx: 0,
       studyAngleIdx: 0,
       timerSec: 25 * 60,
@@ -1554,9 +1430,6 @@
     let hinigaranMarkersLayer = null;
     const spotMarkerLookup = {};
 
-    // =========================================================================
-    // QUILLFINITE ACCOUNT (NAME + 4-NUMBER CODE)
-    // =========================================================================
     const ACCOUNT_STORE_KEY = "quillfinite_accounts_v1";
     const ACTIVE_ACCOUNT_KEY = "quillfinite_active_account_v1";
 
@@ -1575,7 +1448,679 @@
       try {
         return JSON.parse(localStorage.getItem(ACCOUNT_STORE_KEY) || "{}");
       } catch (_) {
-        const whyRead = matchedCurated?.whyRead
+        return {};
+      }
+    }
+
+    function saveAllAccounts(accountsObj) {
+      try {
+        localStorage.setItem(ACCOUNT_STORE_KEY, JSON.stringify(accountsObj));
+      } catch (_) {}
+    }
+
+    function snapshotCurrentUserData() {
+      return {
+        savedBooks: appState.savedBooks,
+        finishedIds: appState.finishedIds,
+        marginNotes: appState.marginNotes,
+        corkPins: appState.corkPins,
+        progressMap: appState.progressMap,
+        tasks: appState.tasks,
+        shelfTheme: appState.shelfTheme,
+        activeCup: appState.activeCup,
+        pickedSpotId: appState.pickedSpotId,
+        updatedAt: new Date().toLocaleDateString()
+      };
+    }
+
+    function persistActiveAccountData() {
+      const acct = appState.account;
+      if (!acct || !acct.name || normalizePin(acct.pin).length !== 4) return;
+      const key = getAccountKey(acct.name, acct.pin);
+      if (!key) return;
+      const accounts = loadAllAccounts();
+      accounts[key] = {
+        name: acct.name.trim(),
+        pin: normalizePin(acct.pin),
+        data: snapshotCurrentUserData()
+      };
+      saveAllAccounts(accounts);
+      try {
+        localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify({ name: acct.name.trim(), pin: normalizePin(acct.pin) }));
+      } catch (_) {}
+    }
+
+    function applyAccountDataToState(name, pin, savedEntry, showNotice = true) {
+      const cleanPin = normalizePin(pin);
+      const cleanName = String(name || "").trim();
+      appState.account = { name: cleanName, pin: cleanPin };
+      const d = (savedEntry && savedEntry.data) || {};
+      appState.savedBooks = Array.isArray(d.savedBooks) ? d.savedBooks : [];
+      appState.finishedIds = Array.isArray(d.finishedIds) ? d.finishedIds : [];
+      appState.marginNotes = d.marginNotes && typeof d.marginNotes === "object" ? d.marginNotes : {};
+      appState.corkPins = d.corkPins && typeof d.corkPins === "object" ? d.corkPins : {};
+      appState.progressMap = d.progressMap && typeof d.progressMap === "object" ? d.progressMap : {};
+      appState.tasks = Array.isArray(d.tasks) && d.tasks.length ? d.tasks : appState.tasks;
+      appState.shelfTheme = d.shelfTheme || "";
+      appState.activeCup = d.activeCup || CUPS[0].name;
+      appState.pickedSpotId = d.pickedSpotId || null;
+
+      persistActiveAccountData();
+      updateAccountBadge();
+      renderCupMenu();
+      renderBookshelf();
+      renderStudyStudio();
+      if (appState.currentBook) displayBook(appState.currentBook);
+      if (showNotice) showBanner(`Account active for ${cleanName} (${cleanPin}).`);
+    }
+
+    function updateAccountBadge() {
+      const btn = document.getElementById("accountBtnLabel");
+      if (!btn) return;
+      btn.textContent = appState.account?.name
+        ? `Account: ${appState.account.name} (${appState.account.pin})`
+        : "Account (Name + 4-Digit)";
+    }
+
+    function openAccountModal() {
+      const overlay = document.getElementById("accountModalOverlay");
+      if (!overlay) return;
+      document.getElementById("accountNameInput").value = appState.account?.name || "";
+      document.getElementById("accountPinInput").value = appState.account?.pin || "";
+      renderSavedAccountButtons();
+      overlay.classList.remove("hidden");
+      document.getElementById("accountNameInput").focus();
+    }
+
+    function closeAccountModal() {
+      document.getElementById("accountModalOverlay")?.classList.add("hidden");
+    }
+
+    function renderSavedAccountButtons() {
+      const wrap = document.getElementById("savedAccountsButtons");
+      if (!wrap) return;
+      const entries = Object.values(loadAllAccounts());
+      wrap.innerHTML = "";
+      if (!entries.length) {
+        wrap.innerHTML = `<span class="text-xs text-stone-500">No saved accounts yet.</span>`;
+        return;
+      }
+      entries.forEach((entry) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "sketch-btn bg-amber-50 px-2.5 py-1 text-xs";
+        b.textContent = `${entry.name} • ${entry.pin} (${(entry.data?.savedBooks || []).length} books)`;
+        b.onclick = () => {
+          applyAccountDataToState(entry.name, entry.pin, entry, true);
+          closeAccountModal();
+        };
+        wrap.appendChild(b);
+      });
+    }
+
+    function handleAccountSaveOrLoad(e) {
+      e.preventDefault();
+      const name = document.getElementById("accountNameInput").value.trim();
+      const pin = normalizePin(document.getElementById("accountPinInput").value);
+      if (!name || pin.length !== 4) {
+        showBanner("Please enter your name and a 4-digit code.");
+        return;
+      }
+      const key = getAccountKey(name, pin);
+      const accounts = loadAllAccounts();
+      if (accounts[key]) {
+        applyAccountDataToState(name, pin, accounts[key], true);
+      } else {
+        appState.account = { name, pin };
+        persistActiveAccountData();
+        updateAccountBadge();
+        showBanner(`Created & saved account for ${name} (${pin}).`);
+      }
+      closeAccountModal();
+    }
+
+    function signOutQuillAccount() {
+      persistActiveAccountData();
+      appState.account = null;
+      try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (_) {}
+      updateAccountBadge();
+      closeAccountModal();
+      showBanner("Signed out of your Quillfinite account.");
+    }
+
+    function restoreLastSessionAccount() {
+      try {
+        const raw = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const key = getAccountKey(parsed?.name, parsed?.pin);
+        const accounts = loadAllAccounts();
+        if (key && accounts[key]) applyAccountDataToState(parsed.name, parsed.pin, accounts[key], false);
+      } catch (_) {}
+    }
+
+    function showBanner(msg) {
+      document.getElementById("statusBannerText").textContent = msg;
+      document.getElementById("statusBanner").classList.remove("hidden");
+    }
+
+    function hideBanner() {
+      document.getElementById("statusBanner").classList.add("hidden");
+    }
+
+    function showSection(sectionKey) {
+      ["booth", "shelf", "study", "spots", "paper"].forEach((key) => {
+        const sec = document.getElementById(`section-${key}`);
+        if (sec) sec.classList.toggle("hidden", key !== sectionKey);
+      });
+      document.querySelectorAll("[data-nav]").forEach((btn) => {
+        const active = btn.dataset.nav === sectionKey;
+        btn.classList.toggle("bg-amber-900", active);
+        btn.classList.toggle("text-amber-50", active);
+        btn.classList.toggle("bg-white", !active);
+      });
+      if (sectionKey === "shelf") renderBookshelf();
+      if (sectionKey === "study") renderStudyStudio();
+      if (sectionKey === "spots") renderHinigaranSpots();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function addSchoolPaperTask(label) {
+      appState.tasks.unshift({ id: Date.now(), text: label, done: false });
+      persistActiveAccountData();
+      renderStudyStudio();
+      showBanner(`Added "${label}" to your Study Checklist.`);
+    }
+
+    function getGoogleMapsSearchUrl(spot) {
+      const q = `${spot.name}, Hinigaran, Negros Occidental`;
+      return spot.placeId
+        ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}&query_place_id=${encodeURIComponent(spot.placeId)}`
+        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+    }
+
+    function setSpotFilter(filterKey) {
+      appState.spotFilter = filterKey;
+      document.querySelectorAll("[data-spot-filter]").forEach((btn) => {
+        const active = btn.dataset.spotFilter === filterKey;
+        btn.classList.toggle("bg-amber-900", active);
+        btn.classList.toggle("text-amber-50", active);
+        btn.classList.toggle("bg-white", !active);
+      });
+      renderHinigaranSpots();
+    }
+
+    function pickSpotForReadingSession(spotId) {
+      const spot = HINIGARAN_SPOTS.find((s) => s.id === spotId);
+      if (!spot) return;
+      appState.pickedSpotId = spot.id;
+      document.getElementById("pickedSpotBadge").textContent = `Session Spot: ${spot.name}`;
+      document.getElementById("spotSessionNoteStatus").textContent = `Logged "${spot.name}" into your reading session notes.`;
+      appState.tasks.unshift({ id: Date.now(), text: `Reading session at ${spot.name} (${spot.hours})`, done: false });
+      persistActiveAccountData();
+      if (hinigaranMapInstance) {
+        hinigaranMapInstance.setView([spot.lat, spot.lng], 15, { animate: true });
+        spotMarkerLookup[spot.id]?.openPopup();
+      }
+      renderHinigaranSpots();
+      showBanner(`Picked "${spot.name}" for your reading session.`);
+    }
+
+    function initOrUpdateHinigaranMap(visibleSpots) {
+      const mapEl = document.getElementById("hinigaranMap");
+      if (!mapEl || typeof L === "undefined") return;
+      if (!hinigaranMapInstance) {
+        hinigaranMapInstance = L.map("hinigaranMap").setView([10.2705, 122.851], 14);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap contributors",
+          maxZoom: 19
+        }).addTo(hinigaranMapInstance);
+        hinigaranMarkersLayer = L.layerGroup().addTo(hinigaranMapInstance);
+      }
+      hinigaranMarkersLayer.clearLayers();
+      Object.keys(spotMarkerLookup).forEach((k) => delete spotMarkerLookup[k]);
+      const bounds = [];
+      visibleSpots.forEach((spot) => {
+        const isPicked = appState.pickedSpotId === spot.id;
+        const pinColor = spot.category === "reading-spot" ? "#4f6d58" : spot.category === "outdoor" ? "#71856a" : "#c76e4b";
+        const marker = L.circleMarker([spot.lat, spot.lng], {
+          radius: isPicked ? 11 : 8,
+          fillColor: pinColor,
+          color: "#2b1d14",
+          weight: 2.5,
+          opacity: 1,
+          fillOpacity: 0.92
+        });
+        marker.bindPopup(`<strong>${spot.name}</strong><br/><span style="font-size:12px;">${spot.categoryLabel} • ${spot.hours}</span>`);
+        marker.addTo(hinigaranMarkersLayer);
+        spotMarkerLookup[spot.id] = marker;
+        bounds.push([spot.lat, spot.lng]);
+      });
+      if (bounds.length) hinigaranMapInstance.fitBounds(bounds, { padding: [28, 28], maxZoom: 15 });
+      setTimeout(() => hinigaranMapInstance.invalidateSize(), 120);
+    }
+
+    function buildSpotCardElement(spot) {
+      const isPicked = appState.pickedSpotId === spot.id;
+      const card = document.createElement("article");
+      card.className = "rounded-2xl bg-[#fffaf0] p-4 flex flex-col justify-between gap-3";
+      card.innerHTML = `
+        <div class="space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-semibold px-2.5 py-0.5 sketch-pill bg-amber-100 text-amber-900">${spot.categoryLabel}</span>
+            ${isPicked ? `<span class="text-xs font-bold text-emerald-800">Picked ✓</span>` : ""}
+          </div>
+          <h3 class="font-display text-lg font-bold">${spot.name}</h3>
+          <p class="text-xs text-stone-600"><strong>Hours:</strong> ${spot.hours}</p>
+          <p class="text-sm text-stone-800"><strong>Highlights:</strong> ${spot.highlights}</p>
+          <p class="text-sm text-stone-700">${spot.vibe}</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-dashed border-stone-800/20">
+          <button type="button" onclick="pickSpotForReadingSession('${spot.id}')" class="sketch-btn ${isPicked ? "bg-emerald-700 text-white" : "bg-[#b85d3b] text-white"} px-3 py-1.5 text-xs font-semibold">
+            ${isPicked ? "Selected for Session ✓" : "Pick for Reading Session"}
+          </button>
+          <a href="${getGoogleMapsSearchUrl(spot)}" target="_blank" rel="noopener noreferrer" class="text-xs font-bold underline text-[#8b4b32]">
+            Google Maps ↗
+          </a>
+        </div>
+      `;
+      return card;
+    }
+
+    function renderHinigaranSpots() {
+      const regularSpots = HINIGARAN_SPOTS.filter((s) => s.category !== "reading-spot");
+      const librarySpot = HINIGARAN_SPOTS.find((s) => s.category === "reading-spot");
+      const visibleRegular = appState.spotFilter === "all"
+        ? regularSpots
+        : appState.spotFilter === "reading-spot"
+          ? []
+          : regularSpots.filter((s) => s.category === appState.spotFilter);
+
+      const grid = document.getElementById("hinigaranSpotsGrid");
+      grid.innerHTML = "";
+      visibleRegular.forEach((spot) => grid.appendChild(buildSpotCardElement(spot)));
+
+      const featuredBox = document.getElementById("littleReadingSpotFeatured");
+      if (librarySpot && (appState.spotFilter === "all" || appState.spotFilter === "reading-spot")) {
+        featuredBox.classList.remove("hidden");
+        const isPicked = appState.pickedSpotId === librarySpot.id;
+        featuredBox.innerHTML = `
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="space-y-1.5 max-w-2xl">
+              <span class="text-xs font-bold px-3 py-0.5 sketch-pill bg-emerald-100 text-emerald-950">Little Reading Spot at the End</span>
+              <h2 class="font-display text-2xl font-bold">${librarySpot.name}</h2>
+              <p class="text-xs text-stone-600"><strong>Hours:</strong> ${librarySpot.hours}</p>
+              <p class="text-sm text-stone-800"><strong>Reading Setup:</strong> ${librarySpot.highlights}</p>
+              <p class="text-sm text-stone-700">${librarySpot.vibe}</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="pickSpotForReadingSession('${librarySpot.id}')" class="sketch-btn ${isPicked ? "bg-emerald-700 text-white" : "bg-amber-900 text-amber-50"} px-4 py-2 text-xs font-semibold">
+                ${isPicked ? "Selected for Session ✓" : "Pick for Reading Session"}
+              </button>
+              <a href="${getGoogleMapsSearchUrl(librarySpot)}" target="_blank" rel="noopener noreferrer" class="sketch-btn bg-white px-4 py-2 text-xs font-semibold">
+                Open in Google Maps ↗
+              </a>
+            </div>
+          </div>
+        `;
+      } else {
+        featuredBox.classList.add("hidden");
+      }
+
+      const mapSpots = appState.spotFilter === "all"
+        ? HINIGARAN_SPOTS
+        : appState.spotFilter === "reading-spot"
+          ? (librarySpot ? [librarySpot] : [])
+          : regularSpots.filter((s) => s.category === appState.spotFilter);
+      initOrUpdateHinigaranMap(mapSpots);
+    }
+
+    function cleanHtml(str) {
+      return String(str || "")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function extractIsbn(raw) {
+      const digits = String(raw || "").replace(/[^0-9Xx]/g, "").toUpperCase();
+      return digits.length === 10 || digits.length === 13 ? digits : "";
+    }
+
+    async function queryOpenLibrary(query, scope) {
+      const trimmed = query.trim();
+      const isbn = extractIsbn(trimmed);
+      if (isbn || scope === "isbn") {
+        const code = isbn || trimmed.replace(/[^0-9Xx]/g, "");
+        if (code) {
+          const res = await fetch(`https://openlibrary.org/isbn/${encodeURIComponent(code)}.json`);
+          if (res.ok) {
+            const ed = await res.json();
+            const desc = typeof ed.description === "string" ? ed.description : ed.description?.value || "";
+            const coverId = Array.isArray(ed.covers) && ed.covers.length ? ed.covers[0] : null;
+            return {
+              title: ed.title || `ISBN ${code}`,
+              subtitle: ed.subtitle || "",
+              author: "Author on Edition",
+              year: ed.publish_date || "",
+              pages: ed.number_of_pages || null,
+              isbn: code,
+              subjects: Array.isArray(ed.subjects) ? ed.subjects.slice(0, 5) : [],
+              description: cleanHtml(desc),
+              coverUrl: coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(code)}-L.jpg`,
+              source: "Open Library",
+              catalogUrl: `https://openlibrary.org/isbn/${encodeURIComponent(code)}`
+            };
+          }
+        }
+      }
+      const params = new URLSearchParams({ limit: "6" });
+      if (scope === "title") params.set("title", trimmed);
+      else if (scope === "author") params.set("author", trimmed);
+      else params.set("q", trimmed);
+      const res = await fetch(`https://openlibrary.org/search.json?${params.toString()}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const doc = Array.isArray(data.docs) ? data.docs[0] : null;
+      if (!doc || !doc.title) return null;
+      const isbnGuess = Array.isArray(doc.isbn) && doc.isbn.length ? doc.isbn[0] : "";
+      return {
+        title: doc.title,
+        subtitle: doc.subtitle || "",
+        author: Array.isArray(doc.author_name) && doc.author_name.length ? doc.author_name.slice(0, 2).join(", ") : "Unknown Author",
+        year: doc.first_publish_year ? String(doc.first_publish_year) : "",
+        pages: doc.number_of_pages_median || null,
+        isbn: isbnGuess,
+        subjects: Array.isArray(doc.subject) ? doc.subject.slice(0, 5) : [],
+        description: "",
+        coverUrl: doc.cover_i ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg` : (isbnGuess ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbnGuess)}-L.jpg` : ""),
+        source: "Open Library",
+        catalogUrl: doc.key ? `https://openlibrary.org${doc.key}` : "https://openlibrary.org"
+      };
+    }
+
+    async function queryGoogleBooks(query, scope) {
+      const trimmed = query.trim();
+      const isbn = extractIsbn(trimmed);
+      let q = trimmed;
+      if (isbn || scope === "isbn") q = `isbn:${isbn || trimmed.replace(/[^0-9Xx]/g, "")}`;
+      else if (scope === "title") q = `intitle:${trimmed}`;
+      else if (scope === "author") q = `inauthor:${trimmed}`;
+      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=1`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const info = data?.items?.[0]?.volumeInfo;
+      if (!info || !info.title) return null;
+      const ids = Array.isArray(info.industryIdentifiers) ? info.industryIdentifiers : [];
+      const isbn13 = ids.find((x) => x.type === "ISBN_13")?.identifier;
+      const isbn10 = ids.find((x) => x.type === "ISBN_10")?.identifier;
+      const thumb = info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "";
+      return {
+        title: info.title,
+        subtitle: info.subtitle || "",
+        author: Array.isArray(info.authors) && info.authors.length ? info.authors.slice(0, 2).join(", ") : "Unknown Author",
+        year: info.publishedDate ? String(info.publishedDate).slice(0, 4) : "",
+        pages: info.pageCount || null,
+        isbn: isbn13 || isbn10 || isbn || "",
+        subjects: Array.isArray(info.categories) ? info.categories.slice(0, 5) : [],
+        description: cleanHtml(info.description || ""),
+        coverUrl: thumb.replace(/^http:\/\//i, "https://"),
+        source: "Google Books",
+        catalogUrl: info.infoLink || "https://books.google.com"
+      };
+    }
+
+    function combineRecords(olRec, gbRec) {
+      if (!olRec && !gbRec) return null;
+      const a = gbRec || {};
+      const b = olRec || {};
+      const description = (a.description && a.description.length > 50 ? a.description : "") || (b.description && b.description.length > 50 ? b.description : "") || a.description || b.description || "";
+      const subjects = Array.from(new Set([...(a.subjects || []), ...(b.subjects || [])].filter(Boolean))).slice(0, 5);
+      return {
+        title: a.title || b.title || "Untitled Book",
+        subtitle: a.subtitle || b.subtitle || "",
+        author: (a.author && a.author !== "Unknown Author" ? a.author : "") || b.author || "Unknown Author",
+        year: a.year || b.year || "",
+        pages: a.pages || b.pages || null,
+        isbn: a.isbn || b.isbn || "",
+        subjects,
+        description,
+        coverUrl: a.coverUrl || b.coverUrl || "",
+        source: olRec && gbRec ? "Open Library + Google Books" : (gbRec || olRec).source,
+        catalogUrl: (gbRec || olRec).catalogUrl || "https://openlibrary.org"
+      };
+    }
+
+    async function fetchWikipediaBookSubstance(title, author = "") {
+      const cleanT = String(title || "").trim();
+      if (!cleanT) return null;
+      const cleanA = author && author !== "Unknown Author" ? String(author).trim() : "";
+      const candidates = cleanA
+        ? [`${cleanT} (${cleanA} novel)`, `${cleanT} (novel)`, `${cleanT} (${cleanA})`, cleanT]
+        : [`${cleanT} (novel)`, `${cleanT} (book)`, cleanT];
+
+      for (const pageTitle of candidates) {
+        try {
+          const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`);
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (data?.type === "standard" && data.extract && data.extract.length > 80) {
+            const lower = data.extract.toLowerCase();
+            if (lower.includes("may refer to:") || lower.includes("most commonly refers to")) continue;
+            return {
+              extract: cleanHtml(data.extract),
+              wikiUrl: data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(pageTitle.replace(/\s+/g, "_"))}`,
+              thumbUrl: data.thumbnail?.source ? data.thumbnail.source.replace(/^http:\/\//i, "https://") : ""
+            };
+          }
+        } catch (_) {}
+      }
+      return null;
+    }
+
+    async function enrichAnyBookRecord(record) {
+      let enriched = { ...record };
+      const wiki = await fetchWikipediaBookSubstance(enriched.title, enriched.author);
+      if (wiki) {
+        enriched.wikiSummary = wiki.extract;
+        enriched.wikiUrl = wiki.wikiUrl;
+        if (!enriched.description || enriched.description.length < wiki.extract.length) {
+          enriched.description = wiki.extract;
+        }
+        if (!enriched.coverUrl && wiki.thumbUrl) enriched.coverUrl = wiki.thumbUrl;
+      }
+      if (!enriched.description || enriched.description.length < 70 || !enriched.pages) {
+        try {
+          const [olExtra, gbExtra] = await Promise.allSettled([
+            queryOpenLibrary(enriched.isbn || enriched.title, enriched.isbn ? "isbn" : "title"),
+            queryGoogleBooks(enriched.isbn ? `isbn:${enriched.isbn}` : `${enriched.title} ${enriched.author || ""}`.trim(), "all")
+          ]);
+          const combined = combineRecords(
+            olExtra.status === "fulfilled" ? olExtra.value : null,
+            gbExtra.status === "fulfilled" ? gbExtra.value : null
+          );
+          if (combined) {
+            enriched = {
+              ...enriched,
+              description: (enriched.description && enriched.description.length >= 70 ? enriched.description : "") || combined.description || enriched.description,
+              pages: enriched.pages || combined.pages,
+              year: enriched.year || combined.year,
+              subjects: enriched.subjects?.length ? enriched.subjects : combined.subjects,
+              coverUrl: enriched.coverUrl || combined.coverUrl,
+              catalogUrl: combined.catalogUrl || enriched.catalogUrl
+            };
+          }
+        } catch (_) {}
+      }
+      return enriched;
+    }
+
+    function findCuratedMatches(query, scope = "all") {
+      const q = String(query || "").trim().toLowerCase();
+      if (!q) return [];
+      const isbnClean = extractIsbn(q);
+      return CURATED_SUBSTANCE_BOOKS.filter((item) => {
+        const titleMatch = item.title.toLowerCase().includes(q) || (item.subtitle || "").toLowerCase().includes(q);
+        const authorMatch = item.author.toLowerCase().includes(q);
+        const isbnMatch = isbnClean && item.isbn.replace(/[^0-9Xx]/g, "").toUpperCase() === isbnClean;
+        const subjectMatch = (item.subjects || []).some((s) => s.toLowerCase().includes(q));
+        if (scope === "title") return titleMatch;
+        if (scope === "author") return authorMatch;
+        if (scope === "isbn") return isbnMatch;
+        return titleMatch || authorMatch || isbnMatch || subjectMatch;
+      });
+    }
+
+    async function searchCandidateBooks(query, scope = "all") {
+      const trimmed = String(query || "").trim();
+      const isbn = extractIsbn(trimmed);
+      const candidates = findCuratedMatches(trimmed, scope).map((c) => ({ ...c, _isCurated: true }));
+      const seen = new Set(candidates.map((c) => `${c.title.toLowerCase()}::${c.author.toLowerCase()}`));
+
+      try {
+        const params = new URLSearchParams({ limit: "6" });
+        if (isbn || scope === "isbn") params.set("q", isbn || trimmed);
+        else if (scope === "title") params.set("title", trimmed);
+        else if (scope === "author") params.set("author", trimmed);
+        else params.set("q", trimmed);
+
+        const res = await fetch(`https://openlibrary.org/search.json?${params.toString()}`);
+        if (res.ok) {
+          const data = await res.json();
+          (data.docs || []).slice(0, 6).forEach((doc) => {
+            if (!doc?.title) return;
+            const authorStr = Array.isArray(doc.author_name) && doc.author_name.length ? doc.author_name.slice(0, 2).join(", ") : "Unknown Author";
+            const k = `${doc.title.toLowerCase()}::${authorStr.toLowerCase()}`;
+            if (seen.has(k)) return;
+            seen.add(k);
+            const isbnGuess = Array.isArray(doc.isbn) && doc.isbn.length ? doc.isbn[0] : "";
+            candidates.push({
+              title: doc.title,
+              subtitle: doc.subtitle || "",
+              author: authorStr,
+              year: doc.first_publish_year ? String(doc.first_publish_year) : "",
+              pages: doc.number_of_pages_median || null,
+              isbn: isbnGuess,
+              subjects: Array.isArray(doc.subject) ? doc.subject.slice(0, 5) : [],
+              description: "",
+              coverUrl: doc.cover_i ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg` : (isbnGuess ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbnGuess)}-M.jpg` : ""),
+              source: "Open Library",
+              catalogUrl: doc.key ? `https://openlibrary.org${doc.key}` : "https://openlibrary.org"
+            });
+          });
+        }
+      } catch (_) {}
+
+      return candidates.slice(0, 8);
+    }
+
+    function hideCandidatesBox() {
+      document.getElementById("searchCandidatesBox")?.classList.add("hidden");
+    }
+
+    function renderSearchCandidates(candidates, previewImageUrl = "") {
+      const box = document.getElementById("searchCandidatesBox");
+      const list = document.getElementById("searchCandidatesList");
+      if (!box || !list) return;
+      list.innerHTML = "";
+      if (!candidates || candidates.length <= 1) {
+        box.classList.add("hidden");
+        return;
+      }
+      candidates.forEach((cand, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "w-full text-left rounded-xl bg-white hover:bg-amber-100/70 p-2.5 border border-stone-800/20 flex items-start justify-between gap-2 transition";
+        const meta = [cand.author, cand.year, cand.pages ? `${cand.pages} pp.` : ""].filter(Boolean).join(" • ");
+        btn.innerHTML = `
+          <div class="min-w-0">
+            <span class="block text-sm font-bold text-stone-900 truncate">${cand.title}</span>
+            <span class="block text-xs text-stone-600 truncate">${meta || "Edition match"}</span>
+          </div>
+          <span class="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full ${cand._isCurated ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-stone-800"}">
+            ${cand._isCurated ? "Full Notes" : (cand.source || "Catalog")}
+          </span>
+        `;
+        btn.onclick = () => selectCandidateBook(candidates[idx], previewImageUrl);
+        list.appendChild(btn);
+      });
+      box.classList.remove("hidden");
+    }
+
+    async function selectCandidateBook(cand, previewImageUrl = "") {
+      if (!cand) return;
+      document.getElementById("loadingBookCard").classList.remove("hidden");
+      document.getElementById("emptyBookCard").classList.add("hidden");
+      document.getElementById("activeBookReadingCard").classList.add("hidden");
+      document.getElementById("loadingBookSubtext").textContent = `Loading "${cand.title}"...`;
+
+      let enriched = await enrichAnyBookRecord(cand);
+      if (previewImageUrl && !enriched.coverUrl) enriched.coverUrl = previewImageUrl;
+
+      document.getElementById("loadingBookCard").classList.add("hidden");
+      const book = buildDynamicCompanion(enriched);
+      displayBook(book);
+      document.getElementById("lookupStatusLine").textContent = `Selected "${book.title}" by ${book.author} (${book.source}).`;
+    }
+
+    function buildStudyKit({ title, author, year, primaryTopic, subjects, leadSentence }) {
+      const cleanAuthor = author && author !== "Unknown Author" ? author : "Author";
+      const parts = cleanAuthor.trim().split(/\s+/);
+      const lastName = parts.length > 1 ? parts[parts.length - 1] : cleanAuthor;
+      const firstInitial = parts.length > 1 ? `${parts[0][0]}.` : "";
+      const mlaAuthor = parts.length > 1 ? `${lastName}, ${parts.slice(0, -1).join(" ")}` : cleanAuthor;
+      const apaAuthor = firstInitial ? `${lastName}, ${firstInitial}` : cleanAuthor;
+      const cleanYear = /^\d{4}$/.test(String(year).trim()) ? String(year).trim() : "n.d.";
+
+      const mla = `${mlaAuthor}. *${title}*. ${cleanYear !== "n.d." ? `${cleanYear}.` : ""}`.trim();
+      const apa = `${apaAuthor} (${cleanYear}). *${title}*.`;
+      const topicFocus = subjects.slice(0, 2).join(" and ").toLowerCase() || primaryTopic.toLowerCase();
+
+      const essayAngles = [
+        `How does "${title}" handle ${topicFocus}, and where does the author's perspective feel most deliberate?`,
+        `Compare how the opening setup (“${leadSentence.slice(0, 85)}${leadSentence.length > 85 ? "…" : ""}”) connects to the main tension in ${primaryTopic}.`,
+        `Pick one choice made by a central figure or argument in "${title}" and argue whether it solves or deepens the core conflict.`
+      ];
+
+      return {
+        mla,
+        apa,
+        essayAngles,
+        recallQuestion: `In 2–3 sentences from memory (without looking at the blurb), what is the main focus or conflict in "${title}" so far?`,
+        recallHint: `Check your answer against: ${primaryTopic} • ${leadSentence}`
+      };
+    }
+
+    function buildDynamicCompanion(record) {
+      const matchedCurated = record._isCurated
+        ? record
+        : CURATED_SUBSTANCE_BOOKS.find((c) => c.title.toLowerCase() === String(record.title || "").trim().toLowerCase());
+
+      const title = cleanHtml(matchedCurated?.title || record.title) || "Untitled Book";
+      const subtitle = cleanHtml(matchedCurated?.subtitle || record.subtitle);
+      const author = cleanHtml(record.author && record.author !== "Unknown Author" ? record.author : (matchedCurated?.author || "Unknown Author"));
+      const year = cleanHtml(matchedCurated?.year || record.year) || "Edition Listed";
+      const pages = matchedCurated?.pages || (record.pages && Number(record.pages) > 0 ? Number(record.pages) : 250);
+      const subjects = Array.isArray(matchedCurated?.subjects) && matchedCurated.subjects.length
+        ? matchedCurated.subjects.map(cleanHtml).filter(Boolean)
+        : Array.isArray(record.subjects) && record.subjects.length
+          ? record.subjects.map(cleanHtml).filter(Boolean)
+          : ["General"];
+      const primaryTopic = subjects[0] || "General";
+      const rawDesc = cleanHtml(matchedCurated?.description || record.description);
+      const synopsis = rawDesc || `"${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} (${primaryTopic}). No full blurb was in the catalog record, so jot down what happens as you read.`;
+
+      const sentences = synopsis.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean);
+      const leadSentence = sentences[0] || `"${title}" sets up its main situation early on.`;
+      const followSentence = sentences.slice(1, 3).join(" ") || "Watch how the main characters react when plans change.";
+      const topicText = subjects.slice(0, 2).join(" & ") || primaryTopic;
+      const authorLabel = author !== "Unknown Author" ? author : "its author";
+      const yearLabel = year && year !== "Edition Listed" ? ` (${year})` : "";
+
+      const whyRead = matchedCurated?.whyRead
         ? matchedCurated.whyRead
         : `"${title}" is worth picking up if you want to explore ${topicText.toLowerCase()} through a clear central situation${author !== "Unknown Author" ? ` shaped by ${author}` : ""}. It gives students strong material for reflection, discussion, and comparing how big ideas play out in concrete choices.`;
 
@@ -1598,6 +2143,31 @@
         ? matchedCurated.deepAnalysis
         : `At a deeper level, "${title}" revolves around ${topicText.toLowerCase()}. Rather than reading only for plot events, examine why key conflicts happen, whose viewpoint shapes what we see, and what assumptions the book takes for granted. Comparing the opening setup (“${leadSentence.slice(0, 110)}${leadSentence.length > 110 ? "…" : ""}”) with how tensions develop later will help you build sharp essay claims or debate arguments.`;
 
+      const takeaways = matchedCurated?.takeaways?.length
+        ? matchedCurated.takeaways
+        : [
+            `Core focus: ${topicText} in "${title}" by ${authorLabel}${yearLabel}.`,
+            sentences.length > 1 ? `Key plot/idea thread: ${sentences[1]}` : `Read how "${title}" develops its central situation across ~${pages} pages.`,
+            `Reading takeaway: Track how the central tension shifts from the opening setup to the middle turning point.`
+          ];
+
+      const quotes = matchedCurated?.quotes?.length
+        ? matchedCurated.quotes
+        : [
+            { tag: "Opening Setup / Premise", quote: leadSentence, note: `Ask what question or expectation "${title}" sets up right here.` },
+            { tag: "Developing Thread", quote: followSentence || leadSentence, note: `Watch how ${authorLabel} builds stakes or evidence around ${primaryTopic.toLowerCase()}.` }
+          ];
+
+      const storyNotes = matchedCurated?.storyNotes
+        ? matchedCurated.storyNotes
+        : {
+            arc: `${leadSentence} ${followSentence}`.trim().slice(0, 440),
+            themes: `Centered on ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}—pay attention to recurring motifs, choices, or arguments that evolve across the book.`,
+            pacing: `Roughly ${pages} pages${year && year !== "Edition Listed" ? ` (${year})` : ""}. Aim for ~15–25 pages per sitting and note where scenes or chapters accelerate vs. pause for reflection.`
+          };
+
+      const studyKit = buildStudyKit({ title, author, year, primaryTopic, subjects, leadSentence });
+
       const moodBlob = `${title} ${subjects.join(" ")} ${synopsis}`.toLowerCase();
       let moodTitle = "Acoustic & Café";
       let spotifyQuery = `${title} reading playlist`;
@@ -1612,7 +2182,6 @@
       if (/fantasy|magic|wizard|dragon|quest|king|realm|hobbit|ring/.test(moodBlob)) {
         moodTitle = "Fantasy & Adventure";
         spotifyQuery = `${title} fantasy reading`;
-        adaptationText = `Check if "${title}" has a screen adaptation and compare how the setting and magic rules look on screen vs. on the page.`;
         tracks = [
           { title: "Concerning Hobbits — Howard Shore", note: "Warm pastoral journey" },
           { title: "The Cave — Mumford & Sons", note: "Adventure & resolve" },
@@ -1622,7 +2191,6 @@
       } else if (/sci-fi|science fiction|space|future|dystop|planet|star|giver/.test(moodBlob)) {
         moodTitle = "Dystopian & Atmospheric";
         spotifyQuery = `${title} sci fi reading`;
-        adaptationText = `If "${title}" has a film or series adaptation, pay attention to how world rules and quiet scenes are handled.`;
         tracks = [
           { title: "Cornfield Chase — Hans Zimmer", note: "Memory & longing" },
           { title: "Midnight City — M83", note: "Wide-eyed & cinematic" },
@@ -1632,7 +2200,6 @@
       } else if (/mystery|thriller|detective|crime|ghost|secret|gothic|piranesi|house/.test(moodBlob)) {
         moodTitle = "Mystery & Liminal Mood";
         spotifyQuery = `${title} mystery reading`;
-        adaptationText = `Mysteries and atmospheric stories often shift clues or tone when adapted—worth comparing once you finish.`;
         tracks = [
           { title: "Nocturne in E-flat Major — Chopin", note: "Hushed & contemplative" },
           { title: "Experience — Ludovico Einaudi", note: "Rising discovery" },
@@ -1641,12 +2208,7 @@
         ];
       }
 
-            const id = `${title}-${author}-${record.isbn || ""}`
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")
-        .slice(0, 60) || `book-${Date.now()}`;
-
+      const id = `${title}-${author}-${record.isbn || ""}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || `book-${Date.now()}`;
       const spineColor = SPINE_COLORS[Math.abs(id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0)) % SPINE_COLORS.length];
 
       return {
@@ -1670,58 +2232,20 @@
         adaptationSearchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${title} ${author !== "Unknown Author" ? author : ""} adaptation trailer`)}`,
         moodTitle,
         spotifySearchUrl: `https://open.spotify.com/search/${encodeURIComponent(spotifyQuery)}`,
-        tracks: tracks.map((t) => ({
-          ...t,
-          url: `https://open.spotify.com/search/${encodeURIComponent(t.title)}`
-        })),
+        tracks: tracks.map((t) => ({ ...t, url: `https://open.spotify.com/search/${encodeURIComponent(t.title)}` })),
         coverUrl: record.coverUrl || "",
+        wikiUrl: record.wikiUrl || "",
         source: record.source || "Quillfinite",
         catalogUrl: record.catalogUrl || `https://openlibrary.org/search?q=${encodeURIComponent(title)}`,
         spineColor
       };
     }
 
-    function buildStudyKit({ title, author, year, pages, primaryTopic, subjects, leadSentence }) {
-      const cleanAuthor = author && author !== "Unknown Author" ? author : "Author";
-      const parts = cleanAuthor.trim().split(/\s+/);
-      const lastName = parts.length > 1 ? parts[parts.length - 1] : cleanAuthor;
-      const firstInitial = parts.length > 1 ? `${parts[0][0]}.` : "";
-      const mlaAuthor = parts.length > 1 ? `${lastName}, ${parts.slice(0, -1).join(" ")}` : cleanAuthor;
-      const apaAuthor = firstInitial ? `${lastName}, ${firstInitial}` : cleanAuthor;
-      const cleanYear = /^\d{4}$/.test(String(year).trim()) ? String(year).trim() : "n.d.";
-
-      const mla = `${mlaAuthor}. *${title}*. ${cleanYear !== "n.d." ? `${cleanYear}.` : ""}`.trim();
-      const apa = `${apaAuthor} (${cleanYear}). *${title}*.`;
-
-      const topicFocus = subjects.slice(0, 2).join(" and ").toLowerCase() || primaryTopic.toLowerCase();
-      const essayAngles = [
-        `How does "${title}" handle ${topicFocus}, and where does the author's perspective feel most deliberate?`,
-        `Compare how the opening setup (“${leadSentence.slice(0, 85)}${leadSentence.length > 85 ? "…" : ""}”) connects to the main tension in ${primaryTopic}.`,
-        `Pick one choice made by a central figure or argument in "${title}" and argue whether it solves or deepens the core conflict.`
-      ];
-
-      const recallQuestion = `In 2–3 sentences from memory (without looking at the blurb), what is the main focus or conflict in "${title}" so far?`;
-      const recallHint = `Check your answer against: ${primaryTopic} • ${leadSentence}`;
-
-      return { mla, apa, essayAngles, recallQuestion, recallHint };
-    }
-
     function renderStudyKit(book) {
-      const kit = book.studyKit || buildStudyKit({
-        title: book.title,
-        author: book.author,
-        year: book.year,
-        pages: book.pages,
-        primaryTopic: book.primaryTopic,
-        subjects: [book.primaryTopic],
-        leadSentence: book.synopsis
-      });
-
+      const kit = book.studyKit;
       document.getElementById("citationMlaText").textContent = kit.mla;
       document.getElementById("citationApaText").textContent = kit.apa;
-
-      const idx = appState.studyAngleIdx % kit.essayAngles.length;
-      document.getElementById("bookEssayAngleText").textContent = kit.essayAngles[idx];
+      document.getElementById("bookEssayAngleText").textContent = kit.essayAngles[appState.studyAngleIdx % kit.essayAngles.length];
       document.getElementById("bookRecallQuestionText").textContent = kit.recallQuestion;
       const ansEl = document.getElementById("bookRecallAnswerText");
       ansEl.textContent = kit.recallHint;
@@ -1740,17 +2264,7 @@
     function copyBookCitation(style) {
       const book = appState.currentBook;
       if (!book) return;
-      const kit = book.studyKit || buildStudyKit({
-        title: book.title,
-        author: book.author,
-        year: book.year,
-        pages: book.pages,
-        primaryTopic: book.primaryTopic,
-        subjects: [book.primaryTopic],
-        leadSentence: book.synopsis
-      });
-      const text = style === "APA" ? kit.apa : kit.mla;
-      navigator.clipboard?.writeText(text);
+      navigator.clipboard?.writeText(style === "APA" ? book.studyKit.apa : book.studyKit.mla);
       showBanner(`Copied ${style} citation for "${book.title}".`);
     }
 
@@ -1760,29 +2274,24 @@
       const notes = (appState.marginNotes[book.id] || "").trim();
       const digest = [
         `${book.title} — ${book.author}`,
-        `Story Note (Hook/Setup): ${book.storyNotes?.arc || ""}`,
-        `Story Note (Craft/Motifs): ${book.storyNotes?.themes || ""}`,
+        `Why Read: ${book.whyRead}`,
+        `Deep Analysis: ${book.deepAnalysis}`,
         notes ? `Margin Notes: ${notes}` : ""
       ].filter(Boolean).join("\n\n");
       navigator.clipboard?.writeText(digest);
       showBanner(`Copied study notes for "${book.title}".`);
     }
 
-    // =========================================================================
-    // LOOKUP FLOW & RENDERING
-    // =========================================================================
     async function lookupBook(rawQuery, scope = "all", previewImageUrl = "") {
       const q = String(rawQuery || "").trim();
       if (!q) {
         showBanner("Enter a book title, author, or ISBN—or open the Scan Panel.");
         return;
       }
-
       appState.lastQuery = q;
       document.getElementById("loadingBookCard").classList.remove("hidden");
       document.getElementById("emptyBookCard").classList.add("hidden");
       document.getElementById("activeBookReadingCard").classList.add("hidden");
-      document.getElementById("loadingBookSubtext").textContent = `Looking up "${q}" and preparing Story Notes...`;
       document.getElementById("lookupStatusLine").textContent = `Searching for "${q}"...`;
 
       if (previewImageUrl) {
@@ -1795,52 +2304,26 @@
       try {
         const candidates = await searchCandidateBooks(q, scope);
         document.getElementById("loadingBookCard").classList.add("hidden");
-
-        if (!candidates || !candidates.length) {
+        if (!candidates?.length) {
           hideCandidatesBox();
           document.getElementById("emptyBookCard").classList.remove("hidden");
-          document.getElementById("emptyBookReason").textContent =
-            `No direct catalog match came back for "${q}" right now. You can still generate a complete book card and Story Notes.`;
+          document.getElementById("emptyBookReason").textContent = `No direct catalog match came back for "${q}".`;
           document.getElementById("buildCustomCardBtn").onclick = () => {
-            const customBook = buildDynamicCompanion({
-              title: q,
-              coverUrl: previewImageUrl
-            });
-            displayBook(customBook);
-            showBanner(`Generated reading card & Story Notes for "${customBook.title}".`);
+            displayBook(buildDynamicCompanion({ title: q, coverUrl: previewImageUrl }));
           };
-          document.getElementById("lookupStatusLine").textContent = `No catalog match for "${q}".`;
           return;
         }
-
         renderSearchCandidates(candidates, previewImageUrl);
-
-        if (candidates.length > 1) {
-          document.getElementById("lookupStatusLine").textContent =
-            `Found ${candidates.length} matches for "${q}" — pick the right book in "Pick the Right Book Match" (showing top match below).`;
-        } else {
-          document.getElementById("lookupStatusLine").textContent =
-            `Loaded "${candidates[0].title}" by ${candidates[0].author} (${candidates[0].source}).`;
-        }
-
         await selectCandidateBook(candidates[0], previewImageUrl);
       } catch (_) {
         document.getElementById("loadingBookCard").classList.add("hidden");
-        document.getElementById("emptyBookCard").classList.remove("hidden");
-        document.getElementById("emptyBookReason").textContent =
-          "Could not reach the online book catalogs right now—generate a local reading card & Story Notes anyway.";
-        document.getElementById("buildCustomCardBtn").onclick = () => {
-          const fallbackBook = buildDynamicCompanion({ title: q, coverUrl: previewImageUrl });
-          displayBook(fallbackBook);
-        };
+        displayBook(buildDynamicCompanion({ title: q, coverUrl: previewImageUrl }));
       }
     }
 
     function handleUniversalSearch(e) {
       e.preventDefault();
-      const q = document.getElementById("universalBookInput").value;
-      const scope = document.getElementById("universalSearchScope").value;
-      lookupBook(q, scope);
+      lookupBook(document.getElementById("universalBookInput").value, document.getElementById("universalSearchScope").value);
     }
 
     function runQuickSearch(q) {
@@ -1859,7 +2342,6 @@
       document.getElementById("activeBookReadingCard").classList.remove("hidden");
       document.getElementById("headerShelfCount").textContent = String(appState.savedBooks.length);
 
-      // Sync 2:3 sketch frame with book cover when available
       const boothImg = document.getElementById("boothCoverImg");
       const boothIdle = document.getElementById("boothIdlePlaceholder");
       if (book.coverUrl) {
@@ -1886,9 +2368,7 @@
       shelfBtn.classList.toggle("bg-emerald-700", onShelf);
       shelfBtn.classList.toggle("bg-[#b85d3b]", !onShelf);
 
-      const isDone = appState.finishedIds.includes(book.id);
-      document.getElementById("toggleFinishedBtn").textContent = isDone ? "Finished ✓" : "Finished It";
-
+      document.getElementById("toggleFinishedBtn").textContent = appState.finishedIds.includes(book.id) ? "Finished ✓" : "Finished It";
       document.getElementById("bookSynopsisBody").textContent = book.synopsis;
       document.getElementById("bookWhyReadBody").textContent = book.whyRead || "";
       document.getElementById("bookDeepAnalysisBody").textContent = book.deepAnalysis || "";
@@ -1930,20 +2410,15 @@
         quotesWrap.appendChild(box);
       });
 
-      // Incorporated Story Notes inside the book card
       document.getElementById("storyNoteArc").textContent = book.storyNotes.arc;
       document.getElementById("storyNoteThemes").textContent = book.storyNotes.themes;
       document.getElementById("storyNotePacing").textContent = book.storyNotes.pacing;
       document.getElementById("bookMarginNotesInput").value = appState.marginNotes[book.id] || "";
       document.getElementById("marginNoteStatus").textContent = "Saved locally";
 
-      // Study & Citation Kit
       renderStudyKit(book);
-
-      // Corkboard for this book
       renderBookCorkboard(book.id);
 
-      // Film/TV & Spotify
       document.getElementById("bookAdaptationBody").textContent = book.adaptationText;
       document.getElementById("bookAdaptationSearchLink").href = book.adaptationSearchUrl;
       document.getElementById("vinylMoodHeading").textContent = `${book.title} • ${book.moodTitle}`;
@@ -1967,7 +2442,6 @@
         vinylList.appendChild(row);
       });
 
-      // Receipt
       const prog = appState.progressMap[book.id] || { cur: 0, tot: book.pages || 250 };
       const pct = prog.tot > 0 ? Math.min(100, Math.round((prog.cur / prog.tot) * 100)) : 0;
       document.getElementById("receiptTitleText").textContent = book.title.toUpperCase();
@@ -1978,7 +2452,6 @@
       document.getElementById("receiptPctLabel").textContent = `${pct}%`;
       document.getElementById("receiptBarFill").style.width = `${pct}%`;
 
-      // Sources at the end of every book card
       renderBookSources(book);
     }
 
@@ -1986,37 +2459,18 @@
       const list = document.getElementById("bookSourcesList");
       const badge = document.getElementById("bookSourcesCountBadge");
       if (!list) return;
-
       const sources = [
-        {
-          label: `${book.source || "Book Catalog"} — Record for "${book.title}"`,
-          url: book.catalogUrl || `https://openlibrary.org/search?q=${encodeURIComponent(book.title)}`
-        },
-        ...(book.wikiUrl ? [{
-          label: `Wikipedia — Overview & Context for "${book.title}"`,
-          url: book.wikiUrl
-        }] : []),
-        {
-          label: "Philippine Statistics Authority (PSA) — 2024 Functional Literacy, Education, and Mass Media Survey (FLEMMS)",
-          url: "https://psa.gov.ph/"
-        },
-        {
-          label: "World Bank — Philippines Learning Poverty & Reading Proficiency Data",
-          url: "https://www.worldbank.org/en/country/philippines"
-        }
+        { label: `${book.source || "Book Catalog"} — Record for "${book.title}"`, url: book.catalogUrl },
+        ...(book.wikiUrl ? [{ label: `Wikipedia — Overview & Context for "${book.title}"`, url: book.wikiUrl }] : []),
+        { label: "Philippine Statistics Authority (PSA) — 2024 FLEMMS", url: "https://psa.gov.ph/" },
+        { label: "World Bank — Philippines Learning Poverty Data", url: "https://www.worldbank.org/en/country/philippines" }
       ];
-
       if (badge) badge.textContent = `${sources.length} sources`;
       list.innerHTML = "";
       sources.forEach((src) => {
         const li = document.createElement("li");
         li.className = "flex flex-wrap items-center justify-between gap-2";
-        li.innerHTML = `
-          <span>• ${src.label}</span>
-          <a href="${src.url}" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#8b4b32] shrink-0">
-            Source ↗
-          </a>
-        `;
+        li.innerHTML = `<span>• ${src.label}</span><a href="${src.url}" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#8b4b32] shrink-0">Source ↗</a>`;
         list.appendChild(li);
       });
     }
@@ -2028,9 +2482,6 @@
       persistActiveAccountData();
     }
 
-    // =========================================================================
-    // CORKBOARD PINS (QUOTES & PICTURES)
-    // =========================================================================
     function handleCorkboardPhoto(e) {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -2060,11 +2511,8 @@
         return;
       }
       const id = appState.currentBook.id;
-      const pinSize = document.getElementById("corkPinSizeSelect")?.value || "standard";
-      appState.corkPins[id] = [
-        { text: text || "Pinned photo note", page, photo, size: pinSize },
-        ...(appState.corkPins[id] || [])
-      ];
+      const size = document.getElementById("corkPinSizeSelect")?.value || "standard";
+      appState.corkPins[id] = [{ text: text || "Pinned photo note", page, photo, size }, ...(appState.corkPins[id] || [])];
       document.getElementById("corkNoteTextInput").value = "";
       document.getElementById("corkPageTagInput").value = "";
       clearCorkboardPhoto();
@@ -2075,8 +2523,7 @@
 
     function renderBookCorkboard(bookId) {
       const pins = appState.corkPins[bookId] || [];
-      document.getElementById("corkPinCountBadge").textContent =
-        `${pins.length} ${pins.length === 1 ? "pin" : "pins"}`;
+      document.getElementById("corkPinCountBadge").textContent = `${pins.length} ${pins.length === 1 ? "pin" : "pins"}`;
       const grid = document.getElementById("bookCorkboardGrid");
       grid.innerHTML = "";
       if (!pins.length) {
@@ -2086,11 +2533,7 @@
       const pinColors = ["bg-rose-500", "bg-amber-400", "bg-emerald-600", "bg-sky-500"];
       pins.forEach((p, idx) => {
         const curSize = p.size || "standard";
-        const sizeClass = curSize === "feature"
-          ? "cork-size-feature"
-          : curSize === "compact"
-            ? "cork-size-compact"
-            : "cork-size-standard";
+        const sizeClass = curSize === "feature" ? "cork-size-feature" : curSize === "compact" ? "cork-size-compact" : "cork-size-standard";
         const card = document.createElement("div");
         card.className = `cork-pin-card ${sizeClass} p-3 pt-6 relative`;
         card.innerHTML = `
@@ -2107,14 +2550,11 @@
           ${p.page ? `<span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 mb-1">${p.page}</span>` : ""}
           <p class="${curSize === "feature" ? "text-base font-medium" : curSize === "compact" ? "text-xs" : "text-sm"} text-stone-800">${p.text}</p>
         `;
-        const sizeSel = card.querySelector("select");
-        if (sizeSel) {
-          sizeSel.onchange = () => {
-            p.size = sizeSel.value;
-            renderBookCorkboard(bookId);
-            persistActiveAccountData();
-          };
-        }
+        card.querySelector("select").onchange = (ev) => {
+          p.size = ev.target.value;
+          renderBookCorkboard(bookId);
+          persistActiveAccountData();
+        };
         card.querySelector("button").onclick = () => {
           appState.corkPins[bookId] = pins.filter((_, i) => i !== idx);
           renderBookCorkboard(bookId);
@@ -2124,16 +2564,11 @@
       });
     }
 
-    // =========================================================================
-    // BOOKSHELF, CUPPA & RECEIPT
-    // =========================================================================
     function toggleCurrentBookShelf() {
       const book = appState.currentBook;
       if (!book) return;
       const exists = appState.savedBooks.some((b) => b.id === book.id);
-      appState.savedBooks = exists
-        ? appState.savedBooks.filter((b) => b.id !== book.id)
-        : [book, ...appState.savedBooks];
+      appState.savedBooks = exists ? appState.savedBooks.filter((b) => b.id !== book.id) : [book, ...appState.savedBooks];
       document.getElementById("headerShelfCount").textContent = String(appState.savedBooks.length);
       persistActiveAccountData();
       displayBook(book);
@@ -2145,9 +2580,7 @@
       const book = appState.currentBook;
       if (!book) return;
       const done = appState.finishedIds.includes(book.id);
-      appState.finishedIds = done
-        ? appState.finishedIds.filter((x) => x !== book.id)
-        : [...appState.finishedIds, book.id];
+      appState.finishedIds = done ? appState.finishedIds.filter((x) => x !== book.id) : [...appState.finishedIds, book.id];
       persistActiveAccountData();
       displayBook(book);
     }
@@ -2164,8 +2597,7 @@
       row.className = `wood-shelf ${appState.shelfTheme} rounded-2xl p-4 sm:p-6 flex flex-wrap items-end gap-3 min-h-[200px]`;
       row.innerHTML = "";
       list.innerHTML = "";
-      document.getElementById("shelfSummaryCount").textContent =
-        `${appState.savedBooks.length} ${appState.savedBooks.length === 1 ? "book" : "books"} saved`;
+      document.getElementById("shelfSummaryCount").textContent = `${appState.savedBooks.length} ${appState.savedBooks.length === 1 ? "book" : "books"} saved`;
       document.getElementById("headerShelfCount").textContent = String(appState.savedBooks.length);
 
       if (!appState.savedBooks.length) {
@@ -2179,31 +2611,21 @@
         spine.className = "book-spine text-sm text-amber-50";
         spine.style.backgroundColor = b.spineColor || "#c76e4b";
         spine.textContent = b.title;
-        spine.onclick = () => {
-          showSection("booth");
-          displayBook(b);
-        };
+        spine.onclick = () => { showSection("booth"); displayBook(b); };
         row.appendChild(spine);
 
-        const prog = appState.progressMap[b.id];
-        const progLabel = prog ? ` • p.${prog.cur}/${prog.tot}` : "";
         const card = document.createElement("div");
         card.className = "rounded-2xl bg-[#fffaf0] p-4 flex flex-col justify-between gap-2.5";
         card.innerHTML = `
           <div>
-            <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">${b.primaryTopic}${progLabel}</span>
+            <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">${b.primaryTopic}</span>
             <h3 class="font-display text-lg font-bold mt-1.5">${b.title}</h3>
             <p class="text-xs text-stone-600">by ${b.author}</p>
             <p class="text-xs text-stone-700 mt-1.5 line-clamp-2">${b.synopsis}</p>
           </div>
-          <button type="button" class="sketch-btn bg-white px-3 py-1 text-xs font-semibold self-start">
-            Open Card &amp; Story Notes →
-          </button>
+          <button type="button" class="sketch-btn bg-white px-3 py-1 text-xs font-semibold self-start">Open Card &amp; Notes →</button>
         `;
-        card.querySelector("button").onclick = () => {
-          showSection("booth");
-          displayBook(b);
-        };
+        card.querySelector("button").onclick = () => { showSection("booth"); displayBook(b); };
         list.appendChild(card);
       });
     }
@@ -2215,9 +2637,7 @@
         const active = c.name === appState.activeCup;
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = `text-xs px-2.5 py-1 rounded-full border ${
-          active ? "bg-amber-300 text-stone-950 border-amber-200 font-bold" : "bg-white/10 text-amber-100 border-amber-200/25"
-        }`;
+        btn.className = `text-xs px-2.5 py-1 rounded-full border ${active ? "bg-amber-300 text-stone-950 border-amber-200 font-bold" : "bg-white/10 text-amber-100 border-amber-200/25"}`;
         btn.textContent = c.name;
         btn.onclick = () => {
           appState.activeCup = c.name;
@@ -2253,9 +2673,6 @@
       showBanner("Copied reading receipt summary.");
     }
 
-    // =========================================================================
-    // SCAN MODAL
-    // =========================================================================
     function openScanModal() {
       document.getElementById("scanModalOverlay").classList.remove("hidden");
       document.getElementById("scanModalCodeInput").focus();
@@ -2296,51 +2713,32 @@
       lookupBook(code, extractIsbn(code) ? "isbn" : "all");
     }
 
-    // =========================================================================
-    // STUDY STUDIO
-    // =========================================================================
     function renderStudyStudio() {
       const m = String(Math.floor(appState.timerSec / 60)).padStart(2, "0");
       const s = String(appState.timerSec % 60).padStart(2, "0");
       document.getElementById("studioTimerClock").textContent = `${m}:${s}`;
-
       const ul = document.getElementById("studioTaskList");
       ul.innerHTML = "";
       appState.tasks.forEach((t) => {
         const li = document.createElement("li");
         li.className = "flex items-center gap-2";
         li.innerHTML = `<input type="checkbox" ${t.done ? "checked" : ""} /><span class="${t.done ? "line-through text-stone-400" : ""}">${t.text}</span>`;
-        li.querySelector("input").onchange = () => {
-          t.done = !t.done;
-          persistActiveAccountData();
-          renderStudyStudio();
-        };
+        li.querySelector("input").onchange = () => { t.done = !t.done; persistActiveAccountData(); renderStudyStudio(); };
         ul.appendChild(li);
       });
-
-      document.getElementById("studioPromptText").textContent =
-        `“${REFLECTION_PROMPTS[appState.promptIdx % REFLECTION_PROMPTS.length]}”`;
-
+      document.getElementById("studioPromptText").textContent = `“${REFLECTION_PROMPTS[appState.promptIdx % REFLECTION_PROMPTS.length]}”`;
       const pagesLeft = Math.max(1, Number(document.getElementById("pacePagesLeftInput")?.value) || 180);
       const daysLeft = Math.max(1, Number(document.getElementById("paceDaysLeftInput")?.value) || 6);
       const perDay = Math.ceil(pagesLeft / daysLeft);
-      const estMins = Math.max(10, Math.round(perDay * 1.4));
-      const paceEl = document.getElementById("paceResultText");
-      const paceSubEl = document.getElementById("paceSubtext");
-      if (paceEl) paceEl.textContent = `${perDay} ${perDay === 1 ? "page" : "pages"} / day`;
-      if (paceSubEl) paceSubEl.textContent = `~${estMins} mins/day across ${daysLeft} ${daysLeft === 1 ? "day" : "days"} (${pagesLeft} pages left).`;
+      document.getElementById("paceResultText").textContent = `${perDay} ${perDay === 1 ? "page" : "pages"} / day`;
+      document.getElementById("paceSubtext").textContent = `~${Math.max(10, Math.round(perDay * 1.4))} mins/day across ${daysLeft} ${daysLeft === 1 ? "day" : "days"} (${pagesLeft} pages left).`;
     }
 
     function addPacePlanToChecklist() {
       const pagesLeft = Math.max(1, Number(document.getElementById("pacePagesLeftInput")?.value) || 180);
       const daysLeft = Math.max(1, Number(document.getElementById("paceDaysLeftInput")?.value) || 6);
       const perDay = Math.ceil(pagesLeft / daysLeft);
-      const label = appState.currentBook ? ` (${appState.currentBook.title})` : "";
-      appState.tasks.unshift({
-        id: Date.now(),
-        text: `Read ${perDay} ${perDay === 1 ? "page" : "pages"} today${label}`,
-        done: false
-      });
+      appState.tasks.unshift({ id: Date.now(), text: `Read ${perDay} ${perDay === 1 ? "page" : "pages"} today`, done: false });
       persistActiveAccountData();
       renderStudyStudio();
       showBanner(`Added today's ${perDay}-page goal to your Study Checklist.`);
@@ -2395,9 +2793,6 @@
       renderStudyStudio();
     }
 
-    // =========================================================================
-    // INIT
-    // =========================================================================
     restoreLastSessionAccount();
     updateAccountBadge();
     renderCupMenu();
