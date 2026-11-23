@@ -493,6 +493,26 @@
             </div>
           </form>
 
+          <div class="rounded-xl bg-amber-50/70 border border-stone-800/15 p-3 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <label for="quillGeminiKeyInput" class="text-[11px] font-bold uppercase tracking-wider text-stone-700">
+                Gemini Key for Custom AI Analysis &amp; Songs (Optional)
+              </label>
+              <button type="button" onclick="saveGeminiKeyInput()" class="text-xs font-bold underline text-[#8b4b32]">
+                Save Key
+              </button>
+            </div>
+            <input
+              id="quillGeminiKeyInput"
+              type="password"
+              placeholder="Paste Gemini API key (or leave blank for dynamic book-specific mode)"
+              class="w-full rounded-xl bg-white px-3 py-1.5 text-xs"
+            />
+            <p id="aiEngineModeStatus" class="text-[11px] text-stone-600">
+              Mode: Dynamic Book-Specific Engine (no repeats)
+            </p>
+          </div>
+
           <div id="searchCandidatesBox" class="hidden rounded-2xl border-2 border-stone-800/20 bg-amber-50/90 p-3.5 space-y-2">
             <div class="flex items-center justify-between gap-2">
               <span class="text-xs font-bold uppercase tracking-wider text-[#8b4b32]">
@@ -547,9 +567,9 @@
 
         <div class="lg:col-span-7 space-y-6">
           <div id="loadingBookCard" class="hidden sketch-box bg-[#fffaf2] p-8 text-center space-y-2">
-            <p class="font-display text-xl font-bold">Checking Catalogs...</p>
+            <p class="font-display text-xl font-bold">Checking Catalogs &amp; Crafting Analysis...</p>
             <p id="loadingBookSubtext" class="text-sm text-stone-700">
-              Pulling book details, characters, and deep analysis...
+              Pulling book details, characters, deep analysis, and related songs...
             </p>
           </div>
 
@@ -557,7 +577,7 @@
             <h2 class="font-display text-2xl font-bold">No Catalog Match</h2>
             <p id="emptyBookReason" class="text-sm text-stone-700 max-w-md mx-auto"></p>
             <button type="button" id="buildCustomCardBtn" class="sketch-btn bg-[#c76e4b] text-white px-4 py-2 text-sm font-semibold">
-              Make a Blank Card Anyway
+              Make a Custom Card Anyway
             </button>
           </div>
 
@@ -810,7 +830,7 @@
               <div class="vinyl-rack-box rounded-2xl p-4 space-y-3">
                 <div class="flex items-center justify-between gap-2">
                   <div>
-                    <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-200 text-stone-950">Spotify Soundtrack</span>
+                    <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-200 text-stone-950">Related Songs</span>
                     <h3 id="vinylMoodHeading" class="font-display text-base font-bold mt-1 text-amber-50">Reading Vinyls</h3>
                   </div>
                   <a
@@ -823,7 +843,7 @@
                     Spotify ↗
                   </a>
                 </div>
-                <div id="bookVinylTracksList" class="space-y-2"></div>
+                <div id="bookVinylTracksList" class="space-y-2.5"></div>
               </div>
             </div>
 
@@ -1329,76 +1349,81 @@
       "What line or scene stuck with you today?"
     ];
 
-    const CURATED_SUBSTANCE_BOOKS = [
-      {
-        title: "The Alchemist",
-        subtitle: "A Fable About Following Your Dream",
-        author: "Paulo Coelho",
-        year: "1988",
-        pages: 208,
-        isbn: "9780062315007",
-        subjects: ["Philosophy", "Quest & Destiny", "Spiritual Fiction"],
-        description: "Santiago, a young Andalusian shepherd, leaves his familiar flock behind after recurring dreams point toward hidden treasure near the Egyptian pyramids. Along the journey through Spain and across the Sahara, he meets an old king, a crystal merchant, an Englishman seeking the Philosopher's Stone, and an alchemist who teaches him to listen to his heart and read signs in the world around him.",
-        whyRead: "If you are standing at a crossroads—deciding on a strand, college path, or big leap while worrying about what people expect—this short fable feels like a clear, encouraging conversation about courage, setbacks, and starting over when plans fall apart.",
-        characters: [
-          {
-            name: "Santiago",
-            role: "Andalusian Shepherd & Seeker",
-            breakdown: "Starts out valuing travel and freedom over seminary rules, then learns that real growth takes patience, humility, and recovering after losing everything."
-          },
-          {
-            name: "Melchizedek (The Old King of Salem)",
-            role: "Catalyst & Mentor",
-            breakdown: "Represents the nudge that turns a daydream into action—reminding Santiago that fear of failure and 'personal legends' are tied together."
-          },
-          {
-            name: "The Crystal Merchant",
-            role: "Caution vs. Comfort",
-            breakdown: "A foil to Santiago: he dreams of Mecca but stays put because pursuing the dream might ruin the hope of it."
-          },
-          {
-            name: "The Alchemist",
-            role: "Guide in the Desert",
-            breakdown: "Shifts Santiago's focus from chasing gold to understanding presence, listening to the heart, and seeing how inner calm affects action."
+    const SONG_POOLS_BY_ANGLE = {
+      innerConflict: [
+        { title: "Ribs", artist: "Lorde", angle: "Growing Pains & Inner Shift", why: "Captures the sudden weight of outgrowing familiar comfort and realizing how fast chapters of life change." },
+        { title: "Landslide", artist: "Fleetwood Mac", angle: "Change & Self-Doubt", why: "Mirrors moments when a character has to decide whether they are ready for the shifts unfolding inside and around them." },
+        { title: "The Archer", artist: "Taylor Swift", angle: "Guard & Vulnerability", why: "Reflects internal tension between putting up armor and letting someone or something actually reach you." },
+        { title: "Liability", artist: "Lorde", angle: "Feeling Out of Sync", why: "Fits stories where a character feels misunderstood or too heavy for the room they are standing in." }
+      ],
+      settingAndMood: [
+        { title: "Holocene", artist: "Bon Iver", angle: "Setting & Quiet Scale", why: "Matches expansive, contemplative settings where a character feels small against a larger landscape or idea." },
+        { title: "Mystery of Love", artist: "Sufjan Stevens", angle: "Atmosphere & Reverence", why: "Brings a delicate, lingering mood that fits quiet realizations, memory, and emotionally charged places." },
+        { title: "Apocalypse", artist: "Cigarettes After Sex", angle: "Late-Night & Slow Tension", why: "Suits slow-burn, moody scenes where unspoken feelings or hidden truths hang in the air." },
+        { title: "Pale Blue Eyes", artist: "The Velvet Underground", angle: "Understated & Wistful", why: "Fits grounded, slightly melancholic moments where an ordinary setting carries deeper history." }
+      ],
+      turningPoint: [
+        { title: "Tongue Tied", artist: "Grouplove", angle: "Momentum & Breakthrough", why: "Brings an energetic surge that fits moments of connection, motion, or breaking out of hesitation." },
+        { title: "Karma Police", artist: "Radiohead", angle: "System & Reckoning", why: "Echoes stories where rigid rules, authority, or institutions begin to crack under scrutiny." },
+        { title: "Everlong", artist: "Foo Fighters", angle: "Obsession & Devotion", why: "Matches intense focus, longing, or a pivotal moment when one bond or goal takes over everything else." },
+        { title: "Pink + White", artist: "Frank Ocean", angle: "Perspective & Aftermath", why: "Fits reflective turning points where a character looks back with clearer eyes on what mattered." }
+      ],
+      characterAndChoice: [
+        { title: "Motion Sickness", artist: "Phoebe Bridgers", angle: "Aftermath & Honesty", why: "Fits sharp emotional reckoning when polite facades drop and a character confronts what really happened." },
+        { title: "505", artist: "Arctic Monkeys", angle: "Pull & Return", why: "Captures magnetic pull toward a person, place, or memory that keeps drawing the character back." },
+        { title: "Youth", artist: "Daughter", angle: "Fierce Protection", why: "Resonates with characters trying to hold onto what they love when outside forces threaten to take it." },
+        { title: "Champagne Supernova", artist: "Oasis", angle: "Memory & Mythmaking", why: "Fits stories where past moments, promises, or legends feel larger than life in hindsight." }
+      ]
+    };
+
+    const AI_CACHE_KEY = "quillfinite_ai_book_v1";
+    const RECENT_SONGS_KEY = "quillfinite_recent_songs_v1";
+    const GEMINI_KEY_STORAGE = "quillfinite_gemini_key_v1";
+
+    const BOOK_INSIGHT_SCHEMA = {
+      type: "object",
+      properties: {
+        whyRead: { type: "string" },
+        centralTension: { type: "string" },
+        themesAndMotifs: { type: "string" },
+        characterPsychology: { type: "string" },
+        teenTakeaway: { type: "string" },
+        characters: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              role: { type: "string" },
+              breakdown: { type: "string" }
+            },
+            required: ["name", "role", "breakdown"]
           }
-        ],
-        deepAnalysis: "Rather than building complex psychological realism, Coelho writes a philosophical parable where characters embody choices and attitudes toward risk. Notice a key tension in the book: Santiago's journey treats obstacles as 'tests' and omens as meaningful, which can feel inspiring and motivating—yet students reading critically can also ask whether 'the universe conspiring' ever overlooks structural luck, privilege, or hard labor. Tracing how Santiago earns his resilience through work (like rebuilding the crystal shop) gives you a strong, grounded angle for essays and discussions.",
-        takeaways: [
-          "Paying attention to omens and small turns in a journey often reveals direction before the final destination is clear.",
-          "Fear of failure and attachment to comfort can hold people back longer than external obstacles.",
-          "Listening to your own heart helps separate genuine purpose from borrowed expectations."
-        ],
-        quotes: [
-          {
-            tag: "Core Motif • Personal Legend",
-            quote: "And, when you want something, all the universe conspires in helping you to achieve it.",
-            note: "Test this idea against Santiago's setbacks—notice how opportunities only matter when you're ready to act."
-          },
-          {
-            tag: "Present Moment",
-            quote: "The secret of life, though, is to fall seven times and to get up eight times.",
-            note: "Good lens for how Santiago handles losing his money and starting over."
-          }
-        ],
-        storyNotes: {
-          arc: "Opens with Santiago choosing a shepherd's freedom over seminary expectations, then builds a parabolic road journey from Andalusia to the desert—each stop tests what he values most.",
-          themes: "Fable structure keeps characters archetypal and clear around 'Personal Legend,' omens, and the language of the world. Notice how parable works best when every detour mirrors an inner question.",
-          pacing: "Short, brisk scenes (~208 pages total) read almost like folk tales stitched together. Great for 20–30 page cafe sittings where you pause after each mentor or setback."
         },
-        adaptationText: "Stage adaptations and illustrated editions exist worldwide; compare how a sparse parable translates when staged or drawn visually without a narrator's commentary.",
-        moodTitle: "Desert & Acoustic",
-        spotifyQuery: "The Alchemist acoustic folk reading",
-        tracks: [
-          { title: "The Cave — Mumford & Sons", note: "Restless quest & forward drive" },
-          { title: "Hoppípolla — Sigur Rós", note: "Hopeful & sweeping" },
-          { title: "Home — Edward Sharpe & The Magnetic Zeros", note: "Road-trip warmth & companionship" },
-          { title: "Holocene — Bon Iver", note: "Quiet open space" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/works/OL15626917W"
-      }
-    ];
+        songs: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              title: { type: "string" },
+              artist: { type: "string" },
+              storyAngle: { type: "string" },
+              whyItRelates: { type: "string" }
+            },
+            required: ["title", "artist", "storyAngle", "whyItRelates"]
+          }
+        }
+      },
+      required: [
+        "whyRead",
+        "centralTension",
+        "themesAndMotifs",
+        "characterPsychology",
+        "teenTakeaway",
+        "characters",
+        "songs"
+      ]
+    };
 
     const appState = {
       currentBook: null,
@@ -1432,6 +1457,123 @@
 
     const ACCOUNT_STORE_KEY = "quillfinite_accounts_v1";
     const ACTIVE_ACCOUNT_KEY = "quillfinite_active_account_v1";
+
+    function getGeminiApiKey() {
+      if (typeof window.QUILLFINITE_API_KEY === "string" && window.QUILLFINITE_API_KEY.trim()) {
+        return window.QUILLFINITE_API_KEY.trim();
+      }
+      try {
+        return (localStorage.getItem(GEMINI_KEY_STORAGE) || "").trim();
+      } catch (_) {
+        return "";
+      }
+    }
+
+    function saveGeminiKeyInput() {
+      const inp = document.getElementById("quillGeminiKeyInput");
+      const val = (inp?.value || "").trim();
+      try {
+        if (val) localStorage.setItem(GEMINI_KEY_STORAGE, val);
+        else localStorage.removeItem(GEMINI_KEY_STORAGE);
+      } catch (_) {}
+      updateAiEngineStatus();
+      showBanner(val ? "Saved Gemini API key for custom book analysis & songs." : "Cleared Gemini API key; using dynamic book-specific mode.");
+      if (appState.currentBook) {
+        displayBook(appState.currentBook);
+      }
+    }
+
+    function updateAiEngineStatus() {
+      const statusEl = document.getElementById("aiEngineModeStatus");
+      const inp = document.getElementById("quillGeminiKeyInput");
+      const hasKey = Boolean(getGeminiApiKey());
+      if (inp && hasKey && !inp.value) inp.value = getGeminiApiKey();
+      if (statusEl) {
+        statusEl.textContent = hasKey
+          ? "Mode: Gemini AI + Anti-Repeat Song Tracker (Active)"
+          : "Mode: Dynamic Book-Specific Engine (no repeats)";
+      }
+    }
+
+    function getRecentSongs() {
+      try {
+        return JSON.parse(localStorage.getItem(RECENT_SONGS_KEY) || "[]");
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function recordRecentSongs(songs = []) {
+      try {
+        const prev = getRecentSongs();
+        const next = songs
+          .map((s) => `${String(s.title || "").trim()} — ${String(s.artist || "").trim()}`)
+          .filter((x) => x.length > 3);
+        const merged = Array.from(new Set([...next, ...prev])).slice(0, 36);
+        localStorage.setItem(RECENT_SONGS_KEY, JSON.stringify(merged));
+      } catch (_) {}
+    }
+
+    function getAiBookCache() {
+      try {
+        return JSON.parse(localStorage.getItem(AI_CACHE_KEY) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveAiBookCache(bookId, payload) {
+      try {
+        const cache = getAiBookCache();
+        cache[bookId] = payload;
+        localStorage.setItem(AI_CACHE_KEY, JSON.stringify(cache));
+      } catch (_) {}
+    }
+
+    function pickDistinctSongsForBook({ id, title, author, primaryTopic, synopsis }) {
+      const recent = new Set(getRecentSongs().map((s) => s.toLowerCase()));
+      const seed = Math.abs(
+        `${id}-${title}-${author}-${primaryTopic}-${synopsis.slice(0, 40)}`
+          .split("")
+          .reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+      );
+
+      const pools = [
+        { key: "innerConflict", list: SONG_POOLS_BY_ANGLE.innerConflict },
+        { key: "settingAndMood", list: SONG_POOLS_BY_ANGLE.settingAndMood },
+        { key: "characterAndChoice", list: SONG_POOLS_BY_ANGLE.characterAndChoice },
+        { key: "turningPoint", list: SONG_POOLS_BY_ANGLE.turningPoint }
+      ];
+
+      const chosen = [];
+      const usedTitles = new Set();
+
+      pools.forEach((pool, pIdx) => {
+        const ordered = [];
+        for (let i = 0; i < pool.list.length; i++) {
+          ordered.push(pool.list[(seed + pIdx * 3 + i) % pool.list.length]);
+        }
+        const nonRecent = ordered.find(
+          (item) => !recent.has(`${item.title.toLowerCase()} — ${item.artist.toLowerCase()}`) && !usedTitles.has(item.title.toLowerCase())
+        );
+        const fallback = ordered.find((item) => !usedTitles.has(item.title.toLowerCase())) || ordered[0];
+        const pick = nonRecent || fallback;
+        usedTitles.add(pick.title.toLowerCase());
+        chosen.push({
+          title: `${pick.title} — ${pick.artist}`,
+          storyAngle: pick.angle,
+          note: `${pick.why} (Connected to "${title}"'s ${primaryTopic.toLowerCase()} arc.)`,
+          url: `https://open.spotify.com/search/${encodeURIComponent(`${pick.title} ${pick.artist}`)}`
+        });
+      });
+
+      recordRecentSongs(chosen.map((c) => {
+        const [t, a] = c.title.split(" — ");
+        return { title: t, artist: a || "" };
+      }));
+
+      return chosen;
+    }
 
     function normalizePin(raw) {
       return String(raw || "").replace(/\D/g, "").slice(0, 4);
@@ -1958,27 +2100,11 @@
       return enriched;
     }
 
-    function findCuratedMatches(query, scope = "all") {
-      const q = String(query || "").trim().toLowerCase();
-      if (!q) return [];
-      const isbnClean = extractIsbn(q);
-      return CURATED_SUBSTANCE_BOOKS.filter((item) => {
-        const titleMatch = item.title.toLowerCase().includes(q) || (item.subtitle || "").toLowerCase().includes(q);
-        const authorMatch = item.author.toLowerCase().includes(q);
-        const isbnMatch = isbnClean && item.isbn.replace(/[^0-9Xx]/g, "").toUpperCase() === isbnClean;
-        const subjectMatch = (item.subjects || []).some((s) => s.toLowerCase().includes(q));
-        if (scope === "title") return titleMatch;
-        if (scope === "author") return authorMatch;
-        if (scope === "isbn") return isbnMatch;
-        return titleMatch || authorMatch || isbnMatch || subjectMatch;
-      });
-    }
-
     async function searchCandidateBooks(query, scope = "all") {
       const trimmed = String(query || "").trim();
       const isbn = extractIsbn(trimmed);
-      const candidates = findCuratedMatches(trimmed, scope).map((c) => ({ ...c, _isCurated: true }));
-      const seen = new Set(candidates.map((c) => `${c.title.toLowerCase()}::${c.author.toLowerCase()}`));
+      const candidates = [];
+      const seen = new Set();
 
       try {
         const params = new URLSearchParams({ limit: "6" });
@@ -2040,8 +2166,8 @@
             <span class="block text-sm font-bold text-stone-900 truncate">${cand.title}</span>
             <span class="block text-xs text-stone-600 truncate">${meta || "Edition match"}</span>
           </div>
-          <span class="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full ${cand._isCurated ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-stone-800"}">
-            ${cand._isCurated ? "Full Notes" : (cand.source || "Catalog")}
+          <span class="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-stone-800">
+            ${cand.source || "Catalog"}
           </span>
         `;
         btn.onclick = () => selectCandidateBook(candidates[idx], previewImageUrl);
@@ -2055,15 +2181,16 @@
       document.getElementById("loadingBookCard").classList.remove("hidden");
       document.getElementById("emptyBookCard").classList.add("hidden");
       document.getElementById("activeBookReadingCard").classList.add("hidden");
-      document.getElementById("loadingBookSubtext").textContent = `Loading "${cand.title}"...`;
+      document.getElementById("loadingBookSubtext").textContent = `Analyzing "${cand.title}" & curating related songs...`;
 
       let enriched = await enrichAnyBookRecord(cand);
       if (previewImageUrl && !enriched.coverUrl) enriched.coverUrl = previewImageUrl;
+      const book = buildDynamicCompanion(enriched);
+      const finalBook = await enrichBookWithDeepAnalysisAndSongs(book);
 
       document.getElementById("loadingBookCard").classList.add("hidden");
-      const book = buildDynamicCompanion(enriched);
-      displayBook(book);
-      document.getElementById("lookupStatusLine").textContent = `Selected "${book.title}" by ${book.author} (${book.source}).`;
+      displayBook(finalBook);
+      document.getElementById("lookupStatusLine").textContent = `Loaded "${finalBook.title}" by ${finalBook.author} (${finalBook.source}).`;
     }
 
     function buildStudyKit({ title, author, year, primaryTopic, subjects, leadSentence }) {
@@ -2095,22 +2222,16 @@
     }
 
     function buildDynamicCompanion(record) {
-      const matchedCurated = record._isCurated
-        ? record
-        : CURATED_SUBSTANCE_BOOKS.find((c) => c.title.toLowerCase() === String(record.title || "").trim().toLowerCase());
-
-      const title = cleanHtml(matchedCurated?.title || record.title) || "Untitled Book";
-      const subtitle = cleanHtml(matchedCurated?.subtitle || record.subtitle);
-      const author = cleanHtml(record.author && record.author !== "Unknown Author" ? record.author : (matchedCurated?.author || "Unknown Author"));
-      const year = cleanHtml(matchedCurated?.year || record.year) || "Edition Listed";
-      const pages = matchedCurated?.pages || (record.pages && Number(record.pages) > 0 ? Number(record.pages) : 250);
-      const subjects = Array.isArray(matchedCurated?.subjects) && matchedCurated.subjects.length
-        ? matchedCurated.subjects.map(cleanHtml).filter(Boolean)
-        : Array.isArray(record.subjects) && record.subjects.length
-          ? record.subjects.map(cleanHtml).filter(Boolean)
-          : ["General"];
+      const title = cleanHtml(record.title) || "Untitled Book";
+      const subtitle = cleanHtml(record.subtitle);
+      const author = cleanHtml(record.author) || "Unknown Author";
+      const year = cleanHtml(record.year) || "Edition Listed";
+      const pages = record.pages && Number(record.pages) > 0 ? Number(record.pages) : 250;
+      const subjects = Array.isArray(record.subjects) && record.subjects.length
+        ? record.subjects.map(cleanHtml).filter(Boolean)
+        : ["General"];
       const primaryTopic = subjects[0] || "General";
-      const rawDesc = cleanHtml(matchedCurated?.description || record.description);
+      const rawDesc = cleanHtml(record.description);
       const synopsis = rawDesc || `"${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} (${primaryTopic}). No full blurb was in the catalog record, so jot down what happens as you read.`;
 
       const sentences = synopsis.split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean);
@@ -2120,96 +2241,49 @@
       const authorLabel = author !== "Unknown Author" ? author : "its author";
       const yearLabel = year && year !== "Edition Listed" ? ` (${year})` : "";
 
-      const whyRead = matchedCurated?.whyRead
-        ? matchedCurated.whyRead
-        : `"${title}" is worth picking up if you want to explore ${topicText.toLowerCase()} through a clear central situation${author !== "Unknown Author" ? ` shaped by ${author}` : ""}. It gives students strong material for reflection, discussion, and comparing how big ideas play out in concrete choices.`;
+      const whyRead = `"${title}" is worth picking up if you want to explore ${topicText.toLowerCase()} through a clear central situation${author !== "Unknown Author" ? ` shaped by ${author}` : ""}. It gives students strong material for reflection, discussion, and comparing how big ideas play out in concrete choices.`;
 
-      const characters = Array.isArray(matchedCurated?.characters) && matchedCurated.characters.length
-        ? matchedCurated.characters
-        : [
-            {
-              name: `Central Perspective / Lead in "${title}"`,
-              role: "Focal Point of Action",
-              breakdown: `${leadSentence} Watch what this figure prioritizes most when pressure rises.`
-            },
-            {
-              name: `Counter-Force / Key Tension (${primaryTopic})`,
-              role: "Challenge & Conflict",
-              breakdown: `${followSentence || `Notice how obstacles in "${title}" test the main character's habits, beliefs, or plans.`}`
-            }
-          ];
-
-      const deepAnalysis = matchedCurated?.deepAnalysis
-        ? matchedCurated.deepAnalysis
-        : `At a deeper level, "${title}" revolves around ${topicText.toLowerCase()}. Rather than reading only for plot events, examine why key conflicts happen, whose viewpoint shapes what we see, and what assumptions the book takes for granted. Comparing the opening setup (“${leadSentence.slice(0, 110)}${leadSentence.length > 110 ? "…" : ""}”) with how tensions develop later will help you build sharp essay claims or debate arguments.`;
-
-      const takeaways = matchedCurated?.takeaways?.length
-        ? matchedCurated.takeaways
-        : [
-            `Core focus: ${topicText} in "${title}" by ${authorLabel}${yearLabel}.`,
-            sentences.length > 1 ? `Key plot/idea thread: ${sentences[1]}` : `Read how "${title}" develops its central situation across ~${pages} pages.`,
-            `Reading takeaway: Track how the central tension shifts from the opening setup to the middle turning point.`
-          ];
-
-      const quotes = matchedCurated?.quotes?.length
-        ? matchedCurated.quotes
-        : [
-            { tag: "Opening Setup / Premise", quote: leadSentence, note: `Ask what question or expectation "${title}" sets up right here.` },
-            { tag: "Developing Thread", quote: followSentence || leadSentence, note: `Watch how ${authorLabel} builds stakes or evidence around ${primaryTopic.toLowerCase()}.` }
-          ];
-
-      const storyNotes = matchedCurated?.storyNotes
-        ? matchedCurated.storyNotes
-        : {
-            arc: `${leadSentence} ${followSentence}`.trim().slice(0, 440),
-            themes: `Centered on ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}—pay attention to recurring motifs, choices, or arguments that evolve across the book.`,
-            pacing: `Roughly ${pages} pages${year && year !== "Edition Listed" ? ` (${year})` : ""}. Aim for ~15–25 pages per sitting and note where scenes or chapters accelerate vs. pause for reflection.`
-          };
-
-      const studyKit = buildStudyKit({ title, author, year, primaryTopic, subjects, leadSentence });
-
-      const moodBlob = `${title} ${subjects.join(" ")} ${synopsis}`.toLowerCase();
-      let moodTitle = "Acoustic & Café";
-      let spotifyQuery = `${title} reading playlist`;
-      let adaptationText = `Search for film, TV, or stage adaptations of "${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} to see what changed from the page.`;
-      let tracks = [
-        { title: "Landslide — Fleetwood Mac", note: "Acoustic & reflective" },
-        { title: "Vienna — Billy Joel", note: "Steady & thoughtful pace" },
-        { title: "Holocene — Bon Iver", note: "Calm & atmospheric" },
-        { title: "Nuvole Bianche — Ludovico Einaudi", note: "Focused piano" }
+      const characters = [
+        {
+          name: `Central Perspective / Lead in "${title}"`,
+          role: "Focal Point & Agency",
+          breakdown: `${leadSentence} Trace what this figure risks or values most when pressure builds.`
+        },
+        {
+          name: `Key Tension & Counter-Force (${primaryTopic})`,
+          role: "Conflict & Turning Point",
+          breakdown: `${followSentence || `Observe how external expectations or obstacles in "${title}" test the protagonist's assumptions.`}`
+        }
       ];
 
-      if (/fantasy|magic|wizard|dragon|quest|king|realm|hobbit|ring/.test(moodBlob)) {
-        moodTitle = "Fantasy & Adventure";
-        spotifyQuery = `${title} fantasy reading`;
-        tracks = [
-          { title: "Concerning Hobbits — Howard Shore", note: "Warm pastoral journey" },
-          { title: "The Cave — Mumford & Sons", note: "Adventure & resolve" },
-          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Wonder & quiet focus" },
-          { title: "Into the West — Annie Lennox", note: "Farewell & memory" }
-        ];
-      } else if (/sci-fi|science fiction|space|future|dystop|planet|star|giver/.test(moodBlob)) {
-        moodTitle = "Dystopian & Atmospheric";
-        spotifyQuery = `${title} sci fi reading`;
-        tracks = [
-          { title: "Cornfield Chase — Hans Zimmer", note: "Memory & longing" },
-          { title: "Midnight City — M83", note: "Wide-eyed & cinematic" },
-          { title: "Time — Hans Zimmer", note: "Slow build & weight" },
-          { title: "Holocene — Bon Iver", note: "Quiet reflection" }
-        ];
-      } else if (/mystery|thriller|detective|crime|ghost|secret|gothic|piranesi|house/.test(moodBlob)) {
-        moodTitle = "Mystery & Liminal Mood";
-        spotifyQuery = `${title} mystery reading`;
-        tracks = [
-          { title: "Nocturne in E-flat Major — Chopin", note: "Hushed & contemplative" },
-          { title: "Experience — Ludovico Einaudi", note: "Rising discovery" },
-          { title: "Breathe Me — Sia", note: "Quiet & haunting" },
-          { title: "Moonlight Sonata — Beethoven", note: "Still & enigmatic" }
-        ];
-      }
+      const deepAnalysis = [
+        `Central Tension: "${title}" brings ${topicText.toLowerCase()} into direct friction with the characters' immediate choices and surroundings.`,
+        `Themes & Motifs: Pay attention to how ${authorLabel} repeats key images, choices, or arguments around "${leadSentence.slice(0, 100)}${leadSentence.length > 100 ? "…" : ""}".`,
+        `Character Psychology & Teen Takeaway: Notice what shifts internally when plans falter—this is where the sharpest essay claims and personal takeaways live for young readers.`
+      ].join(" ");
 
+      const takeaways = [
+        `Core focus: ${topicText} in "${title}" by ${authorLabel}${yearLabel}.`,
+        sentences.length > 1 ? `Key plot/idea thread: ${sentences[1]}` : `Read how "${title}" develops its central situation across ~${pages} pages.`,
+        `Reading takeaway: Track how the central tension shifts from the opening setup to the middle turning point.`
+      ];
+
+      const quotes = [
+        { tag: "Opening Setup / Premise", quote: leadSentence, note: `Ask what question or expectation "${title}" sets up right here.` },
+        { tag: "Developing Thread", quote: followSentence || leadSentence, note: `Watch how ${authorLabel} builds stakes or evidence around ${primaryTopic.toLowerCase()}.` }
+      ];
+
+      const storyNotes = {
+        arc: `${leadSentence} ${followSentence}`.trim().slice(0, 440),
+        themes: `Centered on ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}—pay attention to recurring motifs, choices, or arguments that evolve across the book.`,
+        pacing: `Roughly ${pages} pages${year && year !== "Edition Listed" ? ` (${year})` : ""}. Aim for ~15–25 pages per sitting and note where scenes or chapters accelerate vs. pause for reflection.`
+      };
+
+      const studyKit = buildStudyKit({ title, author, year, primaryTopic, subjects, leadSentence });
       const id = `${title}-${author}-${record.isbn || ""}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || `book-${Date.now()}`;
       const spineColor = SPINE_COLORS[Math.abs(id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0)) % SPINE_COLORS.length];
+
+      const tracks = pickDistinctSongsForBook({ id, title, author, primaryTopic, synopsis });
 
       return {
         id,
@@ -2228,17 +2302,103 @@
         quotes,
         storyNotes,
         studyKit,
-        adaptationText,
+        adaptationText: `Search for film, TV, or stage adaptations of "${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} to see what changed from the page.`,
         adaptationSearchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${title} ${author !== "Unknown Author" ? author : ""} adaptation trailer`)}`,
-        moodTitle,
-        spotifySearchUrl: `https://open.spotify.com/search/${encodeURIComponent(spotifyQuery)}`,
-        tracks: tracks.map((t) => ({ ...t, url: `https://open.spotify.com/search/${encodeURIComponent(t.title)}` })),
+        moodTitle: `${primaryTopic} Soundtrack`,
+        spotifySearchUrl: `https://open.spotify.com/search/${encodeURIComponent(`${title} ${primaryTopic} reading`)}`,
+        tracks,
         coverUrl: record.coverUrl || "",
         wikiUrl: record.wikiUrl || "",
         source: record.source || "Quillfinite",
         catalogUrl: record.catalogUrl || `https://openlibrary.org/search?q=${encodeURIComponent(title)}`,
         spineColor
       };
+    }
+
+    async function enrichBookWithDeepAnalysisAndSongs(book) {
+      const apiKey = getGeminiApiKey();
+      const cacheKey = `${book.id}::${apiKey ? "gemini" : "dynamic"}`;
+      const cached = getAiBookCache()[cacheKey];
+      if (cached) {
+        return { ...book, ...cached };
+      }
+
+      if (!apiKey) {
+        const dynamicPatch = {
+          tracks: pickDistinctSongsForBook(book)
+        };
+        saveAiBookCache(cacheKey, dynamicPatch);
+        return { ...book, ...dynamicPatch };
+      }
+
+      const recentSongs = getRecentSongs().slice(0, 30);
+      const systemInstruction = `
+You are the literary analyst and soundtrack curator for Quillfinite, a teen reading app.
+Generate a deep literary analysis and 4 distinct, book-specific songs for ANY book.
+Rules:
+1. Do not give a shallow plot summary alone; analyze central tension, themes/motifs, character psychology, and teen takeaway.
+2. Choose 4 songs that genuinely connect to THIS book's themes, characters, conflicts, or setting.
+3. Avoid repeating any song in this recently used list: [${recentSongs.join("; ") || "None"}].
+4. Every song must include storyAngle and whyItRelates explaining how it connects to this specific book.
+`.trim();
+
+      const prompt = `
+Book Title: ${book.title}
+Author: ${book.author}
+Genre / Topic: ${book.primaryTopic}
+Synopsis / Notes: ${book.synopsis}
+`.trim();
+
+      try {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemInstruction }] },
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.85,
+              responseMimeType: "application/json",
+              responseSchema: BOOK_INSIGHT_SCHEMA
+            }
+          })
+        });
+        if (!res.ok) throw new Error(`Gemini error ${res.status}`);
+        const data = await res.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawText) throw new Error("Empty model response");
+        const parsed = JSON.parse(rawText);
+
+        const formattedTracks = (parsed.songs || []).slice(0, 4).map((s) => ({
+          title: `${s.title} — ${s.artist}`,
+          storyAngle: s.storyAngle || "Story Connection",
+          note: s.whyItRelates || "",
+          url: `https://open.spotify.com/search/${encodeURIComponent(`${s.title} ${s.artist}`)}`
+        }));
+
+        recordRecentSongs(parsed.songs || []);
+
+        const combinedAnalysis = [
+          parsed.centralTension ? `Central Tension: ${parsed.centralTension}` : "",
+          parsed.themesAndMotifs ? `Themes & Motifs: ${parsed.themesAndMotifs}` : "",
+          parsed.characterPsychology ? `Character Psychology: ${parsed.characterPsychology}` : "",
+          parsed.teenTakeaway ? `Teen Takeaway: ${parsed.teenTakeaway}` : ""
+        ].filter(Boolean).join(" ");
+
+        const patch = {
+          whyRead: parsed.whyRead || book.whyRead,
+          deepAnalysis: combinedAnalysis || book.deepAnalysis,
+          characters: Array.isArray(parsed.characters) && parsed.characters.length ? parsed.characters : book.characters,
+          tracks: formattedTracks.length ? formattedTracks : book.tracks,
+          source: `${book.source} + Gemini Analysis`
+        };
+
+        saveAiBookCache(cacheKey, patch);
+        return { ...book, ...patch };
+      } catch (_) {
+        return { ...book, tracks: pickDistinctSongsForBook(book) };
+      }
     }
 
     function renderStudyKit(book) {
@@ -2272,10 +2432,12 @@
       const book = appState.currentBook;
       if (!book) return;
       const notes = (appState.marginNotes[book.id] || "").trim();
+      const songsText = (book.tracks || []).map((t) => `- ${t.title}: ${t.note}`).join("\n");
       const digest = [
         `${book.title} — ${book.author}`,
         `Why Read: ${book.whyRead}`,
         `Deep Analysis: ${book.deepAnalysis}`,
+        songsText ? `Related Songs:\n${songsText}` : "",
         notes ? `Margin Notes: ${notes}` : ""
       ].filter(Boolean).join("\n\n");
       navigator.clipboard?.writeText(digest);
@@ -2308,8 +2470,10 @@
           hideCandidatesBox();
           document.getElementById("emptyBookCard").classList.remove("hidden");
           document.getElementById("emptyBookReason").textContent = `No direct catalog match came back for "${q}".`;
-          document.getElementById("buildCustomCardBtn").onclick = () => {
-            displayBook(buildDynamicCompanion({ title: q, coverUrl: previewImageUrl }));
+          document.getElementById("buildCustomCardBtn").onclick = async () => {
+            const base = buildDynamicCompanion({ title: q, coverUrl: previewImageUrl });
+            const full = await enrichBookWithDeepAnalysisAndSongs(base);
+            displayBook(full);
           };
           return;
         }
@@ -2317,7 +2481,9 @@
         await selectCandidateBook(candidates[0], previewImageUrl);
       } catch (_) {
         document.getElementById("loadingBookCard").classList.add("hidden");
-        displayBook(buildDynamicCompanion({ title: q, coverUrl: previewImageUrl }));
+        const base = buildDynamicCompanion({ title: q, coverUrl: previewImageUrl });
+        const full = await enrichBookWithDeepAnalysisAndSongs(base);
+        displayBook(full);
       }
     }
 
@@ -2428,16 +2594,17 @@
       vinylList.innerHTML = "";
       book.tracks.forEach((tr, idx) => {
         const row = document.createElement("div");
-        row.className = "vinyl-slot p-2.5";
+        row.className = "vinyl-slot p-2.5 space-y-1";
         row.innerHTML = `
           <a href="${tr.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 text-inherit no-underline">
             <span class="vinyl-disc" aria-hidden="true"></span>
             <span class="min-w-0 flex-1">
               <span class="block text-xs font-bold truncate">${idx + 1}. ${tr.title}</span>
-              <span class="block text-[11px] text-stone-600 truncate">${tr.note}</span>
+              ${tr.storyAngle ? `<span class="block text-[10px] font-bold uppercase tracking-wider text-[#8b4b32]">${tr.storyAngle}</span>` : ""}
             </span>
             <span class="text-xs font-bold text-[#4f6d58] shrink-0">Play ↗</span>
           </a>
+          <p class="text-[11px] text-stone-700 leading-snug pl-12"><strong>Why it relates:</strong> ${tr.note}</p>
         `;
         vinylList.appendChild(row);
       });
@@ -2795,6 +2962,7 @@
 
     restoreLastSessionAccount();
     updateAccountBadge();
+    updateAiEngineStatus();
     renderCupMenu();
     renderBookshelf();
     renderStudyStudio();
