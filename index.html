@@ -280,6 +280,29 @@
         display: none !important;
       }
     }
+  
+    .cork-size-compact .polaroid-frame img {
+      max-height: 92px;
+    }
+    .cork-size-compact {
+      padding: 10px 10px 10px 10px !important;
+    }
+    .cork-size-standard .polaroid-frame img {
+      max-height: 155px;
+    }
+    .cork-size-feature {
+      grid-column: span 2 / span 2;
+      background: #fffef8 !important;
+    }
+    .cork-size-feature .polaroid-frame img {
+      max-height: 250px;
+    }
+    @media (max-width: 639px) {
+      .cork-size-feature {
+        grid-column: span 1 / span 1;
+      }
+    }
+
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -639,6 +662,33 @@
               <p id="bookSynopsisBody" class="text-sm sm:text-base leading-relaxed text-stone-800"></p>
             </div>
 
+            <!-- Why Should You Read It -->
+            <div class="rounded-2xl border-2 border-stone-800/20 bg-[#fffaf0] p-4 sm:p-5 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-[#8b4b32]">Why Should You Read It?</h3>
+                <span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-stone-800 font-semibold">For Students</span>
+              </div>
+              <p id="bookWhyReadBody" class="text-sm sm:text-base leading-relaxed text-stone-800"></p>
+            </div>
+
+            <!-- Characters & Deep Student Analysis -->
+            <div class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/45 p-4 sm:p-5 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-dashed border-stone-800/20 pb-2">
+                <div>
+                  <span class="text-xs px-2.5 py-0.5 sketch-pill bg-emerald-100 text-emerald-950">Deep Dive</span>
+                  <h3 class="font-display text-xl font-bold mt-1">Characters &amp; Deep Analysis</h3>
+                </div>
+                <span class="text-xs text-stone-600">Who’s Who • Motives &amp; Tensions • Study Takeaways</span>
+              </div>
+
+              <div id="bookCharactersGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+
+              <div class="rounded-xl bg-[#fffdf9] p-4 space-y-1.5 border border-stone-800/10">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-[#4f6d58]">Deep Analysis for Essays, Debates &amp; Class</h4>
+                <p id="bookDeepAnalysisBody" class="text-sm sm:text-base leading-relaxed text-stone-800"></p>
+              </div>
+            </div>
+
             <!-- Key Takeaways & Notable Quotes -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="rounded-2xl border-2 border-stone-800/15 bg-[#fffaf0] p-4 space-y-2">
@@ -769,7 +819,7 @@
                     <input type="file" accept="image/*" onchange="handleCorkboardPhoto(event)" class="hidden" />
                   </label>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-6 gap-2">
                   <input
                     id="corkNoteTextInput"
                     type="text"
@@ -780,8 +830,17 @@
                     id="corkPageTagInput"
                     type="text"
                     placeholder="Page / Ch."
-                    class="rounded-xl bg-white px-3 py-2 text-sm"
+                    class="sm:col-span-1 rounded-xl bg-white px-3 py-2 text-sm"
                   />
+                  <select
+                    id="corkPinSizeSelect"
+                    aria-label="Corkboard pin size"
+                    class="sm:col-span-2 rounded-xl bg-amber-50 px-2.5 py-2 text-sm font-semibold"
+                  >
+                    <option value="standard">Size: Medium</option>
+                    <option value="compact">Size: Compact</option>
+                    <option value="feature">Size: Big Feature</option>
+                  </select>
                 </div>
                 <div id="corkPhotoPreviewWrap" class="hidden flex items-center justify-between gap-2 bg-amber-50 p-2 rounded-xl">
                   <div class="flex items-center gap-2 min-w-0">
@@ -1516,1425 +1575,73 @@
       try {
         return JSON.parse(localStorage.getItem(ACCOUNT_STORE_KEY) || "{}");
       } catch (_) {
-        return {};
-      }
-    }
-
-    function saveAllAccounts(accountsObj) {
-      try {
-        localStorage.setItem(ACCOUNT_STORE_KEY, JSON.stringify(accountsObj));
-      } catch (_) {}
-    }
-
-    function snapshotCurrentUserData() {
-      return {
-        savedBooks: appState.savedBooks,
-        finishedIds: appState.finishedIds,
-        marginNotes: appState.marginNotes,
-        corkPins: appState.corkPins,
-        progressMap: appState.progressMap,
-        tasks: appState.tasks,
-        shelfTheme: appState.shelfTheme,
-        activeCup: appState.activeCup,
-        pickedSpotId: appState.pickedSpotId,
-        updatedAt: new Date().toLocaleDateString()
-      };
-    }
-
-    function persistActiveAccountData() {
-      const acct = appState.account;
-      if (!acct || !acct.name || normalizePin(acct.pin).length !== 4) return;
-      const key = getAccountKey(acct.name, acct.pin);
-      if (!key) return;
-      const accounts = loadAllAccounts();
-      accounts[key] = {
-        name: acct.name.trim(),
-        pin: normalizePin(acct.pin),
-        data: snapshotCurrentUserData()
-      };
-      saveAllAccounts(accounts);
-      try {
-        localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify({ name: acct.name.trim(), pin: normalizePin(acct.pin) }));
-      } catch (_) {}
-    }
-
-    function applyAccountDataToState(name, pin, savedEntry, showNotice = true) {
-      const cleanPin = normalizePin(pin);
-      const cleanName = String(name || "").trim();
-      appState.account = { name: cleanName, pin: cleanPin };
-
-      const d = (savedEntry && savedEntry.data) || {};
-      appState.savedBooks = Array.isArray(d.savedBooks) ? d.savedBooks : [];
-      appState.finishedIds = Array.isArray(d.finishedIds) ? d.finishedIds : [];
-      appState.marginNotes = d.marginNotes && typeof d.marginNotes === "object" ? d.marginNotes : {};
-      appState.corkPins = d.corkPins && typeof d.corkPins === "object" ? d.corkPins : {};
-      appState.progressMap = d.progressMap && typeof d.progressMap === "object" ? d.progressMap : {};
-      appState.tasks = Array.isArray(d.tasks) && d.tasks.length
-        ? d.tasks
-        : [
-            { id: 1, text: "Read 20 pages with a warm cuppa", done: false },
-            { id: 2, text: "Pin a favorite quote to the book's corkboard", done: false }
-          ];
-      appState.shelfTheme = d.shelfTheme || "";
-      appState.activeCup = d.activeCup || CUPS[0].name;
-      appState.pickedSpotId = d.pickedSpotId || null;
-
-      persistActiveAccountData();
-      updateAccountBadge();
-      renderCupMenu();
-      renderBookshelf();
-      renderStudyStudio();
-      if (appState.currentBook) {
-        displayBook(appState.currentBook);
-      }
-      if (showNotice) {
-        showBanner(`Account active for ${cleanName} (${cleanPin}) — bookshelf & progress synced.`);
-      }
-    }
-
-    function updateAccountBadge() {
-      const btn = document.getElementById("accountBtnLabel");
-      if (!btn) return;
-      if (appState.account && appState.account.name) {
-        btn.textContent = `Account: ${appState.account.name} (${appState.account.pin})`;
-      } else {
-        btn.textContent = "Account (Name + 4-Digit)";
-      }
-    }
-
-    function openAccountModal() {
-      const overlay = document.getElementById("accountModalOverlay");
-      if (!overlay) return;
-      document.getElementById("accountNameInput").value = appState.account?.name || "";
-      document.getElementById("accountPinInput").value = appState.account?.pin || "";
-      renderSavedAccountButtons();
-      overlay.classList.remove("hidden");
-      document.getElementById("accountNameInput").focus();
-    }
-
-    function closeAccountModal() {
-      document.getElementById("accountModalOverlay")?.classList.add("hidden");
-    }
-
-    function renderSavedAccountButtons() {
-      const wrap = document.getElementById("savedAccountsButtons");
-      if (!wrap) return;
-      const accounts = loadAllAccounts();
-      const entries = Object.values(accounts);
-      wrap.innerHTML = "";
-      if (!entries.length) {
-        wrap.innerHTML = `<span class="text-xs text-stone-500">No saved accounts yet.</span>`;
-        return;
-      }
-      entries.forEach((entry) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "sketch-btn bg-amber-50 px-2.5 py-1 text-xs";
-        b.textContent = `${entry.name} • ${entry.pin} (${(entry.data?.savedBooks || []).length} books)`;
-        b.onclick = () => {
-          document.getElementById("accountNameInput").value = entry.name;
-          document.getElementById("accountPinInput").value = entry.pin;
-          applyAccountDataToState(entry.name, entry.pin, entry, true);
-          closeAccountModal();
-        };
-        wrap.appendChild(b);
-      });
-    }
-
-    function handleAccountSaveOrLoad(e) {
-      e.preventDefault();
-      const name = document.getElementById("accountNameInput").value.trim();
-      const pin = normalizePin(document.getElementById("accountPinInput").value);
-      if (!name) {
-        showBanner("Please enter your name.");
-        return;
-      }
-      if (pin.length !== 4) {
-        showBanner("Please enter a 4-number code (4 digits).");
-        return;
-      }
-      const key = getAccountKey(name, pin);
-      const accounts = loadAllAccounts();
-      const existing = accounts[key];
-      if (existing) {
-        applyAccountDataToState(name, pin, existing, true);
-      } else {
-        appState.account = { name, pin };
-        persistActiveAccountData();
-        updateAccountBadge();
-        showBanner(`Created & saved account for ${name} (${pin}).`);
-      }
-      closeAccountModal();
-    }
-
-    function signOutQuillAccount() {
-      persistActiveAccountData();
-      appState.account = null;
-      try {
-        localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
-      } catch (_) {}
-      updateAccountBadge();
-      closeAccountModal();
-      showBanner("Signed out of your Quillfinite account.");
-    }
-
-    function restoreLastSessionAccount() {
-      try {
-        const rawActive = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
-        if (!rawActive) return;
-        const parsed = JSON.parse(rawActive);
-        const key = getAccountKey(parsed?.name, parsed?.pin);
-        if (!key) return;
-        const accounts = loadAllAccounts();
-        if (accounts[key]) {
-          applyAccountDataToState(parsed.name, parsed.pin, accounts[key], false);
-        }
-      } catch (_) {}
-    }
-
-    // =========================================================================
-    // NAVIGATION & BANNERS
-    // =========================================================================
-    function showBanner(msg) {
-      document.getElementById("statusBannerText").textContent = msg;
-      document.getElementById("statusBanner").classList.remove("hidden");
-    }
-
-    function hideBanner() {
-      document.getElementById("statusBanner").classList.add("hidden");
-    }
-
-    function showSection(sectionKey) {
-      ["booth", "shelf", "study", "spots", "paper"].forEach((key) => {
-        const sec = document.getElementById(`section-${key}`);
-        if (sec) sec.classList.toggle("hidden", key !== sectionKey);
-      });
-
-      document.querySelectorAll("[data-nav]").forEach((btn) => {
-        const active = btn.dataset.nav === sectionKey;
-        btn.classList.toggle("bg-amber-900", active);
-        btn.classList.toggle("text-amber-50", active);
-        btn.classList.toggle("bg-white", !active);
-      });
-
-      if (sectionKey === "shelf") renderBookshelf();
-      if (sectionKey === "study") renderStudyStudio();
-      if (sectionKey === "spots") renderHinigaranSpots();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function addSchoolPaperTask(label) {
-      appState.tasks.unshift({
-        id: Date.now(),
-        text: label,
-        done: false
-      });
-      persistActiveAccountData();
-      renderStudyStudio();
-      showBanner(`Added "${label}" to your Study Checklist.`);
-    }
-
-    // =========================================================================
-    // HINIGARAN READING SPOTS, CAFÉS & INTERACTIVE MAP
-    // =========================================================================
-    function getGoogleMapsSearchUrl(spot) {
-      if (spot.placeId) {
-        return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${spot.name}, Hinigaran, Negros Occidental`)}&query_place_id=${encodeURIComponent(spot.placeId)}`;
-      }
-      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${spot.name}, Hinigaran, Negros Occidental`)}`;
-    }
-
-    function setSpotFilter(filterKey) {
-      appState.spotFilter = filterKey;
-      document.querySelectorAll("[data-spot-filter]").forEach((btn) => {
-        const active = btn.dataset.spotFilter === filterKey;
-        btn.classList.toggle("bg-amber-900", active);
-        btn.classList.toggle("text-amber-50", active);
-        btn.classList.toggle("bg-white", !active);
-      });
-      renderHinigaranSpots();
-    }
-
-    function pickSpotForReadingSession(spotId) {
-      const spot = HINIGARAN_SPOTS.find((s) => s.id === spotId);
-      if (!spot) return;
-      appState.pickedSpotId = spot.id;
-
-      const badge = document.getElementById("pickedSpotBadge");
-      if (badge) badge.textContent = `Session Spot: ${spot.name}`;
-
-      const statusEl = document.getElementById("spotSessionNoteStatus");
-      if (statusEl) {
-        statusEl.textContent = `Logged "${spot.name}" into your reading session notes.`;
-      }
-
-      const bookTitle = appState.currentBook ? ` reading "${appState.currentBook.title}"` : "";
-      const noteLine = `[Reading Spot: ${spot.name} (${spot.categoryLabel}) — ${spot.hours}${bookTitle}]`;
-
-      if (appState.currentBook) {
-        const existing = appState.marginNotes[appState.currentBook.id] || "";
-        if (!existing.includes(spot.name)) {
-          const updated = existing ? `${existing}\n${noteLine}` : noteLine;
-          appState.marginNotes[appState.currentBook.id] = updated;
-          const marginBox = document.getElementById("bookMarginNotesInput");
-          if (marginBox) marginBox.value = updated;
-        }
-      }
-
-      appState.tasks.unshift({
-        id: Date.now(),
-        text: `Reading session at ${spot.name} (${spot.hours})`,
-        done: false
-      });
-      persistActiveAccountData();
-
-      if (hinigaranMapInstance) {
-        hinigaranMapInstance.setView([spot.lat, spot.lng], 15, { animate: true });
-        if (spotMarkerLookup[spot.id]) {
-          spotMarkerLookup[spot.id].openPopup();
-        }
-      }
-
-      renderHinigaranSpots();
-      showBanner(`Picked "${spot.name}" for your reading session and added it to your notes & checklist.`);
-    }
-
-    function initOrUpdateHinigaranMap(visibleSpots) {
-      const mapEl = document.getElementById("hinigaranMap");
-      if (!mapEl || typeof L === "undefined") return;
-
-      if (!hinigaranMapInstance) {
-        hinigaranMapInstance = L.map("hinigaranMap").setView([10.2705, 122.851], 14);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "&copy; OpenStreetMap contributors",
-          maxZoom: 19
-        }).addTo(hinigaranMapInstance);
-        hinigaranMarkersLayer = L.layerGroup().addTo(hinigaranMapInstance);
-      }
-
-      hinigaranMarkersLayer.clearLayers();
-      Object.keys(spotMarkerLookup).forEach((k) => delete spotMarkerLookup[k]);
-
-      const bounds = [];
-      visibleSpots.forEach((spot) => {
-        const isPicked = appState.pickedSpotId === spot.id;
-        const pinColor = spot.category === "reading-spot"
-          ? "#4f6d58"
-          : spot.category === "outdoor"
-            ? "#71856a"
-            : "#c76e4b";
-
-        const marker = L.circleMarker([spot.lat, spot.lng], {
-          radius: isPicked ? 11 : 8,
-          fillColor: pinColor,
-          color: "#2b1d14",
-          weight: 2.5,
-          opacity: 1,
-          fillOpacity: 0.92
-        });
-
-        const popupHtml = `
-          <div style="font-family: 'Patrick Hand', cursive; color: #38281f; min-width: 180px;">
-            <strong>${spot.name}</strong><br/>
-            <span style="font-size: 12px;">${spot.categoryLabel} • ${spot.hours}</span><br/>
-            <a href="${getGoogleMapsSearchUrl(spot)}" target="_blank" rel="noopener noreferrer" style="font-size: 12px; color: #b85d3b; font-weight: bold;">Open in Google Maps ↗</a>
-          </div>
-        `;
-        marker.bindPopup(popupHtml);
-        marker.addTo(hinigaranMarkersLayer);
-        spotMarkerLookup[spot.id] = marker;
-        bounds.push([spot.lat, spot.lng]);
-      });
-
-      if (bounds.length) {
-        hinigaranMapInstance.fitBounds(bounds, { padding: [28, 28], maxZoom: 15 });
-      }
-      setTimeout(() => {
-        hinigaranMapInstance.invalidateSize();
-      }, 120);
-    }
-
-    function buildSpotCardElement(spot) {
-      const isPicked = appState.pickedSpotId === spot.id;
-      const card = document.createElement("article");
-      card.className = "rounded-2xl bg-[#fffaf0] p-4 flex flex-col justify-between gap-3";
-      const pillBg = spot.category === "outdoor"
-        ? "bg-emerald-100 text-emerald-950"
-        : spot.category === "reading-spot"
-          ? "bg-amber-200 text-stone-950"
-          : "bg-amber-100 text-amber-900";
-
-      card.innerHTML = `
-        <div class="space-y-2">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-semibold px-2.5 py-0.5 sketch-pill ${pillBg}">${spot.categoryLabel}</span>
-            ${isPicked ? `<span class="text-xs font-bold text-emerald-800">Picked ✓</span>` : ""}
-          </div>
-          <h3 class="font-display text-lg font-bold">${spot.name}</h3>
-          <p class="text-xs text-stone-600"><strong>Hours:</strong> ${spot.hours}</p>
-          <p class="text-sm text-stone-800"><strong>Highlights:</strong> ${spot.highlights}</p>
-          <p class="text-sm text-stone-700">${spot.vibe}</p>
-        </div>
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-dashed border-stone-800/20">
-          <button
-            type="button"
-            onclick="pickSpotForReadingSession('${spot.id}')"
-            class="sketch-btn ${isPicked ? "bg-emerald-700 text-white" : "bg-[#b85d3b] text-white"} px-3 py-1.5 text-xs font-semibold"
-          >
-            ${isPicked ? "Selected for Session ✓" : "Pick for Reading Session"}
-          </button>
-          <a
-            href="${getGoogleMapsSearchUrl(spot)}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-xs font-bold underline text-[#8b4b32]"
-          >
-            Google Maps ↗
-          </a>
-        </div>
-      `;
-      return card;
-    }
-
-    function renderHinigaranSpots() {
-      const regularSpots = HINIGARAN_SPOTS.filter((s) => s.category !== "reading-spot");
-      const librarySpot = HINIGARAN_SPOTS.find((s) => s.category === "reading-spot");
-
-      const visibleRegular = appState.spotFilter === "all"
-        ? regularSpots
-        : appState.spotFilter === "reading-spot"
-          ? []
-          : regularSpots.filter((s) => s.category === appState.spotFilter);
-
-      const grid = document.getElementById("hinigaranSpotsGrid");
-      grid.innerHTML = "";
-      visibleRegular.forEach((spot) => {
-        grid.appendChild(buildSpotCardElement(spot));
-      });
-
-      const featuredBox = document.getElementById("littleReadingSpotFeatured");
-      if (librarySpot && (appState.spotFilter === "all" || appState.spotFilter === "reading-spot")) {
-        featuredBox.classList.remove("hidden");
-        const isPicked = appState.pickedSpotId === librarySpot.id;
-        featuredBox.innerHTML = `
-          <div class="flex flex-wrap items-start justify-between gap-4">
-            <div class="space-y-1.5 max-w-2xl">
-              <span class="text-xs font-bold px-3 py-0.5 sketch-pill bg-emerald-100 text-emerald-950">
-                Little Reading Spot at the End
-              </span>
-              <h2 class="font-display text-2xl font-bold">${librarySpot.name}</h2>
-              <p class="text-xs text-stone-600"><strong>Hours:</strong> ${librarySpot.hours}</p>
-              <p class="text-sm text-stone-800"><strong>Reading Setup:</strong> ${librarySpot.highlights}</p>
-              <p class="text-sm text-stone-700">${librarySpot.vibe}</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onclick="pickSpotForReadingSession('${librarySpot.id}')"
-                class="sketch-btn ${isPicked ? "bg-emerald-700 text-white" : "bg-amber-900 text-amber-50"} px-4 py-2 text-xs font-semibold"
-              >
-                ${isPicked ? "Selected for Session ✓" : "Pick for Reading Session"}
-              </button>
-              <a
-                href="${getGoogleMapsSearchUrl(librarySpot)}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="sketch-btn bg-white px-4 py-2 text-xs font-semibold"
-              >
-                Open in Google Maps ↗
-              </a>
-            </div>
-          </div>
-        `;
-      } else {
-        featuredBox.classList.add("hidden");
-      }
-
-      const mapSpots = appState.spotFilter === "all"
-        ? HINIGARAN_SPOTS
-        : appState.spotFilter === "reading-spot"
-          ? (librarySpot ? [librarySpot] : [])
-          : regularSpots.filter((s) => s.category === appState.spotFilter);
-
-      initOrUpdateHinigaranMap(mapSpots);
-    }
-
-
-    // =========================================================================
-    // CURATED SUBSTANCE LIBRARY (GUARANTEES RICH DETAILS FOR POPULAR BOOKS)
-    // =========================================================================
-    const CURATED_SUBSTANCE_BOOKS = [
-      {
-        title: "The Alchemist",
-        subtitle: "A Fable About Following Your Dream",
-        author: "Paulo Coelho",
-        year: "1988",
-        pages: 208,
-        isbn: "9780062315007",
-        subjects: ["Philosophy", "Quest & Destiny", "Spiritual Fiction"],
-        description: "Santiago, a young Andalusian shepherd, leaves his familiar flock behind after recurring dreams point toward hidden treasure near the Egyptian pyramids. Along the journey through Spain and across the Sahara, he meets an old king, a crystal merchant, an Englishman seeking the Philosopher's Stone, and an alchemist who teaches him to listen to his heart and read signs in the world around him.",
-        takeaways: [
-          "Paying attention to omens and small turns in a journey often reveals direction before the final destination is clear.",
-          "Fear of failure and attachment to comfort can hold people back longer than external obstacles.",
-          "Listening to your own heart helps separate genuine purpose from borrowed expectations."
-        ],
-        quotes: [
-          {
-            tag: "Core Motif • Personal Legend",
-            quote: "And, when you want something, all the universe conspires in helping you to achieve it.",
-            note: "Test this idea against Santiago's setbacks—notice how opportunities only matter when you're ready to act."
-          },
-          {
-            tag: "Present Moment",
-            quote: "The secret of life, though, is to fall seven times and to get up eight times.",
-            note: "Good lens for how Santiago handles losing his money and starting over."
-          }
-        ],
-        storyNotes: {
-          arc: "Opens with Santiago choosing a shepherd's freedom over seminary expectations, then builds a parabolic road journey from Andalusia to the desert—each stop tests what he values most.",
-          themes: "Fable structure keeps characters archetypal and clear around 'Personal Legend,' omens, and the language of the world. Notice how parable works best when every detour mirrors an inner question.",
-          pacing: "Short, brisk scenes (~208 pages total) read almost like folk tales stitched together. Great for 20–30 page cafe sittings where you pause after each mentor or setback."
-        },
-        adaptationText: "Stage adaptations and illustrated editions exist worldwide; compare how a sparse parable translates when staged or drawn visually without a narrator's commentary.",
-        moodTitle: "Desert & Acoustic",
-        spotifyQuery: "The Alchemist acoustic folk reading",
-        tracks: [
-          { title: "The Wind — PJ Harvey", note: "Sparse & reflective" },
-          { title: "Hoppípolla — Sigur Rós", note: "Hopeful & sweeping" },
-          { title: "Into the West — Annie Lennox", note: "Journey & farewell" },
-          { title: "Holocene — Bon Iver", note: "Quiet open space" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/works/OL15626917W"
-      },
-      {
-        title: "The Witch of Portobello",
-        subtitle: "A Novel",
-        author: "Paulo Coelho",
-        year: "2006",
-        pages: 336,
-        isbn: "9780061339252",
-        subjects: ["Identity & Belonging", "Spiritual Fiction", "Voices & Perspective"],
-        description: "Told through a mosaic of interviews with people who knew Athena—born Sherine Khalil in Transylvania, adopted in Beirut, raised in London, and later known in Portobello Road—this novel traces how an unconventional woman who embraces dance, trance, and spiritual guidance sparks both devotion and suspicion in her community.",
-        takeaways: [
-          "Different witnesses remember the exact same person in sharply contrasting ways depending on their own needs and fears.",
-          "Community judgment often turns quickly on people who refuse neat social labels."
-        ],
-        quotes: [
-          {
-            tag: "Voice & Freedom",
-            quote: "Don't let the noise of other people's opinions drown out your own inner voice.",
-            note: "Trace how Athena's supporters and critics interpret the same actions differently."
-          }
-        ],
-        storyNotes: {
-          arc: "Structured as an oral collage of voices rather than a single linear diary, letting mystery and character build through contradictions.",
-          themes: "Explores chosen identity, feminine spiritual expression, and how rumor vs. lived experience shapes a reputation.",
-          pacing: "Short interview fragments make it easy to read a few testimonies at a time and track who is speaking."
-        },
-        adaptationText: "Has been adapted for stage in several productions; pay attention to how multi-voice testimony works when spoken aloud by multiple performers.",
-        moodTitle: "Velvet & Candlelight",
-        spotifyQuery: "Paulo Coelho dramatic acoustic reading",
-        tracks: [
-          { title: "Skinny Love — Bon Iver", note: "Raw & intimate" },
-          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Steady piano" },
-          { title: "Landslide — Fleetwood Mac", note: "Reflective & warm" },
-          { title: "Nocturne in E-flat Major — Chopin", note: "Quiet evening mood" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780061339252-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=The+Witch+of+Portobello+Paulo+Coelho"
-      },
-      {
-        title: "Veronika Decides to Die",
-        subtitle: "A Novel",
-        author: "Paulo Coelho",
-        year: "1998",
-        pages: 210,
-        isbn: "9780060932725",
-        subjects: ["Mental Health & Renewal", "Existential Fiction", "Clarity Through Crisis"],
-        description: "Twenty-four-year-old Veronika in Ljubljana decides to end her life, only to wake up in Villete, a psychiatric clinic, and learn that the overdose left her heart damaged with only days left to live. Facing a countdown she never planned for, she starts noticing small joys, friendships, and truths she had tuned out.",
-        takeaways: [
-          "A sudden shift in perspective—like an unexpected deadline—can expose what you actually care about.",
-          "Connection with outsiders and misfits often brings unexpected honesty."
-        ],
-        quotes: [
-          {
-            tag: "Madness & Normality",
-            quote: "Whenever we love, we always strive to become better than we are.",
-            note: "Compare how 'normal' society vs. the patients inside Villete define sanity."
-          }
-        ],
-        storyNotes: {
-          arc: "Tight premise driven by a short ticking clock inside a confined setting, turning an ending into a forced re-evaluation of every day.",
-          themes: "Examines conformity, emotional numbness, and what makes life feel vivid again.",
-          pacing: "Compact ~210 pages with short chapters—reads quickly with strong emotional contrast."
-        },
-        adaptationText: "Adapted into a 2009 feature film starring Sarah Michelle Gellar; compare how the film handles the clinic setting and internal monologue.",
-        moodTitle: "Rainy Window & Piano",
-        spotifyQuery: "melancholic piano reading playlist",
-        tracks: [
-          { title: "River Flows in You — Yiruma", note: "Gentle & steady" },
-          { title: "Experience — Ludovico Einaudi", note: "Emotional build" },
-          { title: "Breathe Me — Sia", note: "Quiet & raw" },
-          { title: "Vienna — Billy Joel", note: "Grounded & calm" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780060932725-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=Veronika+Decides+to+Die+Paulo+Coelho"
-      },
-      {
-        title: "Brida",
-        subtitle: "A Novel",
-        author: "Paulo Coelho",
-        year: "1990",
-        pages: 224,
-        isbn: "9780061578939",
-        subjects: ["Tradition & Intuition", "Coming of Age", "Spiritual Quest"],
-        description: "A young Irish woman named Brida seeks deeper understanding of love, destiny, and mystical wisdom, studying under two very different teachers: a folklorist/magus in the forest and a Wiccan teacher who guides her in intuition and courage.",
-        takeaways: [
-          "Learning often requires balancing disciplined study with trusting your own intuition.",
-          "Real growth usually asks you to risk losing certainty before finding a truer path."
-        ],
-        quotes: [
-          {
-            tag: "Trusting the Leap",
-            quote: "Love is a trap. When it appears, take it in.",
-            note: "Notice how Brida has to weigh caution against openness."
-          }
-        ],
-        storyNotes: {
-          arc: "Follows an apprenticeship structure with two contrasting mentors, building toward a personal test of readiness.",
-          themes: "Contrasts analytical tradition with intuitive wisdom and personal agency.",
-          pacing: "Around 224 pages with clear dialogue-driven scenes—easy to read in steady evening blocks."
-        },
-        adaptationText: "Look up stage or reading discussions on Brida to see how its two mentor traditions are contrasted.",
-        moodTitle: "Celtic Mist & Acoustic",
-        spotifyQuery: "celtic acoustic reading playlist",
-        tracks: [
-          { title: "The Shire — Howard Shore", note: "Warm folk melody" },
-          { title: "Landslide — Fleetwood Mac", note: "Soft acoustic" },
-          { title: "Holocene — Bon Iver", note: "Calm & airy" },
-          { title: "To Build a Home — The Cinematic Orchestra", note: "Reflective strings" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780061578939-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=Brida+Paulo+Coelho"
-      },
-      {
-        title: "Eleven Minutes",
-        subtitle: "A Novel",
-        author: "Paulo Coelho",
-        year: "2003",
-        pages: 273,
-        isbn: "9780060587291",
-        subjects: ["Intimacy & Desire", "Self-Discovery", "Exile & Return"],
-        description: "Maria leaves a small town in Brazil hoping adventure awaits in Rio, gets sidetracked in Geneva, and ends up working in adult entertainment while keeping a private journal about love, physical intimacy, and the gap between desire and true connection.",
-        takeaways: [
-          "Separating physical transaction from emotional intimacy shapes how a character views herself and others.",
-          "Journals often show the gap between the outward role a person plays and what they actually long for."
-        ],
-        quotes: [
-          {
-            tag: "Journal Reflection",
-            quote: "Sex is a path—one of many—that can lead us to the sacred.",
-            note: "Track how Maria's journal entries shift as she meets someone who treats her as a whole person."
-          }
-        ],
-        storyNotes: {
-          arc: "Structured around diary entries woven into Maria's life abroad, contrasting daily routine with inner reflection.",
-          themes: "Examines vulnerability, dignity, and why connection requires letting go of armor.",
-          pacing: "~273 pages divided into short, sharp diary-style beats."
-        },
-        adaptationText: "Explore reader essays and theater adaptations comparing Maria's public role with her private journal voice.",
-        moodTitle: "Late-Night Strings & Café",
-        spotifyQuery: "late night acoustic cafe reading",
-        tracks: [
-          { title: "Nocturne in E-flat Major — Chopin", note: "Quiet & intimate" },
-          { title: "Vienna — Billy Joel", note: "Steady & reflective" },
-          { title: "Landslide — Fleetwood Mac", note: "Acoustic warmth" },
-          { title: "River Flows in You — Yiruma", note: "Soft piano" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780060587291-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=Eleven+Minutes+Paulo+Coelho"
-      },
-      {
-        title: "The Zahir",
-        subtitle: "A Novel of Obsession",
-        author: "Paulo Coelho",
-        year: "2005",
-        pages: 316,
-        isbn: "9780060820367",
-        subjects: ["Obsession & Love", "Journey & Memory", "Fiction"],
-        description: "A successful writer in Paris finds his life upended when his war-correspondent wife Esther disappears without explanation, leaving him consumed by what 'Zahir' means—something that takes over your thoughts until you can focus on nothing else.",
-        takeaways: [
-          "Obsession can disguise itself as devotion when you try to control someone or freeze a relationship in the past.",
-          "Letting go of an old story is often necessary before you can see what is right in front of you."
-        ],
-        quotes: [
-          {
-            tag: "The Idea of the Zahir",
-            quote: "Love is a force more formidable than any other. It is invisible—it cannot be seen or measured, yet it is powerful enough to transform you in a moment.",
-            note: "Ask whether the narrator loves Esther as she is or loves the mystery of her absence."
-          }
-        ],
-        storyNotes: {
-          arc: "Begins with a sudden disappearance and moves from Paris toward Central Asia as the narrator chases answers and self-honesty.",
-          themes: "Explores obsession, freedom vs. possession, and how grief reshapes memory.",
-          pacing: "~316 pages with reflective conversations driving the plot forward."
-        },
-        adaptationText: "Look up author interviews and book club discussions on how Coelho uses the 'Zahir' concept.",
-        moodTitle: "Open Road & Ambient",
-        spotifyQuery: "ambient journey piano reading",
-        tracks: [
-          { title: "Time — Hans Zimmer", note: "Slow & sweeping" },
-          { title: "Holocene — Bon Iver", note: "Quiet & distant" },
-          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Steady piano" },
-          { title: "Experience — Ludovico Einaudi", note: "Gradual build" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780060820367-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=The+Zahir+Paulo+Coelho"
-      },
-      {
-        title: "The Pilgrimage",
-        subtitle: "A Contemporary Quest for a New Way of Life",
-        author: "Paulo Coelho",
-        year: "1987",
-        pages: 256,
-        isbn: "9780062502186",
-        subjects: ["Camino de Santiago", "Spiritual Quest", "Discipline & Practice"],
-        description: "After failing a test to earn a sword in the RAM tradition, Paulo walks the road to Santiago de Compostela with a guide named Petrus, completing practical exercises meant to strip away ego and routine.",
-        takeaways: [
-          "Repetitive physical exercises often reveal impatience and ego faster than abstract theory.",
-          "Small daily practices matter more than dramatic promises."
-        ],
-        quotes: [
-          {
-            tag: "The Road Exercise",
-            quote: "An ordinary man is always looking for extraordinary things.",
-            note: "Notice which road exercises feel easy vs. frustrating for the narrator."
-          }
-        ],
-        storyNotes: {
-          arc: "Follows step-by-step trials along the Camino pilgrimage route, pairing physical endurance with practical lessons.",
-          themes: "Focuses on humility, discipline, and overcoming self-doubt on a long trek.",
-          pacing: "~256 pages structured around distinct exercises and stages of the walk."
-        },
-        adaptationText: "Compare this early pilgrimage account with modern Camino de Santiago travelogues and documentaries.",
-        moodTitle: "Footsteps & Acoustic",
-        spotifyQuery: "camino de santiago acoustic reading",
-        tracks: [
-          { title: "Landslide — Fleetwood Mac", note: "Gentle acoustic" },
-          { title: "The Shire — Howard Shore", note: "Walking pace" },
-          { title: "Vienna — Billy Joel", note: "Steady & calm" },
-          { title: "Holocene — Bon Iver", note: "Quiet reflection" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780062502186-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=The+Pilgrimage+Paulo+Coelho"
-      },
-      {
-        title: "The Spy",
-        subtitle: "A Novel",
-        author: "Paulo Coelho",
-        year: "2016",
-        pages: 192,
-        isbn: "9780385352809",
-        subjects: ["Historical Fiction", "Biography & Memory", "Freedom & Scandal"],
-        description: "Set in 1917 Paris during World War I, this compact novel looks at Mata Hari—Margaretha Zelle—through a letter written from her cell shortly before her execution, reflecting on her life as a dancer, outsider, and scapegoat.",
-        takeaways: [
-          "In times of war and panic, public scapegoats are often judged by rumor rather than proof.",
-          "Writing in hindsight can reclaim a voice that others tried to define."
-        ],
-        quotes: [
-          {
-            tag: "Letter from Prison",
-            quote: "I was never a traitor; I was a woman who lived on her own terms.",
-            note: "Examine how Margaretha frames her choices against wartime suspicion."
-          }
-        ],
-        storyNotes: {
-          arc: "Framed as a final confession/letter looking back across an unconventional life from a prison cell.",
-          themes: "Explores independence, public scandal, and how history remembers women who step outside norms.",
-          pacing: "Short (~192 pages) and focused—can be read in one or two focused sittings."
-        },
-        adaptationText: "Compare this fictionalized letter with historical accounts and film adaptations of Mata Hari's life.",
-        moodTitle: "Parisian Dusk & Piano",
-        spotifyQuery: "vintage french piano reading",
-        tracks: [
-          { title: "Nocturne in E-flat Major — Chopin", note: "Classic & moody" },
-          { title: "River Flows in You — Yiruma", note: "Soft piano" },
-          { title: "Breathe Me — Sia", note: "Quiet & poignant" },
-          { title: "Moonlight Sonata — Beethoven", note: "Evening calm" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780385352809-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=The+Spy+Paulo+Coelho"
-      },
-      {
-        title: "Manuscript Found in Accra",
-        subtitle: "A Novel",
-        author: "Paulo Coelho",
-        year: "2012",
-        pages: 192,
-        isbn: "9780385350652",
-        subjects: ["Wisdom & Parable", "Community & Fear", "Philosophy"],
-        description: "On the eve of an invasion in 1099 Jerusalem, a mysterious figure known as the Copt gathers residents of all faiths and backgrounds in the town square to answer questions about fear, defeat, solitude, love, and beauty.",
-        takeaways: [
-          "Fear makes people turn inward, while shared perspective helps a community face uncertainty together.",
-          "Short, direct answers to big questions work best when paired with real stakes."
-        ],
-        quotes: [
-          {
-            tag: "Before the Storm",
-            quote: "Defeat is not the worst of failures. Not to have tried is the true failure.",
-            note: "Notice how the looming threat shapes the questions people ask."
-          }
-        ],
-        storyNotes: {
-          arc: "Built around a single gathering on the night before a siege, turning big human questions into a collective conversation.",
-          themes: "Focuses on courage, solidarity, and holding onto meaning when outcomes are uncertain.",
-          pacing: "~192 pages of short, aphoristic passages—great for highlighting one line at a time."
-        },
-        adaptationText: "Read alongside Coelho's other aphoristic works to see how a single setting holds multiple philosophical threads.",
-        moodTitle: "Quiet Lantern & Strings",
-        spotifyQuery: "peaceful acoustic strings reading",
-        tracks: [
-          { title: "To Build a Home — The Cinematic Orchestra", note: "Warm & steady" },
-          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Gentle piano" },
-          { title: "Holocene — Bon Iver", note: "Quiet & reflective" },
-          { title: "Experience — Ludovico Einaudi", note: "Thoughtful arc" }
-        ],
-        coverUrl: "https://covers.openlibrary.org/b/isbn/9780385350652-L.jpg",
-        source: "Quillfinite Curated + Catalog",
-        catalogUrl: "https://openlibrary.org/search?q=Manuscript+Found+in+Accra+Paulo+Coelho"
-      }
-    ];
-
-    function findCuratedMatches(query, scope = "all") {
-      const q = String(query || "").trim().toLowerCase();
-      if (!q) return [];
-      const isbnClean = extractIsbn(q);
-
-      return CURATED_SUBSTANCE_BOOKS.filter((item) => {
-        const titleMatch = item.title.toLowerCase().includes(q) || (item.subtitle || "").toLowerCase().includes(q);
-        const authorMatch = item.author.toLowerCase().includes(q);
-        const isbnMatch = isbnClean && item.isbn.replace(/[^0-9Xx]/g, "").toUpperCase() === isbnClean;
-        const subjectMatch = (item.subjects || []).some((s) => s.toLowerCase().includes(q));
-
-        if (scope === "title") return titleMatch;
-        if (scope === "author") return authorMatch;
-        if (scope === "isbn") return isbnMatch;
-        return titleMatch || authorMatch || isbnMatch || subjectMatch;
-      });
-    }
-
-    async function searchCandidateBooks(query, scope = "all") {
-      const trimmed = String(query || "").trim();
-      const isbn = extractIsbn(trimmed);
-      const curated = findCuratedMatches(trimmed, scope);
-
-      const candidates = curated.map((c) => ({
-        ...c,
-        _isCurated: true
-      }));
-
-      const seenKeys = new Set(
-        candidates.map((c) => `${c.title.toLowerCase()}::${c.author.toLowerCase()}`)
-      );
-
-      // Pull multiple Open Library matches so user can pick the right one
-      try {
-        if (isbn || scope === "isbn") {
-          const code = isbn || trimmed.replace(/[^0-9Xx]/g, "");
-          const single = await queryOpenLibrary(code, "isbn");
-          if (single) {
-            const k = `${single.title.toLowerCase()}::${single.author.toLowerCase()}`;
-            if (!seenKeys.has(k)) {
-              seenKeys.add(k);
-              candidates.push(single);
-            }
-          }
-        } else {
-          const params = new URLSearchParams({ limit: "6" });
-          if (scope === "title") params.set("title", trimmed);
-          else if (scope === "author") params.set("author", trimmed);
-          else params.set("q", trimmed);
-
-          const res = await fetch(`https://openlibrary.org/search.json?${params.toString()}`);
-          if (res.ok) {
-            const data = await res.json();
-            const docs = Array.isArray(data.docs) ? data.docs.slice(0, 6) : [];
-            docs.forEach((doc) => {
-              if (!doc || !doc.title) return;
-              const authorStr = Array.isArray(doc.author_name) && doc.author_name.length
-                ? doc.author_name.slice(0, 2).join(", ")
-                : "Unknown Author";
-              const k = `${doc.title.toLowerCase()}::${authorStr.toLowerCase()}`;
-              if (seenKeys.has(k)) return;
-              seenKeys.add(k);
-
-              const isbnGuess = Array.isArray(doc.isbn) && doc.isbn.length ? doc.isbn[0] : "";
-              const coverUrl = doc.cover_i
-                ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
-                : isbnGuess
-                  ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbnGuess)}-M.jpg`
-                  : "";
-
-              candidates.push({
-                title: doc.title,
-                subtitle: doc.subtitle || "",
-                author: authorStr,
-                year: doc.first_publish_year ? String(doc.first_publish_year) : "",
-                pages: doc.number_of_pages_median || null,
-                isbn: isbnGuess,
-                subjects: Array.isArray(doc.subject) ? doc.subject.slice(0, 5) : [],
-                description: "",
-                coverUrl,
-                source: "Open Library",
-                catalogUrl: doc.key ? `https://openlibrary.org${doc.key}` : "https://openlibrary.org"
-              });
-            });
-          }
-        }
-      } catch (_) {}
-
-      // Also fetch Google Books volume candidates for richer matches
-      try {
-        let gq = trimmed;
-        if (isbn || scope === "isbn") gq = `isbn:${isbn || trimmed.replace(/[^0-9Xx]/g, "")}`;
-        else if (scope === "title") gq = `intitle:${trimmed}`;
-        else if (scope === "author") gq = `inauthor:${trimmed}`;
-
-        const gRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(gq)}&maxResults=5`);
-        if (gRes.ok) {
-          const gData = await gRes.json();
-          const items = Array.isArray(gData.items) ? gData.items : [];
-          items.forEach((item) => {
-            const info = item && item.volumeInfo ? item.volumeInfo : null;
-            if (!info || !info.title) return;
-            const authorStr = Array.isArray(info.authors) && info.authors.length
-              ? info.authors.slice(0, 2).join(", ")
-              : "Unknown Author";
-            const k = `${info.title.toLowerCase()}::${authorStr.toLowerCase()}`;
-            if (seenKeys.has(k)) return;
-            seenKeys.add(k);
-
-            const ids = Array.isArray(info.industryIdentifiers) ? info.industryIdentifiers : [];
-            const isbn13 = ids.find((x) => x.type === "ISBN_13")?.identifier;
-            const isbn10 = ids.find((x) => x.type === "ISBN_10")?.identifier;
-            const thumb = info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "";
-
-            candidates.push({
-              title: info.title,
-              subtitle: info.subtitle || "",
-              author: authorStr,
-              year: info.publishedDate ? String(info.publishedDate).slice(0, 4) : "",
-              pages: info.pageCount || null,
-              isbn: isbn13 || isbn10 || isbn || "",
-              subjects: Array.isArray(info.categories) ? info.categories.slice(0, 5) : [],
-              description: cleanHtml(info.description || ""),
-              coverUrl: thumb.replace(/^http:\/\//i, "https://"),
-              source: "Google Books",
-              catalogUrl: info.infoLink || "https://books.google.com"
-            });
-          });
-        }
-      } catch (_) {}
-
-      return candidates.slice(0, 8);
-    }
-
-    function hideCandidatesBox() {
-      document.getElementById("searchCandidatesBox")?.classList.add("hidden");
-    }
-
-    function renderSearchCandidates(candidates, previewImageUrl = "") {
-      const box = document.getElementById("searchCandidatesBox");
-      const list = document.getElementById("searchCandidatesList");
-      if (!box || !list) return;
-
-      list.innerHTML = "";
-      if (!candidates || candidates.length <= 1) {
-        box.classList.add("hidden");
-        return;
-      }
-
-      candidates.forEach((cand, index) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "w-full text-left rounded-xl bg-white hover:bg-amber-100/70 p-2.5 border border-stone-800/20 flex items-start justify-between gap-2 transition";
-        const metaParts = [cand.author, cand.year, cand.pages ? `${cand.pages} pp.` : ""].filter(Boolean).join(" • ");
-        const badgeLabel = cand._isCurated ? "Full Notes" : (cand.source || "Catalog");
-
-        btn.innerHTML = `
-          <div class="min-w-0">
-            <span class="block text-sm font-bold text-stone-900 truncate">${cand.title}</span>
-            <span class="block text-xs text-stone-600 truncate">${metaParts || "Edition match"}</span>
-          </div>
-          <span class="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full ${cand._isCurated ? "bg-emerald-100 text-emerald-950" : "bg-amber-100 text-stone-800"}">
-            ${badgeLabel}
-          </span>
-        `;
-        btn.onclick = () => {
-          selectCandidateBook(candidates[index], previewImageUrl);
-        };
-        list.appendChild(btn);
-      });
-
-      box.classList.remove("hidden");
-    }
-
-    async function selectCandidateBook(cand, previewImageUrl = "") {
-      if (!cand) return;
-      document.getElementById("loadingBookCard").classList.remove("hidden");
-      document.getElementById("emptyBookCard").classList.add("hidden");
-      document.getElementById("activeBookReadingCard").classList.add("hidden");
-      document.getElementById("loadingBookSubtext").textContent = `Loading "${cand.title}"...`;
-
-      // Enrich ANY book with Wikipedia summary + Open Library + Google Books substance
-      let enriched = await enrichAnyBookRecord(cand);
-
-      if (previewImageUrl && !enriched.coverUrl) {
-        enriched.coverUrl = previewImageUrl;
-      }
-
-      document.getElementById("loadingBookCard").classList.add("hidden");
-      const book = buildDynamicCompanion(enriched);
-      displayBook(book);
-      document.getElementById("lookupStatusLine").textContent =
-        `Selected "${book.title}" by ${book.author} (${book.source}).`;
-    }
-
-
-    // =========================================================================
-    // UNIVERSAL SUBSTANCE ENGINE (WORKS FOR ANY BOOK IN THE WORLD)
-    // =========================================================================
-    async function fetchWikipediaBookSubstance(title, author = "") {
-      const cleanT = String(title || "").trim();
-      if (!cleanT) return null;
-      const cleanA = author && author !== "Unknown Author" ? String(author).trim() : "";
-
-      const candidatesToTry = [];
-      if (cleanA) {
-        candidatesToTry.push(`${cleanT} (${cleanA} novel)`);
-        candidatesToTry.push(`${cleanT} (novel)`);
-        candidatesToTry.push(`${cleanT} (${cleanA})`);
-        candidatesToTry.push(`${cleanT} (book)`);
-      } else {
-        candidatesToTry.push(`${cleanT} (novel)`);
-        candidatesToTry.push(`${cleanT} (book)`);
-      }
-      candidatesToTry.push(cleanT);
-
-      for (const pageTitle of candidatesToTry) {
-        try {
-          const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle)}`;
-          const res = await fetch(url);
-          if (!res.ok) continue;
-          const data = await res.json();
-          if (data && data.type === "standard" && data.extract && data.extract.length > 80) {
-            const lowerExt = data.extract.toLowerCase();
-            // Skip disambiguation pages or non-book entries unless no book match exists
-            if (lowerExt.includes("may refer to:") || lowerExt.includes("most commonly refers to")) {
-              continue;
-            }
-            return {
-              extract: cleanHtml(data.extract),
-              wikiUrl: data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(pageTitle.replace(/\s+/g, "_"))}`,
-              thumbUrl: data.thumbnail?.source ? data.thumbnail.source.replace(/^http:\/\//i, "https://") : ""
-            };
-          }
-        } catch (_) {}
-      }
-
-      // Fallback search via MediaWiki opensearch
-      try {
-        const searchTerm = cleanA ? `${cleanT} ${cleanA} novel` : `${cleanT} novel`;
-        const sUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(searchTerm)}&limit=3&namespace=0&format=json&origin=*`;
-        const sRes = await fetch(sUrl);
-        if (sRes.ok) {
-          const sJson = await sRes.json();
-          const titles = Array.isArray(sJson[1]) ? sJson[1] : [];
-          for (const wt of titles) {
-            const pRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wt)}`);
-            if (!pRes.ok) continue;
-            const pData = await pRes.json();
-            if (pData && pData.type === "standard" && pData.extract && pData.extract.length > 80) {
-              return {
-                extract: cleanHtml(pData.extract),
-                wikiUrl: pData.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(wt.replace(/\s+/g, "_"))}`,
-                thumbUrl: pData.thumbnail?.source ? pData.thumbnail.source.replace(/^http:\/\//i, "https://") : ""
-              };
-            }
-          }
-        }
-      } catch (_) {}
-
-      return null;
-    }
-
-    async function enrichAnyBookRecord(record) {
-      let enriched = { ...record };
-
-      // 1. Fetch Wikipedia book summary for real plot/overview depth on ANY book
-      const wiki = await fetchWikipediaBookSubstance(enriched.title, enriched.author);
-      if (wiki) {
-        enriched.wikiSummary = wiki.extract;
-        enriched.wikiUrl = wiki.wikiUrl;
-        if (!enriched.description || enriched.description.length < wiki.extract.length) {
-          enriched.description = wiki.extract;
-        }
-        if (!enriched.coverUrl && wiki.thumbUrl) {
-          enriched.coverUrl = wiki.thumbUrl;
-        }
-      }
-
-      // 2. Also query Open Library & Google Books if description/pages/subjects are still sparse
-      if (!enriched.description || enriched.description.length < 70 || !enriched.pages || !enriched.subjects?.length) {
-        try {
-          const [olExtra, gbExtra] = await Promise.allSettled([
-            queryOpenLibrary(enriched.isbn || enriched.title, enriched.isbn ? "isbn" : "title"),
-            queryGoogleBooks(enriched.isbn ? `isbn:${enriched.isbn}` : `${enriched.title} ${enriched.author || ""}`.trim(), "all")
-          ]);
-          const olV = olExtra.status === "fulfilled" ? olExtra.value : null;
-          const gbV = gbExtra.status === "fulfilled" ? gbExtra.value : null;
-          const combined = combineRecords(olV, gbV);
-          if (combined) {
-            enriched = {
-              ...enriched,
-              description:
-                (enriched.description && enriched.description.length >= 70 ? enriched.description : "") ||
-                combined.description ||
-                enriched.description,
-              pages: enriched.pages || combined.pages,
-              year: enriched.year || combined.year,
-              subjects: enriched.subjects?.length ? enriched.subjects : combined.subjects,
-              coverUrl: enriched.coverUrl || combined.coverUrl,
-              catalogUrl: combined.catalogUrl || enriched.catalogUrl
-            };
-          }
-        } catch (_) {}
-      }
-
-      return enriched;
-    }
-
-    // =========================================================================
-    // UNIVERSAL BOOK API LOOKUP (OPEN LIBRARY + GOOGLE BOOKS)
-    // =========================================================================
-    function cleanHtml(str) {
-      return String(str || "")
-        .replace(/<[^>]*>/g, " ")
-        .replace(/&amp;/g, "&")
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function extractIsbn(raw) {
-      const digits = String(raw || "").replace(/[^0-9Xx]/g, "").toUpperCase();
-      return digits.length === 10 || digits.length === 13 ? digits : "";
-    }
-
-    async function queryOpenLibrary(query, scope) {
-      const trimmed = query.trim();
-      const isbn = extractIsbn(trimmed);
-
-      if (isbn || scope === "isbn") {
-        const code = isbn || trimmed.replace(/[^0-9Xx]/g, "");
-        if (code) {
-          const res = await fetch(`https://openlibrary.org/isbn/${encodeURIComponent(code)}.json`);
-          if (res.ok) {
-            const ed = await res.json();
-            let authorName = "";
-            if (Array.isArray(ed.authors) && ed.authors.length) {
-              try {
-                const aRes = await fetch(`https://openlibrary.org${ed.authors[0].key}.json`);
-                if (aRes.ok) {
-                  const aJson = await aRes.json();
-                  authorName = aJson.name || "";
-                }
-              } catch (_) {}
-            }
-            const desc =
-              typeof ed.description === "string"
-                ? ed.description
-                : ed.description && ed.description.value
-                  ? ed.description.value
-                  : "";
-            const coverId = Array.isArray(ed.covers) && ed.covers.length ? ed.covers[0] : null;
-            return {
-              title: ed.title || `ISBN ${code}`,
-              subtitle: ed.subtitle || "",
-              author: authorName || "Author on Edition",
-              year: ed.publish_date || "",
-              pages: ed.number_of_pages || null,
-              isbn: code,
-              subjects: Array.isArray(ed.subjects) ? ed.subjects.slice(0, 5) : [],
-              description: cleanHtml(desc),
-              coverUrl: coverId
-                ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
-                : `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(code)}-L.jpg`,
-              source: "Open Library",
-              catalogUrl: `https://openlibrary.org/isbn/${encodeURIComponent(code)}`
-            };
-          }
-        }
-      }
-
-      const params = new URLSearchParams({ limit: "1" });
-      if (scope === "title") params.set("title", trimmed);
-      else if (scope === "author") params.set("author", trimmed);
-      else params.set("q", trimmed);
-
-      const res = await fetch(`https://openlibrary.org/search.json?${params.toString()}`);
-      if (!res.ok) return null;
-      const data = await res.json();
-      const doc = data && Array.isArray(data.docs) ? data.docs[0] : null;
-      if (!doc || !doc.title) return null;
-
-      let workDesc = "";
-      if (doc.key) {
-        try {
-          const wRes = await fetch(`https://openlibrary.org${doc.key}.json`);
-          if (wRes.ok) {
-            const wJson = await wRes.json();
-            workDesc =
-              typeof wJson.description === "string"
-                ? wJson.description
-                : wJson.description && wJson.description.value
-                  ? wJson.description.value
-                  : "";
-          }
-        } catch (_) {}
-      }
-
-      const isbnGuess = Array.isArray(doc.isbn) && doc.isbn.length ? doc.isbn[0] : "";
-      const coverUrl = doc.cover_i
-        ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`
-        : isbnGuess
-          ? `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbnGuess)}-L.jpg`
-          : "";
-
-      return {
-        title: doc.title,
-        subtitle: doc.subtitle || "",
-        author: Array.isArray(doc.author_name) && doc.author_name.length
-          ? doc.author_name.slice(0, 2).join(", ")
-          : "Unknown Author",
-        year: doc.first_publish_year ? String(doc.first_publish_year) : "",
-        pages: doc.number_of_pages_median || null,
-        isbn: isbnGuess,
-        subjects: Array.isArray(doc.subject) ? doc.subject.slice(0, 5) : [],
-        description: cleanHtml(workDesc),
-        coverUrl,
-        source: "Open Library",
-        catalogUrl: doc.key ? `https://openlibrary.org${doc.key}` : "https://openlibrary.org"
-      };
-    }
-
-    async function queryGoogleBooks(query, scope) {
-      const trimmed = query.trim();
-      const isbn = extractIsbn(trimmed);
-      let q = trimmed;
-      if (isbn || scope === "isbn") {
-        q = `isbn:${isbn || trimmed.replace(/[^0-9Xx]/g, "")}`;
-      } else if (scope === "title") {
-        q = `intitle:${trimmed}`;
-      } else if (scope === "author") {
-        q = `inauthor:${trimmed}`;
-      }
-
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=1`);
-      if (!res.ok) return null;
-      const data = await res.json();
-      const item = data && Array.isArray(data.items) ? data.items[0] : null;
-      const info = item && item.volumeInfo ? item.volumeInfo : null;
-      if (!info || !info.title) return null;
-
-      const ids = Array.isArray(info.industryIdentifiers) ? info.industryIdentifiers : [];
-      const isbn13 = ids.find((x) => x.type === "ISBN_13")?.identifier;
-      const isbn10 = ids.find((x) => x.type === "ISBN_10")?.identifier;
-      const thumb = info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail || "";
-
-      return {
-        title: info.title,
-        subtitle: info.subtitle || "",
-        author: Array.isArray(info.authors) && info.authors.length
-          ? info.authors.slice(0, 2).join(", ")
-          : "Unknown Author",
-        year: info.publishedDate ? String(info.publishedDate).slice(0, 4) : "",
-        pages: info.pageCount || null,
-        isbn: isbn13 || isbn10 || isbn || "",
-        subjects: Array.isArray(info.categories) ? info.categories.slice(0, 5) : [],
-        description: cleanHtml(info.description || ""),
-        coverUrl: thumb.replace(/^http:\/\//i, "https://"),
-        source: "Google Books",
-        catalogUrl: info.infoLink || "https://books.google.com"
-      };
-    }
-
-    function combineRecords(olRec, gbRec) {
-      if (!olRec && !gbRec) return null;
-      const a = gbRec || {};
-      const b = olRec || {};
-      const description =
-        (a.description && a.description.length > 50 ? a.description : "") ||
-        (b.description && b.description.length > 50 ? b.description : "") ||
-        a.description ||
-        b.description ||
-        "";
-
-      const subjects = Array.from(
-        new Set([...(a.subjects || []), ...(b.subjects || [])].filter(Boolean))
-      ).slice(0, 5);
-
-      return {
-        title: a.title || b.title || "Untitled Book",
-        subtitle: a.subtitle || b.subtitle || "",
-        author: (a.author && a.author !== "Unknown Author" ? a.author : "") || b.author || "Unknown Author",
-        year: a.year || b.year || "",
-        pages: a.pages || b.pages || null,
-        isbn: a.isbn || b.isbn || "",
-        subjects,
-        description,
-        coverUrl: a.coverUrl || b.coverUrl || "",
-        source: olRec && gbRec ? "Open Library + Google Books" : (gbRec || olRec).source,
-        catalogUrl: (gbRec || olRec).catalogUrl || "https://openlibrary.org"
-      };
-    }
-
-    // =========================================================================
-    // DYNAMIC BOOK SYNTHESIS (WORKS FOR ANY BOOK)
-    // =========================================================================
-    function buildDynamicCompanion(record) {
-      const matchedCurated = record._isCurated
-        ? record
-        : CURATED_SUBSTANCE_BOOKS.find(
-            (c) =>
-              c.title.toLowerCase() === String(record.title || "").trim().toLowerCase() &&
-              (!record.author ||
-                record.author === "Unknown Author" ||
-                c.author.toLowerCase().includes(String(record.author).trim().toLowerCase().split(" ")[0]))
-          );
-
-      const title = cleanHtml(matchedCurated?.title || record.title) || "Untitled Book";
-      const subtitle = cleanHtml(matchedCurated?.subtitle || record.subtitle);
-      const author = cleanHtml(
-        record.author && record.author !== "Unknown Author"
-          ? record.author
-          : (matchedCurated?.author || "Unknown Author")
-      );
-      const year = cleanHtml(matchedCurated?.year || record.year) || "Edition Listed";
-      const pages = (matchedCurated?.pages) || (record.pages && Number(record.pages) > 0 ? Number(record.pages) : 250);
-      const subjects = Array.isArray(matchedCurated?.subjects) && matchedCurated.subjects.length
-        ? matchedCurated.subjects.map(cleanHtml).filter(Boolean)
-        : Array.isArray(record.subjects) && record.subjects.length
-          ? record.subjects.map(cleanHtml).filter(Boolean)
-          : ["General"];
-      const primaryTopic = subjects[0] || "General";
-      const rawDesc = cleanHtml(matchedCurated?.description || record.description);
-
-      const synopsis = rawDesc
-        ? rawDesc
-        : `"${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} (${primaryTopic}). No full blurb was in the catalog record, so jot down what happens as you read.`;
-
-      const sentences = synopsis
-        .split(/(?<=[.!?])\s+/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      const leadSentence = sentences[0] || `"${title}" sets up its main situation early on.`;
-      const followSentence = sentences.slice(1, 3).join(" ") || "Watch how the main characters react when plans change.";
-
-      const topicText = subjects.slice(0, 2).join(" & ") || primaryTopic;
-      const authorLabel = author !== "Unknown Author" ? author : "its author";
-      const yearLabel = year && year !== "Edition Listed" ? ` (${year})` : "";
-
-      const takeaways = matchedCurated?.takeaways?.length
-        ? matchedCurated.takeaways
-        : [
-            `Core focus: ${topicText} in "${title}" by ${authorLabel}${yearLabel}.`,
-            sentences.length > 1
-              ? `Key plot/idea thread: ${sentences[1]}`
-              : `Read how "${title}" develops its central situation across ~${pages} pages.`,
-            `Reading takeaway: Track how the central tension shifts from the opening setup to the middle turning point.`
-          ];
-
-      const quotes = matchedCurated?.quotes?.length
-        ? matchedCurated.quotes
+        const whyRead = matchedCurated?.whyRead
+        ? matchedCurated.whyRead
+        : `"${title}" is worth picking up if you want to explore ${topicText.toLowerCase()} through a clear central situation${author !== "Unknown Author" ? ` shaped by ${author}` : ""}. It gives students strong material for reflection, discussion, and comparing how big ideas play out in concrete choices.`;
+
+      const characters = Array.isArray(matchedCurated?.characters) && matchedCurated.characters.length
+        ? matchedCurated.characters
         : [
             {
-              tag: "Opening Setup / Premise",
-              quote: leadSentence,
-              note: `Ask what question or expectation "${title}" sets up right here.`
+              name: `Central Perspective / Lead in "${title}"`,
+              role: "Focal Point of Action",
+              breakdown: `${leadSentence} Watch what this figure prioritizes most when pressure rises.`
             },
             {
-              tag: "Developing Thread",
-              quote: followSentence || leadSentence,
-              note: `Watch how ${authorLabel} builds stakes or evidence around ${primaryTopic.toLowerCase()}.`
+              name: `Counter-Force / Key Tension (${primaryTopic})`,
+              role: "Challenge & Conflict",
+              breakdown: `${followSentence || `Notice how obstacles in "${title}" test the main character's habits, beliefs, or plans.`}`
             }
           ];
 
-      const storyNotes = matchedCurated?.storyNotes
-        ? matchedCurated.storyNotes
-        : {
-            arc: `${leadSentence} ${followSentence}`.trim().slice(0, 440),
-            themes: `Centered on ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}—pay attention to recurring motifs, choices, or arguments that evolve across the book.`,
-            pacing: `Roughly ${pages} pages${year && year !== "Edition Listed" ? ` (${year})` : ""}. Aim for ~15–25 pages per sitting and note where scenes or chapters accelerate vs. pause for reflection.`
-          };
-
-            const studyKit = buildStudyKit({ title, author, year, pages, primaryTopic, subjects, leadSentence });
+      const deepAnalysis = matchedCurated?.deepAnalysis
+        ? matchedCurated.deepAnalysis
+        : `At a deeper level, "${title}" revolves around ${topicText.toLowerCase()}. Rather than reading only for plot events, examine why key conflicts happen, whose viewpoint shapes what we see, and what assumptions the book takes for granted. Comparing the opening setup (“${leadSentence.slice(0, 110)}${leadSentence.length > 110 ? "…" : ""}”) with how tensions develop later will help you build sharp essay claims or debate arguments.`;
 
       const moodBlob = `${title} ${subjects.join(" ")} ${synopsis}`.toLowerCase();
       let moodTitle = "Acoustic & Café";
       let spotifyQuery = `${title} reading playlist`;
       let adaptationText = `Search for film, TV, or stage adaptations of "${title}"${author !== "Unknown Author" ? ` by ${author}` : ""} to see what changed from the page.`;
       let tracks = [
-        { title: "River Flows in You — Yiruma", note: "Piano background" },
         { title: "Landslide — Fleetwood Mac", note: "Acoustic & reflective" },
-        { title: "Holocene — Bon Iver", note: "Slow & quiet" },
-        { title: "Vienna — Billy Joel", note: "Easy pace" }
+        { title: "Vienna — Billy Joel", note: "Steady & thoughtful pace" },
+        { title: "Holocene — Bon Iver", note: "Calm & atmospheric" },
+        { title: "Nuvole Bianche — Ludovico Einaudi", note: "Focused piano" }
       ];
 
-      if (/fantasy|magic|wizard|dragon|quest|king|realm/.test(moodBlob)) {
-        moodTitle = "Fantasy & Instrumental";
+      if (/fantasy|magic|wizard|dragon|quest|king|realm|hobbit|ring/.test(moodBlob)) {
+        moodTitle = "Fantasy & Adventure";
         spotifyQuery = `${title} fantasy reading`;
         adaptationText = `Check if "${title}" has a screen adaptation and compare how the setting and magic rules look on screen vs. on the page.`;
         tracks = [
-          { title: "The Shire — Howard Shore", note: "Classic folk score" },
-          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Quiet piano" },
-          { title: "To Build a Home — The Cinematic Orchestra", note: "Strings & build" },
-          { title: "Holocene — Bon Iver", note: "Open & calm" }
+          { title: "Concerning Hobbits — Howard Shore", note: "Warm pastoral journey" },
+          { title: "The Cave — Mumford & Sons", note: "Adventure & resolve" },
+          { title: "Nuvole Bianche — Ludovico Einaudi", note: "Wonder & quiet focus" },
+          { title: "Into the West — Annie Lennox", note: "Farewell & memory" }
         ];
-      } else if (/sci-fi|science fiction|space|future|dystop|planet|star/.test(moodBlob)) {
-        moodTitle = "Ambient & Sci-Fi";
-        spotifyQuery = `${title} sci fi ambient`;
+      } else if (/sci-fi|science fiction|space|future|dystop|planet|star|giver/.test(moodBlob)) {
+        moodTitle = "Dystopian & Atmospheric";
+        spotifyQuery = `${title} sci fi reading`;
         adaptationText = `If "${title}" has a film or series adaptation, pay attention to how world rules and quiet scenes are handled.`;
         tracks = [
-          { title: "Cornfield Chase — Hans Zimmer", note: "Steady pulse" },
-          { title: "Avril 14th — Aphex Twin", note: "Short & delicate" },
-          { title: "Time — Hans Zimmer", note: "Slow build" },
-          { title: "Weightless — Marconi Union", note: "Low-key ambient" }
+          { title: "Cornfield Chase — Hans Zimmer", note: "Memory & longing" },
+          { title: "Midnight City — M83", note: "Wide-eyed & cinematic" },
+          { title: "Time — Hans Zimmer", note: "Slow build & weight" },
+          { title: "Holocene — Bon Iver", note: "Quiet reflection" }
         ];
-      } else if (/mystery|thriller|detective|crime|ghost|secret|gothic/.test(moodBlob)) {
-        moodTitle = "Late-Night & Mystery";
-        spotifyQuery = `${title} dark acoustic mystery`;
-        adaptationText = `Mysteries and thrillers often shift clues or tone when adapted—worth comparing once you finish.`;
+      } else if (/mystery|thriller|detective|crime|ghost|secret|gothic|piranesi|house/.test(moodBlob)) {
+        moodTitle = "Mystery & Liminal Mood";
+        spotifyQuery = `${title} mystery reading`;
+        adaptationText = `Mysteries and atmospheric stories often shift clues or tone when adapted—worth comparing once you finish.`;
         tracks = [
-          { title: "Nocturne in E-flat Major — Chopin", note: "Quiet piano" },
-          { title: "Experience — Ludovico Einaudi", note: "Steady tension" },
-          { title: "Breathe Me — Sia", note: "Moody closer" },
-          { title: "Moonlight Sonata — Beethoven", note: "Late-night feel" }
+          { title: "Nocturne in E-flat Major — Chopin", note: "Hushed & contemplative" },
+          { title: "Experience — Ludovico Einaudi", note: "Rising discovery" },
+          { title: "Breathe Me — Sia", note: "Quiet & haunting" },
+          { title: "Moonlight Sonata — Beethoven", note: "Still & enigmatic" }
         ];
       }
 
-      const id = `${title}-${author}-${record.isbn || ""}`
+            const id = `${title}-${author}-${record.isbn || ""}`
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "")
@@ -2952,6 +1659,9 @@
         isbn: record.isbn || "—",
         primaryTopic,
         synopsis,
+        whyRead,
+        characters,
+        deepAnalysis,
         takeaways,
         quotes,
         storyNotes,
@@ -3180,6 +1890,23 @@
       document.getElementById("toggleFinishedBtn").textContent = isDone ? "Finished ✓" : "Finished It";
 
       document.getElementById("bookSynopsisBody").textContent = book.synopsis;
+      document.getElementById("bookWhyReadBody").textContent = book.whyRead || "";
+      document.getElementById("bookDeepAnalysisBody").textContent = book.deepAnalysis || "";
+
+      const charGrid = document.getElementById("bookCharactersGrid");
+      charGrid.innerHTML = "";
+      (book.characters || []).forEach((ch) => {
+        const cCard = document.createElement("div");
+        cCard.className = "rounded-xl bg-[#fffdf9] p-3.5 space-y-1 border border-stone-800/10";
+        cCard.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <h4 class="font-bold text-sm text-stone-900">${ch.name}</h4>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-stone-800 font-semibold">${ch.role}</span>
+          </div>
+          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">${ch.breakdown}</p>
+        `;
+        charGrid.appendChild(cCard);
+      });
 
       const takeUl = document.getElementById("bookTakeawaysBody");
       takeUl.innerHTML = "";
@@ -3333,8 +2060,9 @@
         return;
       }
       const id = appState.currentBook.id;
+      const pinSize = document.getElementById("corkPinSizeSelect")?.value || "standard";
       appState.corkPins[id] = [
-        { text: text || "Pinned photo note", page, photo },
+        { text: text || "Pinned photo note", page, photo, size: pinSize },
         ...(appState.corkPins[id] || [])
       ];
       document.getElementById("corkNoteTextInput").value = "";
@@ -3357,15 +2085,36 @@
       }
       const pinColors = ["bg-rose-500", "bg-amber-400", "bg-emerald-600", "bg-sky-500"];
       pins.forEach((p, idx) => {
+        const curSize = p.size || "standard";
+        const sizeClass = curSize === "feature"
+          ? "cork-size-feature"
+          : curSize === "compact"
+            ? "cork-size-compact"
+            : "cork-size-standard";
         const card = document.createElement("div");
-        card.className = "cork-pin-card p-3 pt-6 relative";
+        card.className = `cork-pin-card ${sizeClass} p-3 pt-6 relative`;
         card.innerHTML = `
           <span class="pushpin-head ${pinColors[idx % pinColors.length]} absolute top-2 left-1/2 -translate-x-1/2"></span>
-          <button type="button" class="absolute top-1.5 right-2.5 text-xs font-bold text-stone-500 hover:text-rose-700" title="Remove">✕</button>
+          <div class="absolute top-1.5 right-2 flex items-center gap-1">
+            <select aria-label="Pin size" class="text-[10px] rounded bg-amber-50 px-1 py-0.5 border border-stone-800/30">
+              <option value="compact" ${curSize === "compact" ? "selected" : ""}>S</option>
+              <option value="standard" ${curSize === "standard" ? "selected" : ""}>M</option>
+              <option value="feature" ${curSize === "feature" ? "selected" : ""}>L</option>
+            </select>
+            <button type="button" class="text-xs font-bold text-stone-500 hover:text-rose-700" title="Remove">✕</button>
+          </div>
           ${p.photo ? `<div class="polaroid-frame mb-2"><img src="${p.photo}" alt="Pinned photo" /></div>` : ""}
           ${p.page ? `<span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 mb-1">${p.page}</span>` : ""}
-          <p class="text-sm text-stone-800">${p.text}</p>
+          <p class="${curSize === "feature" ? "text-base font-medium" : curSize === "compact" ? "text-xs" : "text-sm"} text-stone-800">${p.text}</p>
         `;
+        const sizeSel = card.querySelector("select");
+        if (sizeSel) {
+          sizeSel.onchange = () => {
+            p.size = sizeSel.value;
+            renderBookCorkboard(bookId);
+            persistActiveAccountData();
+          };
+        }
         card.querySelector("button").onclick = () => {
           appState.corkPins[bookId] = pins.filter((_, i) => i !== idx);
           renderBookCorkboard(bookId);
