@@ -1356,7 +1356,7 @@
       ]
     };
 
-    const AI_CACHE_KEY = "quillfinite_ai_book_v3";
+    const AI_CACHE_KEY = "quillfinite_ai_book_v6";
     const RECENT_SONGS_KEY = "quillfinite_recent_songs_v2";
     const GEMINI_KEY_STORAGE = "quillfinite_gemini_key_v1";
 
@@ -2241,29 +2241,42 @@
     }
 
     function extractBookSpecificSubstance(record, title, author, primaryTopic, subjects) {
-      const sourceCorpus = cleanHtml(record.wikiFullText || record.description || "");
-      const sentences = sourceCorpus
+      const rawCorpus = cleanHtml(record.wikiFullText || record.description || "");
+      const sentences = rawCorpus
         .split(/(?<=[.!?])\s+/)
         .map((s) => s.trim())
-        .filter((s) => s.length > 25 && !s.toLowerCase().includes("isbn"));
+        .filter((s) => s.length > 22 && !s.toLowerCase().includes("isbn") && !/^==+/.test(s));
 
-      const synopsis = sentences.slice(0, 4).join(" ") ||
-        `${title}${author !== "Unknown Author" ? ` by ${author}` : ""} examines ${subjects.slice(0, 2).join(" and ").toLowerCase() || primaryTopic.toLowerCase()}.`;
+      // Filter out publication/meta boilerplate sentences when building narrative synopsis
+      const metaPattern = /\b(published on|is a young adult|is a \d{4}|adaptation starring|was released on|through Knopf|Publishing Group|first young adult book)\b/i;
+      const narrativeSentences = sentences.filter((s) => !metaPattern.test(s));
+      const pool = narrativeSentences.length >= 3 ? narrativeSentences : sentences;
 
+      const synopsis = pool.slice(0, 4).join(" ") ||
+        `${title}${author !== "Unknown Author" ? ` by ${author}` : ""} explores ${subjects.slice(0, 2).join(" and ").toLowerCase() || primaryTopic.toLowerCase()}.`;
+
+      // Extract real character/person candidates (excluding place names, titles, and boilerplate)
       const excludedWords = new Set([
         "The", "This", "That", "When", "After", "Before", "During", "While", "Where", "However",
         "Although", "In", "On", "At", "To", "From", "With", "As", "For", "By", "And", "But",
         "New", "York", "Times", "Chapter", "Novel", "Book", "Story", "World", "English", "American",
+        "Indiana", "Bartlett", "Netflix", "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December", "Plot", "Summary",
         ...title.split(/\s+/)
       ]);
+      const nonCharacterPhrases = new Set(["Plot summary", "All the Bright Places", "Bright Places"]);
+
       const nameCounts = new Map();
-      const nameContext = new Map();
-      sentences.forEach((sent) => {
+      const nameSentences = new Map();
+      pool.forEach((sent) => {
         const matches = sent.match(/\b[A-Z][a-z]{2,}(?:\s+[A-Z][a-z]{2,})?\b/g) || [];
         matches.forEach((m) => {
-          if (excludedWords.has(m) || excludedWords.has(m.split(" ")[0])) return;
-          nameCounts.set(m, (nameCounts.get(m) || 0) + 1);
-          if (!nameContext.has(m)) nameContext.set(m, sent);
+          const cleanM = m.trim();
+          const firstWord = cleanM.split(" ")[0];
+          if (excludedWords.has(cleanM) || excludedWords.has(firstWord) || nonCharacterPhrases.has(cleanM)) return;
+          nameCounts.set(cleanM, (nameCounts.get(cleanM) || 0) + 1);
+          if (!nameSentences.has(cleanM)) nameSentences.set(cleanM, []);
+          nameSentences.get(cleanM).push(sent);
         });
       });
 
@@ -2272,61 +2285,78 @@
         .slice(0, 4)
         .map(([n]) => n);
 
+      const usedCharacterSummaries = new Set();
       const characters = rankedNames.length
-        ? rankedNames.map((charName, idx) => ({
-            name: charName,
-            role: idx === 0 ? "Central Figure" : idx === 1 ? "Key Counterpart / Catalyst" : "Supporting Figure",
-            breakdown: nameContext.get(charName) || `Appears at a turning point in ${title}'s ${primaryTopic.toLowerCase()} arc.`
-          }))
+        ? rankedNames.map((charName, idx) => {
+            const matchingSents = nameSentences.get(charName) || [];
+            // Prefer a sentence mentioning this specific character that hasn't been used yet
+            const specificUnused = matchingSents.find((st) => !usedCharacterSummaries.has(st));
+            // Otherwise build a crisp, character-specific summary from their mentions rather than reusing another character's exact sentence
+            const fallbackSummary = matchingSents.length
+              ? `Key role in "${title}": ${matchingSents[0]}`
+              : (pool.find((st) => !usedCharacterSummaries.has(st)) || `${charName} shapes key moments and choices in "${title}".`);
+            const chosenSummary = specificUnused || fallbackSummary;
+            usedCharacterSummaries.add(chosenSummary);
+            const roleLabel = idx === 0
+              ? "Protagonist / Core Arc"
+              : idx === 1
+                ? "Co-Lead / Counter-Perspective"
+                : "Key Figure / Catalyst";
+            return {
+              name: charName,
+              role: roleLabel,
+              breakdown: chosenSummary
+            };
+          })
         : [
             {
-              name: sentences[0] ? sentences[0].split(",")[0].slice(0, 48) : `Protagonist of ${title}`,
-              role: "Primary Perspective",
-              breakdown: sentences[0] || `Carries the central moral and emotional stakes of ${title}.`
+              name: `Central POV in "${title}"`,
+              role: "Primary Lens",
+              breakdown: pool[0] || `Carries the central moral and emotional stakes of "${title}".`
             },
             {
-              name: `The World & Rules of ${title}`,
-              role: "Structural Force",
-              breakdown: sentences[1] || `Shapes what choices carry a real cost in ${title}.`
+              name: `Opposing Pressure / Stakes`,
+              role: "Narrative Tension",
+              breakdown: pool[1] || `Tests what choices cost when expectations collide with reality.`
             }
           ];
 
-      const s1 = sentences[0] || synopsis;
-      const s2 = sentences[1] || s1;
-      const s3 = sentences[2] || s2;
-      const s4 = sentences[3] || s3;
+      const s1 = pool[0] || synopsis;
+      const s2 = pool[1] || s1;
+      const s3 = pool[2] || s2;
+      const s4 = pool[3] || s3;
 
-      const whyRead = `${title} puts readers inside a concrete dilemma: ${s1} ${author !== "Unknown Author" ? `${author} refuses easy answers, forcing ` : "It forces "}readers to weigh what loyalty, truth, or survival actually costs when comfortable assumptions break down.`;
+      const whyRead = `${title} (${author !== "Unknown Author" ? author : "classic & contemporary reading"}) moves past simple plot events into the inner choices that define people under pressure. ${s2 !== s1 ? s2 : "It gives readers a grounded look at how human connection, memory, and personal limits collide when choices carry real weight."}`;
 
       const deepAnalysis = [
-        `Central Conflict: ${s1}`,
-        `Escalation & Turning Point: ${s2}`,
-        `Underlying Thematic Stakes: Through ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}, ${title} tests how individuals respond when personal conscience collides with external pressure (${s3}).`
+        `Character & Conflict Dynamic: ${s1}`,
+        `Emotional & Narrative Shift: ${s2 !== s1 ? s2 : s3}`,
+        `Critical Reading Lens (${subjects.slice(0, 2).join(" • ") || primaryTopic}): ${s3 !== s2 ? s3 : `Look closely at how ${characters[0]?.name || "the central figure"} navigates turning points and what each decision reveals about their priorities.`}`
       ].join(" ");
 
       const takeaways = [
-        s1,
-        s2,
-        s4 !== s2 ? s4 : `Watch how ${title} reframes ${primaryTopic.toLowerCase()} through specific character decisions rather than abstract lectures.`
+        `Look closely at how ${characters[0]?.name || "the main character"} responds under pressure: ${s1}`,
+        `Pay attention to relationship shifts and quiet turning points: ${s2}`,
+        `Connect the story's motif to real life: ${s4 !== s2 ? s4 : `Notice how "${title}" treats vulnerability not as a flaw to hide, but as a signal of what matters most.`}`
       ];
 
       const quotes = [
         {
-          tag: "Core Premise",
+          tag: "Opening Stakes",
           quote: s1,
-          note: `Establishes the central stakes and world rules of ${title}.`
+          note: `Sets the emotional baseline and core situation of "${title}".`
         },
         {
-          tag: "Turning Tension",
-          quote: s2,
-          note: `Marks where initial stability gives way to real consequence.`
+          tag: "Narrative Shift",
+          quote: s3 !== s1 ? s3 : s2,
+          note: `Highlights how character choices deepen the central conflict.`
         }
       ];
 
       const storyNotes = {
-        arc: `${s1} ${s2}`.trim().slice(0, 460),
-        themes: `Built around ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}: ${s3.slice(0, 260)}`,
-        pacing: `${record.pages || 250} pages${record.year ? ` (${record.year})` : ""}. Trace how early world-building narrows into tighter, higher-stakes scenes.`
+        arc: `Setup & Inciting Pull: ${s1} Escalation: ${s2}`,
+        themes: `Key motifs & themes around ${subjects.slice(0, 3).join(", ").toLowerCase() || primaryTopic.toLowerCase()}: ${s3}`,
+        pacing: `${record.pages || 250} pages${record.year ? ` (${record.year})` : ""}. Track how quiet character moments set up later emotional payoffs.`
       };
 
       return { synopsis, whyRead, characters, deepAnalysis, takeaways, quotes, storyNotes, leadSentence: s1 };
@@ -2498,7 +2528,7 @@
 
     async function enrichBookWithDeepAnalysisAndSongs(book, forceRefresh = false) {
       const apiKey = getGeminiApiKey();
-      const cacheKey = `${book.id}::${apiKey ? "gemini_v3" : "local_v3"}`;
+      const cacheKey = `${book.id}::${apiKey ? "gemini_v6" : "local_v6"}`;
       if (!forceRefresh) {
         const cached = getAiBookCache()[cacheKey];
         if (cached) {
@@ -2508,6 +2538,12 @@
 
       if (!apiKey) {
         const localPatch = {
+          whyRead: book.whyRead,
+          deepAnalysis: book.deepAnalysis,
+          characters: book.characters,
+          takeaways: book.takeaways,
+          quotes: book.quotes,
+          storyNotes: book.storyNotes,
           tracks: pickDistinctSongsForBook(book)
         };
         saveAiBookCache(cacheKey, localPatch);
