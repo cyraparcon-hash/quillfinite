@@ -342,6 +342,14 @@
         >
           School Paper
         </button>
+        <button
+          type="button"
+          id="accountOpenBtn"
+          onclick="openAccountModal()"
+          class="px-3.5 py-2 sketch-btn bg-amber-100"
+        >
+          <span id="accountBtnLabel">Account (Name + 4-Digit)</span>
+        </button>
       </nav>
     </div>
   </header>
@@ -1137,6 +1145,90 @@
     </section>
   </main>
 
+  <!-- QUILLFINITE ACCOUNT MODAL (Name + 4-Digit Code) -->
+  <div
+    id="accountModalOverlay"
+    class="hidden fixed inset-0 z-50 bg-stone-950/60 backdrop-blur-[2px] flex items-center justify-center p-4 no-print"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="accountModalTitle"
+  >
+    <div class="sketch-box bg-[#fffdf9] max-w-md w-full p-5 sm:p-6 space-y-4">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Quillfinite Pass</span>
+          <h2 id="accountModalTitle" class="font-display text-xl font-bold mt-1">Name &amp; 4-Number Code</h2>
+        </div>
+        <button
+          type="button"
+          onclick="closeAccountModal()"
+          class="sketch-btn bg-white px-2.5 py-1 text-xs font-bold"
+          aria-label="Close account modal"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p class="text-sm text-stone-700">
+        Enter your name and a 4-number code to save and load your bookshelf, page progress, margin notes, and corkboard pins on this browser.
+      </p>
+
+      <form onsubmit="handleAccountSaveOrLoad(event)" class="space-y-3">
+        <div>
+          <label for="accountNameInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">
+            Your Name
+          </label>
+          <input
+            id="accountNameInput"
+            type="text"
+            required
+            placeholder="e.g. Cyra or Maya"
+            class="w-full rounded-xl bg-white px-3 py-2 text-sm"
+          />
+        </div>
+
+        <div>
+          <label for="accountPinInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">
+            4-Number Code
+          </label>
+          <input
+            id="accountPinInput"
+            type="text"
+            inputmode="numeric"
+            pattern="\d{4}"
+            maxlength="4"
+            required
+            placeholder="4 digits (e.g. 1024)"
+            class="w-full rounded-xl bg-white px-3 py-2 text-sm font-mono tracking-widest"
+          />
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <button
+            type="submit"
+            class="flex-1 sketch-btn bg-[#b85d3b] text-white px-4 py-2 text-sm font-semibold"
+          >
+            Save / Load Account
+          </button>
+          <button
+            type="button"
+            onclick="signOutQuillAccount()"
+            class="sketch-btn bg-amber-100 px-3 py-2 text-xs font-semibold"
+          >
+            Sign Out
+          </button>
+        </div>
+      </form>
+
+      <div id="savedAccountsListWrap" class="pt-3 border-t border-dashed border-stone-800/20 space-y-2">
+        <span class="block text-[11px] font-bold uppercase tracking-wider text-stone-600">
+          Saved Profiles on This Device
+        </span>
+        <div id="savedAccountsButtons" class="flex flex-wrap gap-1.5"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- SCAN PANEL MODAL (Barcode / ISBN / Title / Image File / Sample Scans) -->
   <div
     id="scanModalOverlay"
@@ -1374,13 +1466,211 @@
       timerSec: 25 * 60,
       timerRunning: false,
       spotFilter: "all",
-      pickedSpotId: null
+      pickedSpotId: null,
+      account: null
     };
 
     let studioTimerId = null;
     let hinigaranMapInstance = null;
     let hinigaranMarkersLayer = null;
     const spotMarkerLookup = {};
+
+    // =========================================================================
+    // QUILLFINITE ACCOUNT (NAME + 4-NUMBER CODE)
+    // =========================================================================
+    const ACCOUNT_STORE_KEY = "quillfinite_accounts_v1";
+    const ACTIVE_ACCOUNT_KEY = "quillfinite_active_account_v1";
+
+    function normalizePin(raw) {
+      return String(raw || "").replace(/\D/g, "").slice(0, 4);
+    }
+
+    function getAccountKey(name, pin) {
+      const cleanName = String(name || "").trim().toLowerCase().replace(/\s+/g, " ");
+      const cleanPin = normalizePin(pin);
+      if (!cleanName || cleanPin.length !== 4) return "";
+      return `${cleanName}::${cleanPin}`;
+    }
+
+    function loadAllAccounts() {
+      try {
+        return JSON.parse(localStorage.getItem(ACCOUNT_STORE_KEY) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveAllAccounts(accountsObj) {
+      try {
+        localStorage.setItem(ACCOUNT_STORE_KEY, JSON.stringify(accountsObj));
+      } catch (_) {}
+    }
+
+    function snapshotCurrentUserData() {
+      return {
+        savedBooks: appState.savedBooks,
+        finishedIds: appState.finishedIds,
+        marginNotes: appState.marginNotes,
+        corkPins: appState.corkPins,
+        progressMap: appState.progressMap,
+        tasks: appState.tasks,
+        shelfTheme: appState.shelfTheme,
+        activeCup: appState.activeCup,
+        pickedSpotId: appState.pickedSpotId,
+        updatedAt: new Date().toLocaleDateString()
+      };
+    }
+
+    function persistActiveAccountData() {
+      const acct = appState.account;
+      if (!acct || !acct.name || normalizePin(acct.pin).length !== 4) return;
+      const key = getAccountKey(acct.name, acct.pin);
+      if (!key) return;
+      const accounts = loadAllAccounts();
+      accounts[key] = {
+        name: acct.name.trim(),
+        pin: normalizePin(acct.pin),
+        data: snapshotCurrentUserData()
+      };
+      saveAllAccounts(accounts);
+      try {
+        localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify({ name: acct.name.trim(), pin: normalizePin(acct.pin) }));
+      } catch (_) {}
+    }
+
+    function applyAccountDataToState(name, pin, savedEntry, showNotice = true) {
+      const cleanPin = normalizePin(pin);
+      const cleanName = String(name || "").trim();
+      appState.account = { name: cleanName, pin: cleanPin };
+
+      const d = (savedEntry && savedEntry.data) || {};
+      appState.savedBooks = Array.isArray(d.savedBooks) ? d.savedBooks : [];
+      appState.finishedIds = Array.isArray(d.finishedIds) ? d.finishedIds : [];
+      appState.marginNotes = d.marginNotes && typeof d.marginNotes === "object" ? d.marginNotes : {};
+      appState.corkPins = d.corkPins && typeof d.corkPins === "object" ? d.corkPins : {};
+      appState.progressMap = d.progressMap && typeof d.progressMap === "object" ? d.progressMap : {};
+      appState.tasks = Array.isArray(d.tasks) && d.tasks.length
+        ? d.tasks
+        : [
+            { id: 1, text: "Read 20 pages with a warm cuppa", done: false },
+            { id: 2, text: "Pin a favorite quote to the book's corkboard", done: false }
+          ];
+      appState.shelfTheme = d.shelfTheme || "";
+      appState.activeCup = d.activeCup || CUPS[0].name;
+      appState.pickedSpotId = d.pickedSpotId || null;
+
+      persistActiveAccountData();
+      updateAccountBadge();
+      renderCupMenu();
+      renderBookshelf();
+      renderStudyStudio();
+      if (appState.currentBook) {
+        displayBook(appState.currentBook);
+      }
+      if (showNotice) {
+        showBanner(`Account active for ${cleanName} (${cleanPin}) — bookshelf & progress synced.`);
+      }
+    }
+
+    function updateAccountBadge() {
+      const btn = document.getElementById("accountBtnLabel");
+      if (!btn) return;
+      if (appState.account && appState.account.name) {
+        btn.textContent = `Account: ${appState.account.name} (${appState.account.pin})`;
+      } else {
+        btn.textContent = "Account (Name + 4-Digit)";
+      }
+    }
+
+    function openAccountModal() {
+      const overlay = document.getElementById("accountModalOverlay");
+      if (!overlay) return;
+      document.getElementById("accountNameInput").value = appState.account?.name || "";
+      document.getElementById("accountPinInput").value = appState.account?.pin || "";
+      renderSavedAccountButtons();
+      overlay.classList.remove("hidden");
+      document.getElementById("accountNameInput").focus();
+    }
+
+    function closeAccountModal() {
+      document.getElementById("accountModalOverlay")?.classList.add("hidden");
+    }
+
+    function renderSavedAccountButtons() {
+      const wrap = document.getElementById("savedAccountsButtons");
+      if (!wrap) return;
+      const accounts = loadAllAccounts();
+      const entries = Object.values(accounts);
+      wrap.innerHTML = "";
+      if (!entries.length) {
+        wrap.innerHTML = `<span class="text-xs text-stone-500">No saved accounts yet.</span>`;
+        return;
+      }
+      entries.forEach((entry) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "sketch-btn bg-amber-50 px-2.5 py-1 text-xs";
+        b.textContent = `${entry.name} • ${entry.pin} (${(entry.data?.savedBooks || []).length} books)`;
+        b.onclick = () => {
+          document.getElementById("accountNameInput").value = entry.name;
+          document.getElementById("accountPinInput").value = entry.pin;
+          applyAccountDataToState(entry.name, entry.pin, entry, true);
+          closeAccountModal();
+        };
+        wrap.appendChild(b);
+      });
+    }
+
+    function handleAccountSaveOrLoad(e) {
+      e.preventDefault();
+      const name = document.getElementById("accountNameInput").value.trim();
+      const pin = normalizePin(document.getElementById("accountPinInput").value);
+      if (!name) {
+        showBanner("Please enter your name.");
+        return;
+      }
+      if (pin.length !== 4) {
+        showBanner("Please enter a 4-number code (4 digits).");
+        return;
+      }
+      const key = getAccountKey(name, pin);
+      const accounts = loadAllAccounts();
+      const existing = accounts[key];
+      if (existing) {
+        applyAccountDataToState(name, pin, existing, true);
+      } else {
+        appState.account = { name, pin };
+        persistActiveAccountData();
+        updateAccountBadge();
+        showBanner(`Created & saved account for ${name} (${pin}).`);
+      }
+      closeAccountModal();
+    }
+
+    function signOutQuillAccount() {
+      persistActiveAccountData();
+      appState.account = null;
+      try {
+        localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
+      } catch (_) {}
+      updateAccountBadge();
+      closeAccountModal();
+      showBanner("Signed out of your Quillfinite account.");
+    }
+
+    function restoreLastSessionAccount() {
+      try {
+        const rawActive = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
+        if (!rawActive) return;
+        const parsed = JSON.parse(rawActive);
+        const key = getAccountKey(parsed?.name, parsed?.pin);
+        if (!key) return;
+        const accounts = loadAllAccounts();
+        if (accounts[key]) {
+          applyAccountDataToState(parsed.name, parsed.pin, accounts[key], false);
+        }
+      } catch (_) {}
+    }
 
     // =========================================================================
     // NAVIGATION & BANNERS
@@ -1419,6 +1709,7 @@
         text: label,
         done: false
       });
+      persistActiveAccountData();
       renderStudyStudio();
       showBanner(`Added "${label}" to your Study Checklist.`);
     }
@@ -1475,6 +1766,7 @@
         text: `Reading session at ${spot.name} (${spot.hours})`,
         done: false
       });
+      persistActiveAccountData();
 
       if (hinigaranMapInstance) {
         hinigaranMapInstance.setView([spot.lat, spot.lng], 15, { animate: true });
@@ -2150,6 +2442,7 @@
     function displayBook(book) {
       appState.currentBook = book;
       document.getElementById("activeBookReadingCard").classList.remove("hidden");
+      document.getElementById("headerShelfCount").textContent = String(appState.savedBooks.length);
 
       // Sync 2:3 sketch frame with book cover when available
       const boothImg = document.getElementById("boothCoverImg");
@@ -2296,6 +2589,7 @@
       if (!appState.currentBook) return;
       appState.marginNotes[appState.currentBook.id] = document.getElementById("bookMarginNotesInput").value;
       document.getElementById("marginNoteStatus").textContent = "Saved just now";
+      persistActiveAccountData();
     }
 
     // =========================================================================
@@ -2338,6 +2632,7 @@
       document.getElementById("corkPageTagInput").value = "";
       clearCorkboardPhoto();
       renderBookCorkboard(id);
+      persistActiveAccountData();
       showBanner("Pinned item to the corkboard!");
     }
 
@@ -2365,6 +2660,7 @@
         card.querySelector("button").onclick = () => {
           appState.corkPins[bookId] = pins.filter((_, i) => i !== idx);
           renderBookCorkboard(bookId);
+          persistActiveAccountData();
         };
         grid.appendChild(card);
       });
@@ -2381,6 +2677,7 @@
         ? appState.savedBooks.filter((b) => b.id !== book.id)
         : [book, ...appState.savedBooks];
       document.getElementById("headerShelfCount").textContent = String(appState.savedBooks.length);
+      persistActiveAccountData();
       displayBook(book);
       renderBookshelf();
       showBanner(exists ? `Removed "${book.title}" from My Bookshelf.` : `Added "${book.title}" to My Bookshelf!`);
@@ -2393,11 +2690,13 @@
       appState.finishedIds = done
         ? appState.finishedIds.filter((x) => x !== book.id)
         : [...appState.finishedIds, book.id];
+      persistActiveAccountData();
       displayBook(book);
     }
 
     function setShelfTheme(themeClass) {
       appState.shelfTheme = themeClass;
+      persistActiveAccountData();
       renderBookshelf();
     }
 
@@ -2409,6 +2708,7 @@
       list.innerHTML = "";
       document.getElementById("shelfSummaryCount").textContent =
         `${appState.savedBooks.length} ${appState.savedBooks.length === 1 ? "book" : "books"} saved`;
+      document.getElementById("headerShelfCount").textContent = String(appState.savedBooks.length);
 
       if (!appState.savedBooks.length) {
         row.innerHTML = `<p class="text-amber-50 text-sm">No books on your shelf yet—look up or scan any book in the Book Booth and tap “+ Add to Bookshelf”.</p>`;
@@ -2427,11 +2727,13 @@
         };
         row.appendChild(spine);
 
+        const prog = appState.progressMap[b.id];
+        const progLabel = prog ? ` • p.${prog.cur}/${prog.tot}` : "";
         const card = document.createElement("div");
         card.className = "rounded-2xl bg-[#fffaf0] p-4 flex flex-col justify-between gap-2.5";
         card.innerHTML = `
           <div>
-            <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">${b.primaryTopic}</span>
+            <span class="text-xs px-2 py-0.5 sketch-pill bg-amber-100">${b.primaryTopic}${progLabel}</span>
             <h3 class="font-display text-lg font-bold mt-1.5">${b.title}</h3>
             <p class="text-xs text-stone-600">by ${b.author}</p>
             <p class="text-xs text-stone-700 mt-1.5 line-clamp-2">${b.synopsis}</p>
@@ -2461,6 +2763,7 @@
         btn.textContent = c.name;
         btn.onclick = () => {
           appState.activeCup = c.name;
+          persistActiveAccountData();
           renderCupMenu();
           if (appState.currentBook) displayBook(appState.currentBook);
         };
@@ -2482,6 +2785,7 @@
       const cur = Math.max(0, Number(document.getElementById("receiptCurPage").value) || 0);
       const tot = Math.max(1, Number(document.getElementById("receiptTotPages").value) || 250);
       appState.progressMap[appState.currentBook.id] = { cur, tot };
+      persistActiveAccountData();
       displayBook(appState.currentBook);
     }
 
@@ -2550,6 +2854,7 @@
         li.innerHTML = `<input type="checkbox" ${t.done ? "checked" : ""} /><span class="${t.done ? "line-through text-stone-400" : ""}">${t.text}</span>`;
         li.querySelector("input").onchange = () => {
           t.done = !t.done;
+          persistActiveAccountData();
           renderStudyStudio();
         };
         ul.appendChild(li);
@@ -2578,6 +2883,7 @@
         text: `Read ${perDay} ${perDay === 1 ? "page" : "pages"} today${label}`,
         done: false
       });
+      persistActiveAccountData();
       renderStudyStudio();
       showBanner(`Added today's ${perDay}-page goal to your Study Checklist.`);
     }
@@ -2588,6 +2894,7 @@
       if (!inp.value.trim()) return;
       appState.tasks.push({ id: Date.now(), text: inp.value.trim(), done: false });
       inp.value = "";
+      persistActiveAccountData();
       renderStudyStudio();
     }
 
@@ -2633,6 +2940,8 @@
     // =========================================================================
     // INIT
     // =========================================================================
+    restoreLastSessionAccount();
+    updateAccountBadge();
     renderCupMenu();
     renderBookshelf();
     renderStudyStudio();
