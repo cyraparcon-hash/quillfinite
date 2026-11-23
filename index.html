@@ -88,6 +88,26 @@
   }
   .vinyl-slot:hover .vinyl-disc{transform:rotate(35deg)}
 
+
+  .polaroid-frame{
+    display:inline-block;
+    background:#ffffff;
+    border:2px solid #2b1d14!important;
+    border-radius:4px 3px 5px 4px!important;
+    padding:8px 8px 22px 8px;
+    box-shadow:2px 3px 0 rgba(43,26,14,.26);
+    max-width:100%;
+    line-height:0;
+  }
+  .polaroid-frame img{
+    display:block;
+    max-width:100%;
+    width:auto;
+    height:auto;
+    max-height:240px;
+    border:1px solid rgba(43,26,14,.25);
+  }
+
   .thermal-receipt{background:#fffdf5;color:#261a12;border:1.5px dashed #2b1d14!important}
   .spotify-song-link{display:flex;color:inherit;text-decoration:none;align-items:center;gap:10px;width:100%;min-width:0}
   .page-view.hidden{display:none!important}
@@ -243,14 +263,17 @@
           <video class="w-full aspect-[4/3] rounded-xl object-cover bg-black" id="liveScannerVideo" muted="" playsinline=""></video>
         </div>
 
-        <form class="space-y-2.5 pt-1" onsubmit="handleScanSubmit(event)">
-          <label class="block text-xs font-semibold text-stone-700" for="scanTitleInput">Any Book Title or Author to Scan</label>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input class="flex-1 rounded-xl bg-white px-3.5 py-2.5 text-sm" id="scanTitleInput" placeholder="Search any book title or author..." required="" type="text"/>
-            <button class="px-4 py-2.5 sketch-btn bg-[#b85d3b] text-white text-sm font-semibold" type="submit">Scan Book</button>
+        <div class="space-y-2.5 pt-1">
+          <div class="flex items-center justify-between gap-2">
+            <label class="block text-xs font-semibold text-stone-700" for="scanTitleInput">Optional Title / Author Lookup (or scan camera/photo above)</label>
+            <button class="text-xs font-semibold underline text-[#8b4b32]" onclick="autoDetectOrSnapshotScan()" type="button">Auto-Scan Now</button>
           </div>
+          <form class="flex flex-col sm:flex-row gap-2" onsubmit="handleScanSubmit(event)">
+            <input class="flex-1 rounded-xl bg-white px-3.5 py-2.5 text-sm" id="scanTitleInput" placeholder="Optional: type a book title or author..." type="text"/>
+            <button class="px-4 py-2.5 sketch-btn bg-[#b85d3b] text-white text-sm font-semibold" type="submit">Look Up</button>
+          </form>
           <p class="text-base text-stone-700 min-h-5" id="scanFeedback"></p>
-        </form>
+        </div>
 
         <div class="chalk-board rounded-2xl p-4 text-amber-50 space-y-3">
           <div class="flex items-center justify-between border-b border-dashed border-amber-200/20 pb-2">
@@ -327,7 +350,7 @@
               </div>
               <div class="hidden flex items-center justify-between gap-3 bg-amber-50 p-2 rounded-xl border border-stone-800/20" id="pendingCorkPhotoBar">
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <img alt="Selected corkboard photo" class="w-12 h-12 object-cover rounded-lg border border-stone-800" id="pendingCorkPhotoPreview"/>
+                  <span class="polaroid-frame !p-1.5 !pb-3"><img alt="Selected corkboard photo" class="!max-h-16 !w-auto !h-auto" id="pendingCorkPhotoPreview"/></span>
                   <span class="text-xs text-stone-700 truncate" id="pendingCorkPhotoName">Photo ready to pin</span>
                 </div>
                 <button class="text-xs font-semibold underline text-rose-700 shrink-0" onclick="clearPendingCorkPhoto()" type="button">Remove Photo</button>
@@ -381,6 +404,50 @@
               </div>
               <textarea class="w-full rounded-xl border-2 border-stone-800/20 bg-white p-2.5 text-base" id="bookPersonalNote" oninput="savePersonalNote()" placeholder="Drop your hot take, favorite scene, or essay angle..." rows="3"></textarea>
             </div>
+          </div>
+
+          <!-- Immediate Story Notes Shown on Scan -->
+          <div class="rounded-2xl border-2 border-stone-800/20 bg-[#fffaf2] p-4 sm:p-6 space-y-4" id="postScanStoryNotesBlock">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-dashed border-stone-800/20 pb-3">
+              <div>
+                <span class="text-xs px-2.5 py-0.5 sketch-pill bg-amber-100">Included Immediately on Scan</span>
+                <h3 class="font-display text-xl sm:text-2xl font-bold mt-1">Story Notes &amp; Study Guide</h3>
+              </div>
+              <button class="sketch-btn bg-amber-900 text-amber-50 px-3.5 py-1.5 text-xs font-semibold" onclick="toggleReadAloud()" type="button">Read Aloud</button>
+            </div>
+
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <span class="text-sm px-2.5 py-0.5 sketch-pill bg-amber-100">The reading room • school &amp; story guide</span>
+          <h2 class="font-display text-2xl font-bold mt-1.5" id="storyExplorerHeading-inline">Your Next Read, Understood</h2>
+        </div>
+        <button class="sketch-btn bg-amber-900 text-amber-50 px-3.5 py-2 text-xs font-semibold" onclick="toggleReadAloud()" type="button">Read Aloud</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">The Story in a Minute</h3><p class="text-base leading-relaxed mt-1" id="storyMinute-inline"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Why Read It? &amp; Classroom Value</h3><p class="text-base leading-relaxed mt-1" id="whyRead-inline"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Setting &amp; Atmosphere</h3><p class="text-base leading-relaxed mt-1" id="settingAtmosphere-inline"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">Core Themes &amp; Key Takeaways</h3><p class="text-base leading-relaxed mt-1" id="keyTakeaways-inline"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4"><h3 class="font-display text-lg font-bold">Characters &amp; Relationships</h3><p class="text-base leading-relaxed mt-1" id="characterRelations-inline"></p></article>
+        <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4"><h3 class="font-display text-lg font-bold">Writing, Imagery &amp; Symbolism</h3><p class="text-base leading-relaxed mt-1" id="writingImagery-inline"></p></article>
+      </div>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-emerald-50/70 p-4 space-y-2">
+        <h3 class="font-display text-lg font-bold">School Essay, Debate &amp; Reflection Prompts</h3>
+        <ul class="space-y-1.5 text-base list-disc pl-5" id="schoolPromptsList-inline"></ul>
+      </article>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-[#f6ead8] p-4 space-y-3">
+        <h3 class="font-display text-lg font-bold">Follow the Story Stages</h3>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2" id="storyStages-inline"></ol>
+      </article>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-white p-4 space-y-2">
+        <h3 class="font-display text-lg font-bold">Movie &amp; Screen Connections</h3>
+        <p class="text-base" id="movieConnections-inline"></p>
+      </article>
+      <article class="rounded-2xl border-2 border-stone-800/20 bg-amber-50/70 p-4 space-y-2">
+        <h3 class="font-display text-lg font-bold">Your Next Chapter • Related Books</h3>
+        <div class="flex flex-wrap gap-2" id="relatedBooks-inline"></div>
+      </article>
+    
           </div>
 
           <div class="thermal-receipt p-4 sm:p-6 space-y-3.5 max-w-xl mx-auto w-full" id="printableReceiptCard">
@@ -1107,7 +1174,7 @@ function renderBookBoothAndStory() {
       card.className = `cork-pin-card p-3.5 pt-6 relative ${tilts[idx % tilts.length]}`;
       const pinColors = ["bg-rose-500", "bg-amber-400", "bg-emerald-600", "bg-sky-500"];
       const photoHtml = pin.photo
-        ? `<img src="${pin.photo}" alt="Pinned corkboard photo" class="w-full h-36 object-cover rounded-lg border border-stone-800/30 mb-2.5"/>`
+        ? `<div class="polaroid-frame mb-2.5"><img src="${pin.photo}" alt="Pinned polaroid photo"/></div>`
         : "";
       const pageHtml = pin.page
         ? `<span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-stone-800 border border-stone-800/20 mb-1.5">${pin.page}</span>`
@@ -1175,45 +1242,60 @@ function renderBookBoothAndStory() {
   document.getElementById("pageProgressPercent").textContent = `${pct}%`;
   document.getElementById("pageProgressBar").style.width = `${pct}%`;
 
-  // Story Notes
-  document.getElementById("storyExplorerHeading").textContent = `${b.title} — Story & School Notes`;
-  document.getElementById("storyMinute").textContent = b.storyMinute;
-  document.getElementById("whyRead").textContent = `${b.whyRead} ${b.schoolHook || ""}`.trim();
-  document.getElementById("settingAtmosphere").textContent = b.settingAtmosphere;
-  document.getElementById("keyTakeaways").textContent = b.keyTakeaways;
-  document.getElementById("characterRelations").textContent = b.characterRelations;
-  document.getElementById("writingImagery").textContent = b.writingImagery;
-  document.getElementById("movieConnections").textContent = b.filmNotes;
-
-  const promptsEl = document.getElementById("schoolPromptsList");
-  promptsEl.innerHTML = "";
-  (b.schoolPrompts || [
+  // Story Notes (both Story Notes tab and immediate Post-Scan card)
+  const promptsList = b.schoolPrompts || [
     `What central theme in "${b.title}" connects to a topic you study in class?`,
     `Pin a key quote and explain how it supports a point in a reaction paper or essay.`
-  ]).forEach(pr => {
-    const li = document.createElement("li");
-    li.textContent = pr;
-    promptsEl.appendChild(li);
-  });
+  ];
+  const otherBooks = BOOKS.filter(x => x.id !== b.id);
 
-  const stagesEl = document.getElementById("storyStages");
-  stagesEl.innerHTML = "";
-  b.stages.forEach(st => {
-    const item = document.createElement("li");
-    item.className = "rounded-xl border border-stone-800/20 bg-white/85 px-3 py-2 text-sm";
-    item.textContent = st;
-    stagesEl.appendChild(item);
-  });
+  ["", "-inline"].forEach(suffix => {
+    const setText = (id, val) => {
+      const el = document.getElementById(id + suffix);
+      if (el) el.textContent = val;
+    };
+    setText("storyExplorerHeading", `${b.title} — Story & School Notes`);
+    setText("storyMinute", b.storyMinute);
+    setText("whyRead", `${b.whyRead} ${b.schoolHook || ""}`.trim());
+    setText("settingAtmosphere", b.settingAtmosphere);
+    setText("keyTakeaways", b.keyTakeaways);
+    setText("characterRelations", b.characterRelations);
+    setText("writingImagery", b.writingImagery);
+    setText("movieConnections", b.filmNotes);
 
-  const relEl = document.getElementById("relatedBooks");
-  relEl.innerHTML = "";
-  BOOKS.filter(x => x.id !== b.id).forEach(other => {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "sketch-btn bg-white px-3 py-1 text-xs font-semibold";
-    chip.textContent = `${other.title} — ${other.author}`;
-    chip.onclick = () => scanBookById(other.id);
-    relEl.appendChild(chip);
+    const promptsEl = document.getElementById("schoolPromptsList" + suffix);
+    if (promptsEl) {
+      promptsEl.innerHTML = "";
+      promptsList.forEach(pr => {
+        const li = document.createElement("li");
+        li.textContent = pr;
+        promptsEl.appendChild(li);
+      });
+    }
+
+    const stagesEl = document.getElementById("storyStages" + suffix);
+    if (stagesEl) {
+      stagesEl.innerHTML = "";
+      b.stages.forEach(st => {
+        const item = document.createElement("li");
+        item.className = "rounded-xl border border-stone-800/20 bg-white/85 px-3 py-2 text-sm";
+        item.textContent = st;
+        stagesEl.appendChild(item);
+      });
+    }
+
+    const relEl = document.getElementById("relatedBooks" + suffix);
+    if (relEl) {
+      relEl.innerHTML = "";
+      otherBooks.forEach(other => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "sketch-btn bg-white px-3 py-1 text-xs font-semibold";
+        chip.textContent = `${other.title} — ${other.author}`;
+        chip.onclick = () => scanBookById(other.id);
+        relEl.appendChild(chip);
+      });
+    }
   });
 
   renderPostScanState();
@@ -1281,34 +1363,42 @@ function renderStudyStudio() {
   document.getElementById("studyScratchpad").value = state.scratchpad;
 }
 
+async function createNewScannedBook(queryOrLabel, coverUrl = "") {
+  const cleanLabel = String(queryOrLabel || "").trim() || `Scanned Book #${BOOKS.length + 1}`;
+  const meta = await lookupBookOnline(cleanLabel);
+  const resolvedMeta = meta || {
+    title: cleanLabel,
+    author: "Scanned Cover / Camera Entry",
+    genre: "Scanned Book",
+    year: String(new Date().getFullYear()),
+    pages: "250",
+    description: `Scanned directly via Book Booth for "${cleanLabel}". All story notes, study prompts, corkboard pins, and vinyl tracks are ready below.`,
+    coverUrl
+  };
+  if (coverUrl && !resolvedMeta.coverUrl) {
+    resolvedMeta.coverUrl = coverUrl;
+  }
+  const newBook = buildBookFromMetadata(cleanLabel, resolvedMeta);
+  BOOKS.push(newBook);
+  return { newBook, matchedOnline: Boolean(meta) };
+}
+
 async function handleScanSubmit(e) {
   e.preventDefault();
   const inputEl = document.getElementById("scanTitleInput");
   const feedbackEl = document.getElementById("scanFeedback");
-  const rawInput = inputEl.value.trim();
-  if (!rawInput) return;
+  const rawInput = inputEl ? inputEl.value.trim() : "";
 
-  const normalized = rawInput.toLowerCase();
-  const existingPreset = BOOKS.find(
-    b => b.title.toLowerCase() === normalized || b.author.toLowerCase() === normalized
-  );
-  if (existingPreset) {
-    feedbackEl.textContent = `Found "${existingPreset.title}" by ${existingPreset.author}.`;
-    scanBookById(existingPreset.id);
+  if (!rawInput) {
+    await autoDetectOrSnapshotScan();
     return;
   }
 
-  feedbackEl.textContent = `Searching books for "${rawInput}"...`;
-  const meta = await lookupBookOnline(rawInput);
-  const newBook = buildBookFromMetadata(rawInput, meta);
-  BOOKS.push(newBook);
-
-  if (meta) {
-    feedbackEl.textContent = `Loaded "${newBook.title}" by ${newBook.author} — tap "+ Add to Bookshelf" to save it.`;
-  } else {
-    feedbackEl.textContent = `Opened "${newBook.title}" — add notes anytime or tap "+ Add to Bookshelf".`;
-  }
-
+  feedbackEl.textContent = `Scanning "${rawInput}"...`;
+  const { newBook, matchedOnline } = await createNewScannedBook(rawInput, "");
+  feedbackEl.textContent = matchedOnline
+    ? `Scanned "${newBook.title}" by ${newBook.author} — story notes loaded below.`
+    : `Scanned "${newBook.title}" — story notes loaded below.`;
   scanBookById(newBook.id);
 }
 
@@ -1390,13 +1480,16 @@ async function detectBarcodeFromSource(sourceEl) {
   const isbnFromText = cleanIsbnString(sourceEl && sourceEl.value ? sourceEl.value : "");
   if (isbnFromText) return isbnFromText;
 
-  if ("BarcodeDetector" in window) {
+  if ("BarcodeDetector" in window && sourceEl) {
     try {
-      const detector = new BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128"] });
+      const detector = new BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e", "code_128", "qr_code"] });
       const codes = await detector.detect(sourceEl);
       for (const c of codes) {
         const cleaned = cleanIsbnString(c.rawValue);
         if (cleaned) return cleaned;
+        if (c.rawValue && String(c.rawValue).trim().length >= 2) {
+          return String(c.rawValue).trim().slice(0, 80);
+        }
       }
     } catch (_) {}
   }
@@ -1436,39 +1529,53 @@ async function performRealBookScanFromSource(sourceEl, previewDataUrl) {
     document.getElementById("idleBoothPlaceholder").classList.add("hidden");
   }
 
-  feedbackEl.textContent = "Scanning barcode & cover text...";
+  feedbackEl.textContent = "Scanning barcode & cover text automatically...";
   let detectedQuery = await detectBarcodeFromSource(sourceEl);
 
-  if (!detectedQuery && window.Tesseract) {
-    feedbackEl.textContent = "Reading book cover text with OCR...";
-    const canvas = document.createElement("canvas");
-    const w = sourceEl.videoWidth || sourceEl.naturalWidth || sourceEl.width || 640;
-    const h = sourceEl.videoHeight || sourceEl.naturalHeight || sourceEl.height || 480;
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(sourceEl, 0, 0, w, h);
+  const canvas = document.createElement("canvas");
+  const rawW = sourceEl.videoWidth || sourceEl.naturalWidth || sourceEl.width || 640;
+  const rawH = sourceEl.videoHeight || sourceEl.naturalHeight || sourceEl.height || 480;
+  const scale = rawW > 0 && rawW < 1000 ? Math.min(2, 1200 / rawW) : 1;
+  canvas.width = Math.max(320, Math.round(rawW * scale));
+  canvas.height = Math.max(240, Math.round(rawH * scale));
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(sourceEl, 0, 0, canvas.width, canvas.height);
+
+  if (!detectedQuery) {
+    detectedQuery = await detectBarcodeFromSource(canvas);
+  }
+
+  if (!detectedQuery) {
+    feedbackEl.textContent = "Reading cover text automatically...";
     const ocrText = await recognizeTextFromCanvas(canvas);
     detectedQuery = extractBookQueryFromOcrText(ocrText);
   }
 
-  if (!detectedQuery) {
-    feedbackEl.textContent = "Couldn't read clear text or barcode from that image—try a closer, well-lit cover photo or type the title below.";
+  const finalQuery = detectedQuery || (inputEl && inputEl.value.trim()) || `Scanned Book ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+  if (inputEl) inputEl.value = finalQuery;
+  feedbackEl.textContent = `Scanned "${finalQuery}" — opening card & story notes...`;
+
+  const { newBook } = await createNewScannedBook(finalQuery, previewDataUrl || "");
+  feedbackEl.textContent = `Scanned "${newBook.title}" by ${newBook.author} — story notes & corkboard ready.`;
+  scanBookById(newBook.id);
+}
+
+async function autoDetectOrSnapshotScan() {
+  const feedbackEl = document.getElementById("scanFeedback");
+  const video = document.getElementById("liveScannerVideo");
+  if (liveCameraStream && video && video.readyState >= 2) {
+    await captureCameraAndScan();
     return;
   }
-
-  if (inputEl) inputEl.value = detectedQuery;
-  feedbackEl.textContent = `Detected "${detectedQuery}"—looking up book...`;
-
-  const meta = await lookupBookOnline(detectedQuery);
-  const newBook = buildBookFromMetadata(detectedQuery, meta);
-  BOOKS.push(newBook);
-
-  feedbackEl.textContent = meta
-    ? `Scanned "${newBook.title}" by ${newBook.author} — tap "+ Add to Bookshelf" to save it.`
-    : `Opened "${newBook.title}" — tap "+ Add to Bookshelf" to save it.`;
-
-  scanBookById(newBook.id);
+  const snapImg = document.getElementById("snapshotImg");
+  if (snapImg && !snapImg.classList.contains("hidden") && snapImg.src) {
+    await performRealBookScanFromSource(snapImg, snapImg.src);
+    return;
+  }
+  feedbackEl.textContent = "Starting camera scan...";
+  await toggleLiveCameraScan();
 }
 
 async function handleCoverFileUpload(ev) {
@@ -1529,6 +1636,7 @@ async function toggleLiveCameraScan() {
     document.getElementById("liveCamScanBtn").textContent = "Stop Camera";
     feedbackEl.textContent = "Live camera active—auto-checking for ISBN barcodes or tap 'Scan Frame Now' for cover text.";
 
+    let ocrTicks = 0;
     barcodePollTimer = setInterval(async () => {
       if (!liveCameraStream || video.readyState < 2) return;
       const isbn = await detectBarcodeFromSource(video);
@@ -1540,8 +1648,23 @@ async function toggleLiveCameraScan() {
         const snapUrl = canvas.toDataURL("image/jpeg", 0.85);
         stopLiveCameraScan();
         await performRealBookScanFromSource({ value: isbn }, snapUrl);
+        return;
       }
-    }, 900);
+      ocrTicks += 1;
+      if (ocrTicks % 3 === 0 && window.Tesseract) {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+        const txt = await recognizeTextFromCanvas(canvas);
+        const detected = extractBookQueryFromOcrText(txt);
+        if (detected && detected.length >= 4) {
+          const snapUrl = canvas.toDataURL("image/jpeg", 0.85);
+          stopLiveCameraScan();
+          await performRealBookScanFromSource({ value: detected }, snapUrl);
+        }
+      }
+    }, 1000);
   } catch (_) {
     feedbackEl.textContent = "Camera permission was denied or unavailable—use 'Scan Cover / Barcode Photo' or type a title.";
   }
