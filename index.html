@@ -3,2644 +3,295 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quillfinite — Book Booth, Bookshelf Dossiers, Corkboard Canvas &amp; Hinigaran Cafés</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <title>Name &amp; 4-Digit PIN Access</title>
   <style>
     :root {
-      --bg-cream: #fbf6ee;
-      --card-warm: #fffdf9;
-      --ink-espresso: #2b1d14;
-      --ink-cocoa: #5c4638;
-      --accent-terracotta: #b85d3b;
-      --accent-sage: #4f6d58;
+      --bg-paper: #f6f0e4;
+      --bg-card: #fffdf8;
+      --ink-primary: #2b2118;
+      --ink-muted: #6e5d4f;
+      --accent: #7c3f26;
+      --accent-hover: #62301b;
+      --border: #dfd3c0;
+      --success-bg: #eef5ee;
+      --success-ink: #27582b;
+      --error-bg: #fbeceb;
+      --error-ink: #8c231c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-cream);
-      background-image:
-        radial-gradient(rgba(92, 70, 56, 0.08) 1px, transparent 0),
-        radial-gradient(rgba(184, 93, 59, 0.05) 1px, transparent 0);
-      background-size: 24px 24px;
-      background-position: 0 0, 12px 12px;
-      color: var(--ink-espresso);
-      overflow-x: hidden;
+      font-family: Georgia, "Times New Roman", serif;
+      background-color: var(--bg-paper);
+      color: var(--ink-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    h1, h2, h3, .font-display {
-      font-family: 'Fraunces', Georgia, serif;
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 28px;
+      box-shadow: 0 12px 30px rgba(43, 33, 24, 0.08);
     }
 
-    .font-sketch {
-      font-family: 'Patrick Hand', 'Inter', cursive, sans-serif;
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
     }
 
-    .sketch-box {
-      border: 2px solid #2b1d14;
-      border-radius: 22px 16px 25px 18px / 17px 24px 16px 22px;
-      box-shadow: 3px 4px 0px rgba(43, 29, 20, 0.16);
+    p.subtitle {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      margin-bottom: 24px;
+      line-height: 1.45;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--ink-primary);
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 1rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: var(--ink-primary);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="password"] {
+      letter-spacing: 0.35em;
+      font-weight: 600;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 63, 38, 0.14);
+    }
+
+    .hint {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-top: 5px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
       position: relative;
+      z-index: 1;
     }
 
-    .sketch-pill {
-      border: 1.5px solid #2b1d14;
-      border-radius: 14px 10px 15px 11px / 11px 14px 10px 13px;
-      box-shadow: 2px 2px 0px rgba(43, 29, 20, 0.14);
+    button:hover {
+      background: var(--accent-hover);
     }
 
-    .sketch-btn {
-      border: 1.8px solid #2b1d14;
-      border-radius: 15px 11px 16px 12px / 12px 15px 11px 14px;
-      box-shadow: 2px 3px 0px #2b1d14;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+    button[type="button"] {
+      background: transparent;
+      color: var(--ink-primary);
+      border: 1px solid var(--border);
+      flex: 0 0 auto;
     }
 
-    .sketch-btn:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: 3px 4px 0px #2b1d14;
+    button[type="button"]:hover {
+      background: #efe7d8;
     }
 
-    .sketch-btn:active {
-      transform: translate(1px, 2px);
-      box-shadow: 1px 1px 0px #2b1d14;
+    .status {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      display: none;
     }
 
-    .thermal-receipt {
-      background: #fffefa;
-      color: #261a12;
-      border: 1.5px dashed #2b1d14;
-      border-radius: 6px;
-      box-shadow: 2px 4px 0 rgba(43, 29, 20, 0.12);
+    .status.success {
+      display: block;
+      background: var(--success-bg);
+      color: var(--success-ink);
+      border: 1px solid #c3dec4;
     }
 
-    .corkboard-surface {
-      background-color: #c89566;
-      background-image:
-        radial-gradient(rgba(66, 36, 14, 0.22) 1px, transparent 0),
-        radial-gradient(rgba(255, 236, 204, 0.18) 1px, transparent 0),
-        linear-gradient(160deg, #cf9d6e 0%, #b98353 55%, #a87243 100%);
-      background-size: 14px 14px, 21px 21px, 100% 100%;
-      background-position: 0 0, 7px 11px, 0 0;
-      border: 10px solid #5c381e;
-      border-radius: 24px 18px 26px 20px / 19px 25px 18px 23px;
-      box-shadow:
-        inset 0 4px 14px rgba(34, 17, 5, 0.35),
-        4px 6px 0 rgba(43, 29, 20, 0.18);
-    }
-
-    .pushpin-head {
-      width: 14px;
-      height: 14px;
-      border-radius: 9999px;
-      border: 2px solid #2b1d14;
-      box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.35), inset -2px -2px 3px rgba(0, 0, 0, 0.25);
-    }
-
-    .bookcase-frame {
-      background: #f5ede0;
-      border: 2px solid #2b1d14;
-      box-shadow: inset 0 2px 8px rgba(43, 29, 20, 0.08);
-    }
-
-    .wood-shelf {
-      background: linear-gradient(180deg, #c69262 0%, #a97344 100%);
-      border-top: 2px solid #2b1d14;
-      border-bottom: 3px solid #2b1d14;
-      box-shadow: 0 3px 0 rgba(43, 29, 20, 0.14);
-    }
-
-    .wood-shelf-espresso {
-      background: linear-gradient(180deg, #6b442a 0%, #4c2d19 100%);
-      border-top: 2px solid #2b1d14;
-      border-bottom: 3px solid #2b1d14;
-      box-shadow: 0 3px 0 rgba(43, 29, 20, 0.2);
-    }
-
-    .wood-shelf-matcha {
-      background: linear-gradient(180deg, #7f9a82 0%, #5c7860 100%);
-      border-top: 2px solid #2b1d14;
-      border-bottom: 3px solid #2b1d14;
-      box-shadow: 0 3px 0 rgba(43, 29, 20, 0.16);
-    }
-
-    .chalk-board {
-      background: linear-gradient(160deg, #27332b 0%, #1b241e 100%);
-      border: 2px solid #2b1d14;
-      border-radius: 18px 22px 16px 20px / 20px 16px 22px 18px;
-      box-shadow: inset 0 0 0 2px rgba(253, 230, 138, 0.16), 3px 4px 0 rgba(43, 29, 20, 0.25);
-    }
-
-    @keyframes scanSweep {
-      0% { top: 8%; }
-      50% { top: 88%; }
-      100% { top: 8%; }
-    }
-
-    .scan-beam {
-      animation: scanSweep 2.2s ease-in-out infinite;
-    }
-
-    @media print {
-      body * {
-        visibility: hidden !important;
-      }
-      #printableReceiptCard,
-      #printableReceiptCard * {
-        visibility: visible !important;
-      }
-      #printableReceiptCard {
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        max-width: 420px !important;
-        margin: 0 auto !important;
-        border: 1px dashed #000 !important;
-        box-shadow: none !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-      }
-      .no-print {
-        display: none !important;
-      }
+    .status.error {
+      display: block;
+      background: var(--error-bg);
+      color: var(--error-ink);
+      border: 1px solid #f0c2be;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-amber-200 selection:text-stone-900">
-  <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-30 bg-[#fbf6ee]/95 backdrop-blur border-b-2 border-stone-900/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 sketch-pill bg-amber-900 text-amber-100 flex items-center justify-center">
-          <svg class="w-6 h-6" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 7.5C7.5 6.2 11.2 6.8 14 9C16.8 6.8 20.5 6.2 24 7.5V21.5C20.5 20.2 16.8 20.8 14 23C11.2 20.8 7.5 20.2 4 21.5V7.5Z" />
-            <path d="M14 9V23" />
-            <path d="M10.5 4.2C10.2 5.1 11 5.6 10.7 6.4" stroke-width="1.6" />
-            <path d="M17.5 4.2C17.2 5.1 18 5.6 17.7 6.4" stroke-width="1.6" />
-          </svg>
-        </div>
-        <div>
-          <button type="button" onclick="switchPrimaryView('booth')" class="font-display text-xl sm:text-2xl font-bold tracking-tight text-stone-900 text-left">Quillfinite</button>
-          <p class="font-sketch text-sm sm:text-base text-stone-700 hidden sm:block">Book Booth Main Stage • Per-Book Story Notes &amp; Nightstand • Corkboard Sketch &amp; Pin • Hinigaran Cafés</p>
-        </div>
+<body>
+  <main class="card">
+    <h1>Enter Name &amp; PIN</h1>
+    <p class="subtitle">Provide your name and a 4-digit PIN to continue.</p>
+
+    <form id="pinForm" action="javascript:void(0);" novalidate>
+      <div class="field">
+        <label for="userName">Name</label>
+        <input
+          id="userName"
+          name="userName"
+          type="text"
+          placeholder="Enter your name"
+          autocomplete="name"
+          required
+        />
       </div>
 
-      <nav class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium">
-        <button type="button" id="navBoothBtn" onclick="switchPrimaryView('booth')" class="px-3.5 py-1.5 sketch-btn bg-amber-900 text-amber-50">Book Booth (Main)</button>
-        <button type="button" id="navBookshelfBtn" onclick="switchPrimaryView('bookshelf')" class="px-3.5 py-1.5 sketch-btn bg-amber-100/90 text-stone-900 hover:bg-amber-200/80">Bookshelf &amp; Per-Book Nook</button>
-        <button type="button" id="navCorkboardBtn" onclick="switchPrimaryView('corkboard')" class="px-3.5 py-1.5 sketch-btn bg-[#e8cbb0] text-stone-900 hover:bg-[#dec0a4]">Corkboard &amp; Sketchpad</button>
-        <button type="button" id="navHinigaranBtn" onclick="switchPrimaryView('hinigaran')" class="px-3.5 py-1.5 sketch-btn bg-emerald-100/90 text-stone-900 hover:bg-emerald-200/80">Hinigaran Cafés</button>
-      </nav>
-    </div>
-  </header>
-
-  <main id="top" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
-    <!-- Toast / Status Banner -->
-    <div id="statusBanner" class="hidden sketch-box bg-amber-50 px-4 py-3 text-sm text-stone-800 flex items-center justify-between gap-3" role="status">
-      <span id="statusBannerText" class="font-medium">Ready.</span>
-      <button type="button" onclick="hideBanner()" class="text-xs font-semibold text-amber-950 hover:underline px-2 py-1">Dismiss</button>
-    </div>
-
-    <!-- ===================================================================== -->
-    <!-- VIEW 1 (DEFAULT MAIN PAGE): BOOK BOOTH & FULL BOOK DOSSIER          -->
-    <!-- ===================================================================== -->
-    <section id="view-booth" class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-      <!-- Left Column: Universal Book Booth Search, Camera & Cover OCR -->
-      <div class="lg:col-span-5 space-y-6">
-        <div class="sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-5">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="inline-block font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-amber-100 text-amber-950">Main Booth • Search Any Book + Cover OCR</span>
-              <h2 class="font-display text-xl sm:text-2xl font-bold text-stone-900 mt-1.5">Book Booth</h2>
-              <p class="font-sketch text-base text-stone-700 mt-0.5">Search any title, author, or ISBN—or scan/upload a cover—to load all book info and add it to your bookshelf.</p>
-            </div>
-            <button type="button" onclick="toggleFilmTint()" id="filmTintBtn" class="shrink-0 text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 text-stone-900 hover:bg-amber-100">
-              Golden Hour Cam
-            </button>
-          </div>
-
-          <!-- Search Form at Top of Booth -->
-          <form onsubmit="handleScanSubmit(event)" class="space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-              <label for="scanTitleInput" class="block text-xs font-semibold text-stone-700">
-                Search Any Book Title, Author, or ISBN
-              </label>
-              <select id="searchFieldSelect" aria-label="Search field" class="text-[11px] font-semibold bg-amber-50 border border-stone-800/30 rounded-lg px-2 py-0.5 text-stone-800">
-                <option value="all">All Fields</option>
-                <option value="title">Title</option>
-                <option value="author">Author</option>
-                <option value="isbn">ISBN</option>
-              </select>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-2">
-              <input
-                id="scanTitleInput"
-                type="text"
-                placeholder="Type any book title, author, or ISBN..."
-                class="flex-1 rounded-xl border-2 border-stone-800/80 bg-white px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700/40"
-              />
-              <button type="submit" id="snapScanBtn" class="px-4 py-2.5 sketch-btn bg-[#b85d3b] text-white text-sm font-semibold hover:bg-[#9e4c2e] shrink-0">
-                Search Book
-              </button>
-            </div>
-            <p id="scanFeedback" class="font-sketch text-base text-stone-700 min-h-[1.25rem]"></p>
-          </form>
-
-          <!-- Live Search Matches Picker -->
-          <div id="searchMatchesWrapper" class="hidden rounded-2xl border-2 border-stone-800/20 bg-amber-50/80 p-3.5 space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-stone-700">Matching Editions Found</span>
-              <button type="button" onclick="document.getElementById('searchMatchesWrapper').classList.add('hidden')" class="text-xs font-semibold text-stone-600 hover:text-stone-900">Hide</button>
-            </div>
-            <div id="searchMatchesList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
-          </div>
-
-          <!-- 2:3 Photobooth Viewport -->
-          <div class="flex justify-center">
-            <div id="boothFrame" class="relative w-full max-w-[250px] aspect-[2/3] rounded-[18px_14px_20px_15px] border-[5px] border-stone-900 bg-stone-950 overflow-hidden shadow-xl select-none">
-              <video id="webcam-video" autoplay muted playsinline class="hidden absolute inset-0 w-full h-full object-cover"></video>
-              <img id="scanned-image-preview" class="hidden absolute inset-0 w-full h-full object-cover" alt="Uploaded or snapped book cover" />
-
-              <div id="idleBoothPlaceholder" class="w-full h-full bg-gradient-to-b from-stone-900 via-[#2a1d15] to-stone-950 flex flex-col items-center justify-between p-4 text-amber-50">
-                <div class="w-full flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-amber-200/80">
-                  <span>QUILL-BOOTH 2:3</span>
-                  <span id="boothTimestamp">OCR + ISBN</span>
-                </div>
-                <div class="text-center px-2">
-                  <div class="mx-auto mb-3 w-14 h-20 rounded-md border border-dashed border-amber-300/60 flex items-center justify-center text-amber-200 text-xl font-sketch">
-                    ✧
-                  </div>
-                  <p class="font-display text-base font-bold text-amber-100">Cover &amp; Barcode Snap</p>
-                  <p id="camera-status" class="font-sketch text-sm text-amber-200/80 mt-1">Snap a front cover or upload a photo to read title &amp; ISBN.</p>
-                </div>
-                <div class="w-full border-t border-amber-200/15 pt-2 flex items-center justify-between text-[10px] text-amber-200/70">
-                  <span>GOOGLE BOOKS</span>
-                  <span>OPEN LIBRARY</span>
-                </div>
-              </div>
-
-              <div id="filmOverlay" class="pointer-events-none absolute inset-0 bg-amber-400/10 mix-blend-screen transition-opacity"></div>
-              <div id="scanBeam" class="hidden pointer-events-none absolute left-2 right-2 h-0.5 bg-amber-300 shadow-[0_0_12px_#fcd34d] scan-beam"></div>
-              <div id="flash-overlay" class="pointer-events-none absolute inset-0 bg-white opacity-0 transition-opacity duration-300"></div>
-
-              <span class="pointer-events-none absolute top-2.5 left-2.5 w-4 h-4 border-t-2 border-l-2 border-amber-300/80 rounded-tl-sm"></span>
-              <span class="pointer-events-none absolute top-2.5 right-2.5 w-4 h-4 border-t-2 border-r-2 border-amber-300/80 rounded-tr-sm"></span>
-              <span class="pointer-events-none absolute bottom-2.5 left-2.5 w-4 h-4 border-b-2 border-l-2 border-amber-300/80 rounded-bl-sm"></span>
-              <span class="pointer-events-none absolute bottom-2.5 right-2.5 w-4 h-4 border-b-2 border-r-2 border-amber-300/80 rounded-br-sm"></span>
-            </div>
-          </div>
-
-          <canvas id="captureCanvas" class="hidden"></canvas>
-
-          <!-- Camera & Photo Upload Actions -->
-          <div class="flex flex-wrap items-center justify-center gap-2">
-            <button type="button" id="cameraToggleBtn" onclick="toggleCamera()" class="px-3.5 py-2 sketch-btn bg-amber-100 text-stone-900 text-xs sm:text-sm font-semibold hover:bg-amber-200">
-              Start Camera
-            </button>
-            <button type="button" id="snapBarcodeBtn" onclick="captureFrameAndScan()" class="hidden px-3.5 py-2 sketch-btn bg-[#4f6d58] text-white text-xs sm:text-sm font-semibold hover:bg-[#405948]">
-              Scan Cover / ISBN
-            </button>
-            <label class="px-3.5 py-2 sketch-btn bg-white text-stone-900 text-xs sm:text-sm font-semibold hover:bg-amber-50 cursor-pointer">
-              <span>Upload Cover</span>
-              <input id="coverFileInput" type="file" accept="image/*" onchange="handleCoverFileUpload(event)" class="hidden" />
-            </label>
-            <button type="button" id="pinBoothSnapBtn" onclick="pinCurrentBoothPhoto()" class="px-3.5 py-2 sketch-btn bg-[#e8cbb0] text-stone-900 text-xs sm:text-sm font-semibold hover:bg-[#dec0a4]">
-              Pin Snap 📌
-            </button>
-          </div>
-
-          <!-- Counter Pairing Board -->
-          <div class="chalk-board rounded-2xl p-4 text-amber-50 space-y-3">
-            <div class="flex items-center justify-between gap-2 border-b border-dashed border-amber-200/20 pb-2">
-              <div>
-                <p class="text-[10px] font-mono uppercase tracking-widest text-amber-300">Counter Special • Brew &amp; Read</p>
-                <p class="font-display text-sm font-bold text-amber-100">Pick Your Cuppa for This Book</p>
-              </div>
-              <span id="cafeCupBadge" class="text-xs font-sketch text-sm px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-200 font-medium">Oat Latte</span>
-            </div>
-            <div id="coffeeMenuButtons" class="flex flex-wrap gap-1.5"></div>
-            <p id="coffeePairingNote" class="font-sketch text-base text-amber-100/90 leading-snug"></p>
-          </div>
-        </div>
-
-        <!-- Quick Discovery Picks -->
-        <div class="sketch-box bg-[#fffdf9] p-5 space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-bold text-stone-700 uppercase tracking-wider">Quick Book Searches</h3>
-            <span class="text-[11px] font-sketch text-stone-500">Loads complete info</span>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="triggerQuickSearch('The Perks of Being a Wallflower')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">The Perks of Being a Wallflower</button>
-            <button type="button" onclick="triggerQuickSearch('The Phantom of the Opera')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">The Phantom of the Opera</button>
-            <button type="button" onclick="selectPresetBook('piranesi')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">Piranesi</button>
-            <button type="button" onclick="selectPresetBook('noli')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">Noli Me Tangere</button>
-            <button type="button" onclick="triggerQuickSearch('The Alchemist Paulo Coelho')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">The Alchemist</button>
-            <button type="button" onclick="triggerQuickSearch('Frankenstein Mary Shelley')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">Frankenstein</button>
-            <button type="button" onclick="selectPresetBook('phantom')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">Phantom of the Opera</button>
-            <button type="button" onclick="selectPresetBook('witch_portobello')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">Witch of Portobello</button>
-            <button type="button" onclick="selectPresetBook('frankenstein')" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 hover:bg-amber-100 text-stone-900">Frankenstein (Full Dossier)</button>
-          </div>
-        </div>
+      <div class="field">
+        <label for="userPin">4-Digit PIN</label>
+        <input
+          id="userPin"
+          name="userPin"
+          type="password"
+          inputmode="numeric"
+          pattern="\d{4}"
+          maxlength="4"
+          placeholder="••••"
+          autocomplete="off"
+          required
+        />
+        <div class="hint">Numbers only, 4 digits (e.g., 1234).</div>
       </div>
 
-      <!-- Right Column: Complete Book Information Dossier + Add to Bookshelf CTA -->
-      <div class="lg:col-span-7 sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-6">
-        <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-dashed border-stone-800/20 pb-5">
-          <div class="flex items-start gap-4 max-w-2xl">
-            <img id="book-cover-img" src="https://covers.openlibrary.org/b/isbn/9780671027346-L.jpg" alt="Book cover" class="w-20 h-28 object-cover rounded-xl border-2 border-stone-900 shadow shrink-0 bg-amber-100" />
-            <div class="space-y-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span id="bookGenreBadge" class="text-xs font-semibold px-2.5 py-1 sketch-pill bg-amber-100 text-amber-900">Genre</span>
-                <span id="bookMetaBadge" class="text-xs text-stone-600 font-medium">Year • Pages</span>
-                <span id="bookSourceBadge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-stone-200/80 text-stone-700">Catalog</span>
-                <span id="onShelfBadge" class="hidden text-xs font-semibold px-2.5 py-1 sketch-pill bg-emerald-100 text-emerald-900">On Bookshelf ✓</span>
-              </div>
-              <h1 id="bookTitle" class="font-display text-2xl sm:text-3xl font-bold text-stone-900 leading-tight">The Perks of Being a Wallflower</h1>
-              <p id="bookAuthor" class="text-sm font-medium text-stone-700">by Stephen Chbosky</p>
-              <p id="bookVibe" class="font-sketch text-base text-[#b85d3b]">Atmosphere</p>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-2">
-            <button type="button" id="addToBookshelfBtn" onclick="addActiveBookToBookshelf()" class="px-4 py-2 sketch-btn bg-[#4f6d58] text-white text-xs sm:text-sm font-bold hover:bg-[#405948]">
-              + Add to Bookshelf
-            </button>
-            <button type="button" onclick="openActiveBookInNook()" class="px-3.5 py-2 sketch-btn bg-amber-900 text-amber-50 text-xs sm:text-sm font-semibold hover:bg-amber-800">
-              Open Book Nook →
-            </button>
-            <button type="button" onclick="speakSummary()" class="px-3 py-2 sketch-btn bg-amber-50 text-stone-900 text-xs font-semibold hover:bg-amber-100 flex items-center gap-1.5">
-              <i data-lucide="volume-2" class="w-4 h-4 text-[#b85d3b]"></i> Read Aloud
-            </button>
-            <button type="button" onclick="exportStudyPack('md')" class="px-3 py-2 sketch-btn bg-amber-100 text-amber-950 text-xs font-semibold hover:bg-amber-200">
-              Export .MD ↓
-            </button>
-          </div>
-        </div>
-
-        <!-- Editorial Breakdown matching IMG_1431.jpg -->
-        <div class="space-y-4">
-          <!-- THE STORY IN A MINUTE -->
-          <div class="rounded-2xl border border-[#e3d9c8] bg-[#faf5ec] p-4 sm:p-5 space-y-2">
-            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#6b5d52]">
-              <i data-lucide="book-open" class="w-4 h-4 text-[#8c7866]"></i>
-              <span>THE STORY IN A MINUTE</span>
-            </div>
-            <p id="bookSynopsis" class="text-sm sm:text-[15px] leading-relaxed text-[#4a3e35]"></p>
-          </div>
-
-          <!-- WHY READ IT? (Left accent bar + warm tan box) -->
-          <div class="rounded-r-2xl rounded-l-md border-l-4 border-[#b85d3b] bg-[#efe5d5] p-4 sm:p-5 space-y-2">
-            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#8f492e]">
-              <i data-lucide="sparkles" class="w-4 h-4 text-[#b85d3b]"></i>
-              <span>WHY READ IT?</span>
-            </div>
-            <p id="bookWhyReadIt" class="text-sm sm:text-[15px] leading-relaxed text-[#3b3028]"></p>
-          </div>
-
-          <!-- SETTING & ATMOSPHERE -->
-          <div class="rounded-2xl border border-[#e3d9c8] bg-[#faf5ec] p-4 sm:p-5 space-y-2">
-            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#6b5d52]">
-              <i data-lucide="map-pin" class="w-4 h-4 text-[#8c7866]"></i>
-              <span>SETTING &amp; ATMOSPHERE</span>
-            </div>
-            <p id="bookSettingAtmosphere" class="text-sm sm:text-[15px] leading-relaxed text-[#4a3e35]"></p>
-            <p id="bookCharacters" class="text-xs leading-relaxed text-[#6b5d52] pt-1 border-t border-[#e3d9c8]"></p>
-          </div>
-
-          <!-- CORE THEMES & KEY TAKEAWAYS (2-column cards with dash bullets) -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="rounded-2xl border border-[#e3d9c8] bg-[#faf5ec] p-4 sm:p-5 space-y-2.5">
-              <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#5c4f44]">
-                <i data-lucide="sparkles" class="w-4 h-4 text-[#8c7866]"></i>
-                <span>CORE THEMES</span>
-              </div>
-              <ul id="bookThemesList" class="space-y-2 text-sm leading-relaxed text-[#4a3e35]"></ul>
-            </div>
-
-            <div class="rounded-2xl border border-[#e3d9c8] bg-[#faf5ec] p-4 sm:p-5 space-y-2.5">
-              <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#5c4f44]">
-                <i data-lucide="book-open" class="w-4 h-4 text-[#8c7866]"></i>
-                <span>KEY TAKEAWAYS</span>
-              </div>
-              <ul id="bookTakeawaysList" class="space-y-2 text-sm leading-relaxed text-[#4a3e35]"></ul>
-              <p id="bookInsightLine" class="font-sketch text-base text-[#b85d3b] pt-1"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chapter & Story Arc Overview -->
-        <div class="rounded-2xl border-2 border-stone-800/15 bg-white p-4 sm:p-5 space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="font-display text-lg font-bold text-stone-900">Structural Arc &amp; Chapter Guide</h3>
-            <button type="button" onclick="openActiveBookInNook()" class="text-xs font-semibold text-[#b85d3b] hover:underline">Edit Dedicated Story Notes &amp; Nightstand →</button>
-          </div>
-          <div id="bookChaptersList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
-        </div>
-
-        <!-- Reading Queue Soundtrack -->
-        <div class="rounded-2xl border-2 border-stone-800/15 bg-white p-4 sm:p-5 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="font-display text-lg font-bold text-stone-900">Reading Queue Soundtrack</h3>
-              <p id="bookSongMood" class="font-sketch text-base text-stone-600"></p>
-            </div>
-            <button type="button" id="songListToggleBtn" onclick="toggleSongListView()" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-50 text-amber-950 hover:bg-amber-100">
-              Show Top 2 Only
-            </button>
-          </div>
-          <ol id="bookSongsList" class="space-y-2.5"></ol>
-        </div>
-
-        <!-- Adaptation, Citations & Recall Quiz -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/50 p-4 space-y-2.5">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Adaptation &amp; Study Citations</h3>
-            <p id="bookFilmNotes" class="text-sm leading-relaxed text-stone-700"></p>
-            <p id="bookDifferencesLine" class="text-xs font-medium text-stone-800 bg-white/80 p-2.5 rounded-xl border border-stone-800/10"></p>
-            <div class="bg-white/90 p-2.5 rounded-xl border border-stone-800/15 space-y-1 text-[11px]">
-              <div class="flex items-center justify-between">
-                <p class="font-bold text-stone-700">MLA Citation:</p>
-                <button type="button" onclick="copyTextValue('mlaCitationText', 'MLA citation')" class="text-[10px] font-semibold text-[#b85d3b] hover:underline">Copy</button>
-              </div>
-              <p id="mlaCitationText" class="text-stone-600 font-mono select-all"></p>
-              <div class="flex items-center justify-between pt-1">
-                <p class="font-bold text-stone-700">APA Citation:</p>
-                <button type="button" onclick="copyTextValue('apaCitationText', 'APA citation')" class="text-[10px] font-semibold text-[#b85d3b] hover:underline">Copy</button>
-              </div>
-              <p id="apaCitationText" class="text-stone-600 font-mono select-all"></p>
-            </div>
-            <div id="movieStreamBadges" class="flex flex-wrap gap-1.5 pt-1"></div>
-            <a id="bookTrailerLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-[#b85d3b] hover:underline">
-              Search Adaptation Clips &amp; Trailers ↗
-            </a>
-          </div>
-
-          <div class="rounded-2xl border-2 border-stone-800/15 bg-stone-50/90 p-4 space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Book Rating &amp; Quick Recall Check</h3>
-              <div id="ratingStars" class="flex items-center gap-1" aria-label="Book rating"></div>
-            </div>
-            <p id="quiz-feedback" class="text-xs font-bold min-h-[1rem]"></p>
-            <p id="quiz-question" class="text-xs font-semibold text-stone-900"></p>
-            <div id="quiz-options" class="grid grid-cols-1 gap-1.5"></div>
-          </div>
-        </div>
-
-        <!-- Digital Reading / Audio Links -->
-        <div class="rounded-2xl border-2 border-stone-800/15 bg-amber-50/40 p-4 space-y-2">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Where to Read, Borrow, or Listen</h3>
-          <div id="read-links" class="flex flex-wrap gap-2"></div>
-        </div>
-
-        <!-- Printable Café Order Receipt & Page Tracker -->
-        <div id="printableReceiptCard" class="thermal-receipt p-4 sm:p-6 space-y-3.5 max-w-xl mx-auto w-full">
-          <div class="text-center border-b border-dashed border-stone-800/40 pb-3 space-y-0.5">
-            <p class="text-[11px] font-mono tracking-[0.22em] text-stone-600">★ QUILLFINITE COFFEE &amp; PAGE CO. ★</p>
-            <h3 class="font-mono text-base sm:text-lg font-bold tracking-tight text-stone-900">READING RECEIPT &amp; BOOKMARK</h3>
-            <p id="receiptTicketMeta" class="text-[11px] font-mono text-stone-600">TICKET #QF-0104 • HINIGARAN NOOK</p>
-          </div>
-
-          <div class="space-y-1.5 font-mono text-xs text-stone-800 border-b border-dashed border-stone-800/40 pb-3">
-            <div class="flex justify-between gap-2">
-              <span class="text-stone-600">TITLE:</span>
-              <span id="receiptTitleLine" class="font-bold text-right truncate">—</span>
-            </div>
-            <div class="flex justify-between gap-2">
-              <span class="text-stone-600">CUPPA PAIR:</span>
-              <span id="receiptDrinkLine" class="font-semibold text-right">Oat Latte</span>
-            </div>
-            <div class="flex justify-between gap-2">
-              <span class="text-stone-600">READING SPOT:</span>
-              <span id="receiptSpotLine" class="font-semibold text-right">NOMADS • Jacinto St, Barangay 3</span>
-            </div>
-            <div class="flex justify-between gap-2">
-              <span class="text-stone-600">PROGRESS:</span>
-              <span id="receiptSummaryLine" class="font-semibold text-right">p.0</span>
-            </div>
-            <div class="flex justify-between gap-2">
-              <span class="text-stone-600">VIBE RATING:</span>
-              <span id="receiptRatingLine" class="text-right">Unrated</span>
-            </div>
-            <p id="receiptQuoteLine" class="font-sketch text-base text-stone-800 pt-1.5 italic"></p>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end no-print">
-            <div>
-              <label for="currentPageInput" class="block text-[11px] font-semibold text-stone-700 mb-1">Current Page</label>
-              <input id="currentPageInput" type="number" min="0" oninput="saveBookProgress()" placeholder="e.g., 84" class="w-full rounded-xl border-2 border-stone-800/25 bg-white px-3 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-700/30" />
-            </div>
-            <div>
-              <label for="totalPagesInput" class="block text-[11px] font-semibold text-stone-700 mb-1">Total Pages</label>
-              <input id="totalPagesInput" type="number" min="1" oninput="saveBookProgress()" placeholder="e.g., 272" class="w-full rounded-xl border-2 border-stone-800/25 bg-white px-3 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-700/30" />
-            </div>
-            <div>
-              <div class="flex justify-between text-[11px] font-semibold text-stone-700 mb-1">
-                <span>Bookmark</span>
-                <span id="pageProgressPercent">0%</span>
-              </div>
-              <div class="w-full h-2.5 rounded-full border border-stone-800/30 bg-amber-900/10 overflow-hidden">
-                <div id="pageProgressBar" class="h-full bg-[#b85d3b] transition-all duration-300" style="width: 0%"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-1 no-print">
-            <span class="font-mono text-[10px] text-stone-500">THANK YOU FOR READING SLOWLY ☕</span>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="copyReadingReceipt()" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-amber-100 text-stone-900 hover:bg-amber-200">
-                Copy 📋
-              </button>
-              <button type="button" onclick="printReadingReceipt()" class="text-xs font-semibold px-3.5 py-1.5 sketch-btn bg-amber-900 text-amber-50 hover:bg-amber-800">
-                Print Receipt 🖨️
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="actions">
+        <button id="submitBtn" type="submit">Submit</button>
+        <button id="clearBtn" type="button">Clear</button>
       </div>
-    </section>
+    </form>
 
-    <!-- ===================================================================== -->
-    <!-- VIEW 2: BOOKSHELF + DEDICATED PER-BOOK STORY NOTES & NIGHTSTAND       -->
-    <!-- ===================================================================== -->
-    <section id="view-bookshelf" class="hidden space-y-6">
-      <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-amber-100 text-amber-950">Your Saved Books • Click Any Spine for Its Own Notes &amp; Nightstand</span>
-            <h2 class="font-display text-2xl font-bold text-stone-900 mt-1.5">Your Bookshelf</h2>
-            <p id="shelfStatsText" class="font-sketch text-base text-stone-700">Select a book below to open its own dedicated Story Notes and Nightstand.</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button type="button" onclick="addActiveBookToBookshelf()" class="px-3.5 py-1.5 sketch-btn text-xs font-semibold bg-[#4f6d58] text-white hover:bg-[#405948]">+ Shelve Current Booth Book</button>
-            <select id="shelfFinishSelect" onchange="setShelfFinish(this.value)" aria-label="Bookshelf wood finish" class="sketch-btn bg-white px-2.5 py-1.5 text-xs font-semibold text-stone-900 focus:outline-none">
-              <option value="wood-shelf">Oak Counter</option>
-              <option value="wood-shelf-espresso">Espresso Roast</option>
-              <option value="wood-shelf-matcha">Matcha Wood</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="bookcaseCabinet" class="bookcase-frame rounded-2xl p-4 sm:p-5 space-y-6 transition-all"></div>
-      </div>
-
-      <!-- Dedicated Per-Book Workspace: Each Book Has Its Own Story Notes & Nightstand -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <!-- Per-Book Story Notes Section -->
-        <div class="lg:col-span-6 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-dashed border-stone-800/15 pb-3">
-            <div>
-              <span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-amber-100 text-amber-950">Per-Book Section • Story Notes</span>
-              <h3 id="perBookStoryNotesHeading" class="font-display text-xl sm:text-2xl font-bold text-stone-900 mt-1">Story Notes</h3>
-            </div>
-            <select id="perBookSelector" onchange="selectBookshelfBook(this.value)" aria-label="Select book from bookshelf" class="sketch-btn bg-white px-3 py-1.5 text-xs sm:text-sm font-semibold text-stone-900"></select>
-          </div>
-
-          <p class="text-xs text-stone-600">These story notes belong strictly to <strong id="perBookStoryOwnerLabel" class="text-stone-900">this book</strong>—switching books loads that book’s own notes.</p>
-
-          <div class="space-y-2">
-            <label for="perBookPlotNoteInput" class="block text-xs font-bold uppercase tracking-wider text-stone-700">Plot &amp; Scene Notes for This Book</label>
-            <textarea id="perBookPlotNoteInput" rows="4" oninput="savePerBookStoryNotes()" placeholder="Write chapter summaries, plot twists, character arcs, or essay notes for this specific book..." class="w-full rounded-2xl border-2 border-stone-800/20 bg-amber-50/50 p-3.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-700/30"></textarea>
-          </div>
-
-          <form onsubmit="handleAddPerBookStoryNote(event)" class="flex flex-col sm:flex-row gap-2">
-            <input id="newPerBookStoryBulletInput" type="text" placeholder="Add a specific story note bullet for this book..." class="flex-1 rounded-xl border-2 border-stone-800/20 bg-white px-3.5 py-2 text-sm text-stone-900" />
-            <button type="submit" class="px-4 py-2 sketch-btn bg-amber-900 text-amber-50 text-xs sm:text-sm font-semibold hover:bg-amber-800 shrink-0">+ Add Story Note</button>
-          </form>
-
-          <ul id="perBookStoryNotesList" class="space-y-2"></ul>
-        </div>
-
-        <!-- Dedicated Per-Book Nightstand Section -->
-        <div class="lg:col-span-6 sketch-box bg-[#fffdf9] p-5 sm:p-6 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-dashed border-stone-800/15 pb-3">
-            <div>
-              <span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-emerald-100 text-emerald-950">Per-Book Section • Nightstand</span>
-              <h3 id="perBookNightstandHeading" class="font-display text-xl sm:text-2xl font-bold text-stone-900 mt-1">Nightstand</h3>
-            </div>
-            <button type="button" onclick="toggleBookFinished(state.selectedShelfBookId)" id="perBookFinishedBtn" class="px-3 py-1.5 sketch-btn bg-amber-50 text-stone-900 text-xs font-semibold hover:bg-amber-100">
-              Mark Finished
-            </button>
-          </div>
-
-          <div class="rounded-2xl border-2 border-stone-800/15 bg-gradient-to-b from-amber-50/85 to-stone-100/75 p-4 flex items-center gap-4">
-            <svg class="w-16 h-16 shrink-0" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hand-drawn nightstand lamp and book">
-              <ellipse cx="44" cy="48" rx="30" ry="22" fill="#FDE68A" fill-opacity="0.45" />
-              <rect x="16" y="72" width="88" height="9" rx="4" fill="#8B5A36" stroke="#2B1D14" stroke-width="2.5" />
-              <rect x="24" y="81" width="72" height="24" rx="3" fill="#A66E44" stroke="#2B1D14" stroke-width="2.5" />
-              <line x1="34" y1="68" x2="54" y2="68" stroke="#2B1D14" stroke-width="3" stroke-linecap="round" />
-              <line x1="44" y1="68" x2="44" y2="48" stroke="#2B1D14" stroke-width="2.5" stroke-linecap="round" />
-              <path d="M27 48C29 36 59 36 61 48H27Z" fill="#D97742" stroke="#2B1D14" stroke-width="2.5" stroke-linejoin="round" />
-              <rect x="64" y="64" width="26" height="8" rx="2" fill="#4F6D58" stroke="#2B1D14" stroke-width="2" />
-            </svg>
-            <div>
-              <p class="font-sketch text-lg text-stone-900">Dedicated quotes &amp; late-night reflections for <span id="perBookNightstandOwnerLabel" class="font-bold underline">this book</span>.</p>
-              <p class="text-xs text-stone-600 mt-0.5">Each book keeps its own quotes separate from every other title on your shelf.</p>
-            </div>
-          </div>
-
-          <div id="perBookNightstandQuotesList" class="space-y-2.5"></div>
-
-          <form onsubmit="handleAddPerBookNightstandQuote(event)" class="flex flex-col sm:flex-row gap-2">
-            <input id="newPerBookQuoteInput" type="text" placeholder="Save a quote or late-night reflection for this specific book..." class="flex-1 rounded-xl border-2 border-stone-800/20 bg-white px-3.5 py-2 text-sm text-stone-900" />
-            <button type="submit" class="px-4 py-2 sketch-btn bg-[#4f6d58] text-white text-xs sm:text-sm font-semibold hover:bg-[#405948] shrink-0">+ Save to Nightstand</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- VIEW 3: CORKBOARD WITH CUSTOM CAPTIONS + FREEHAND SKETCHPAD           -->
-    <!-- ===================================================================== -->
-    <section id="view-corkboard" class="hidden space-y-6">
-      <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5">
-        <div class="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-[#f3dcc2] text-stone-900">Custom Captions • Freehand Drawing • Drag &amp; Pin</span>
-            <h2 class="font-display text-2xl font-bold text-stone-900 mt-1.5">Corkboard &amp; Sketchpad</h2>
-            <p class="font-sketch text-base text-stone-700">Choose what caption to put on any pinned photo or note—and draw your own sketch straight onto the board or pin your drawing as a card.</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <label class="px-3.5 py-2 sketch-btn bg-[#b85d3b] text-white text-xs sm:text-sm font-semibold hover:bg-[#9e4c2e] cursor-pointer">
-              <span>+ Upload Photo</span>
-              <input id="corkboardPhotoInput" type="file" accept="image/*" onchange="handleCorkboardFileUpload(event)" class="hidden" />
-            </label>
-            <button type="button" onclick="addTextNotePin()" class="px-3.5 py-2 sketch-btn bg-amber-100 text-stone-900 text-xs sm:text-sm font-semibold hover:bg-amber-200">
-              + Pin Note Card
-            </button>
-          </div>
-        </div>
-
-        <!-- Custom Caption & Photo Pin Form -->
-        <form onsubmit="handleAddCorkboardPin(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 rounded-2xl border-2 border-stone-800/15 bg-amber-50/75 p-3.5">
-          <input
-            id="corkCaptionInput"
-            type="text"
-            placeholder="Write your custom caption for this photo/pin..."
-            class="sm:col-span-5 rounded-xl border-2 border-stone-800/20 bg-white px-3 py-2 font-sketch text-base text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700/30"
-          />
-          <input
-            id="corkImageUrlInput"
-            type="text"
-            placeholder="Photo URL (optional—or upload a photo / draw below)"
-            class="sm:col-span-4 rounded-xl border-2 border-stone-800/20 bg-white px-3 py-2 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700/30"
-          />
-          <select id="corkPinColorSelect" aria-label="Pushpin color" class="sm:col-span-1 rounded-xl border-2 border-stone-800/20 bg-white px-2 py-2 text-xs font-semibold text-stone-800">
-            <option value="terracotta">Red Pin</option>
-            <option value="sage">Sage Pin</option>
-            <option value="amber">Gold Pin</option>
-          </select>
-          <button type="submit" class="sm:col-span-2 px-3 py-2 sketch-btn bg-[#4f6d58] text-white text-xs sm:text-sm font-semibold hover:bg-[#405948]">
-            Pin With Caption 📌
-          </button>
-        </form>
-
-        <!-- Interactive Corkboard Stage -->
-        <div id="corkboardStage" class="corkboard-surface relative min-h-[420px] w-full p-4 sm:p-6 overflow-hidden">
-          <div id="corkboardPinsLayer" class="relative w-full min-h-[370px]"></div>
-        </div>
-      </div>
-
-      <!-- Freehand Sketchpad Box -->
-      <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-amber-100 text-amber-950">Freehand Drawing Canvas</span>
-            <h3 class="font-display text-xl sm:text-2xl font-bold text-stone-900 mt-1">Draw on the Corkboard</h3>
-            <p class="font-sketch text-base text-stone-700">Sketch bookmarks, coffee mugs, or cover doodles—then pin your drawing with a custom caption.</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <label class="flex items-center gap-1.5 text-xs font-semibold text-stone-800 bg-amber-50 border border-stone-800/20 rounded-xl px-2.5 py-1.5">
-              <span>Ink</span>
-              <input id="drawColorInput" type="color" value="#2b1d14" class="w-5 h-5 cursor-pointer bg-transparent border-0" />
-            </label>
-            <label class="flex items-center gap-1.5 text-xs font-semibold text-stone-800 bg-amber-50 border border-stone-800/20 rounded-xl px-2.5 py-1.5">
-              <span>Size</span>
-              <input id="drawSizeInput" type="range" min="2" max="16" value="4" class="w-20 accent-[#b85d3b]" />
-            </label>
-            <button type="button" id="eraserToggleBtn" onclick="toggleEraserMode()" class="px-3 py-1.5 sketch-btn bg-white text-stone-900 text-xs font-semibold hover:bg-amber-50">
-              Eraser: Off
-            </button>
-            <button type="button" onclick="clearSketchCanvas()" class="px-3 py-1.5 sketch-btn bg-amber-50 text-stone-900 text-xs font-semibold hover:bg-amber-100">
-              Clear Canvas
-            </button>
-          </div>
-        </div>
-
-        <div class="rounded-2xl border-2 border-stone-900 bg-[#fffefa] overflow-hidden shadow-inner">
-          <canvas id="sketchpadCanvas" width="900" height="300" class="w-full h-64 sm:h-72 touch-none cursor-crosshair block"></canvas>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-2.5">
-          <input
-            id="sketchCaptionInput"
-            type="text"
-            placeholder="Caption for your drawing (e.g., My coffee cup doodle during chapter 4)..."
-            class="flex-1 rounded-xl border-2 border-stone-800/20 bg-white px-3.5 py-2 font-sketch text-base text-stone-900"
-          />
-          <button type="button" onclick="pinDrawingToCorkboard()" class="px-4 py-2 sketch-btn bg-[#b85d3b] text-white text-xs sm:text-sm font-semibold hover:bg-[#9e4c2e] shrink-0">
-            Pin Drawing to Corkboard 🎨📌
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- VIEW 4: REAL HINIGARAN CAFÉS (BASED ON MAP)                         -->
-    <!-- ===================================================================== -->
-    <section id="view-hinigaran" class="hidden space-y-6">
-      <div class="sketch-box bg-[#fffdf9] p-5 sm:p-7 space-y-5">
-        <div class="flex flex-wrap items-start justify-between gap-3 border-b-2 border-dashed border-stone-800/15 pb-4">
-          <div>
-            <span class="font-sketch text-sm px-2.5 py-0.5 sketch-pill bg-emerald-100 text-emerald-950">Hinigaran, Negros Occidental • Map-Grounded Cafés</span>
-            <h2 class="font-display text-2xl sm:text-3xl font-bold text-stone-900 mt-1.5">Cafés in Hinigaran</h2>
-            <p class="font-sketch text-base sm:text-lg text-stone-700">Every café and coffee shop in Hinigaran from map data—select any spot to stamp it onto your Reading Receipt.</p>
-          </div>
-          <span id="selectedSpotBadge" class="text-xs font-semibold px-3 py-1.5 sketch-pill bg-[#e8cbb0] text-stone-900">Spot: NOMADS • Jacinto St, Barangay 3</span>
-        </div>
-
-        <div id="hinigaranCafesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-      </div>
-    </section>
+    <div id="statusBox" class="status" role="status" aria-live="polite"></div>
   </main>
 
   <script>
-    const STORAGE_KEY = 'quillfinite_v4_perbook_sketch_hinigaran';
+    (function () {
+      /**
+       * Validates and processes a name and 4-digit PIN.
+       * @param {string} name
+       * @param {string} pin
+       * @returns {{ ok: boolean, message: string, data?: { name: string, pin: string } }}
+       */
+      function submitNameAndPin(name, pin) {
+        const cleanName = String(name || "").trim();
+        const cleanPin = String(pin || "").trim();
 
-    // Every cafe in Hinigaran returned from maps_local in this session
-    const HINIGARAN_MAP_CAFES = [
-      {
-        id: 'nomads',
-        name: 'NOMADS',
-        address: 'Jacinto St, Barangay 3, Hinigaran, 6106 Negros Occidental',
-        hours: 'Mon–Fri: 9:30AM – 7PM, Sat–Sun: 9:30AM – 8PM',
-        rating: '4.5/5 (116 reviews)',
-        vibe: 'Specialty coffee & café hangouts on Jacinto St, Barangay 3.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJDUMZxKylrjMRgw_IMir8NPw'
-      },
-      {
-        id: 'nexpresso',
-        name: 'Nexpresso Coffee Co.',
-        address: 'Aguinaldo St, Hinigaran, 6106 Negros Occidental',
-        hours: 'Mon–Thu, Sun: 6AM – 8PM, Fri: 6AM – 10PM, Sat: 8AM – 10PM',
-        rating: '4.6/5 (75 reviews)',
-        vibe: 'Early-morning to late-evening coffee spot on Aguinaldo St.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJY0o33v6lrjMR1FwzFGblZQA'
-      },
-      {
-        id: 'thirteen-degrees',
-        name: '13 Degrees Cafe',
-        address: 'Corner MH Del Pilar Burgos St, Barangay 3, Hinigaran, 6106 Negros Occidental',
-        hours: 'Mon–Sat: 9AM – 7PM, Sun: 9AM – 8PM',
-        rating: '4.9/5 (28 reviews)',
-        vibe: 'Corner café & tea spot at MH Del Pilar and Burgos St, Barangay 3.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJf98tGgDRrjMREnf7VUuxa6M'
-      },
-      {
-        id: 'crudough',
-        name: 'CRUDOUGH',
-        address: '7VC2+2R2, Hinigaran, Negros Occidental',
-        hours: 'Mon–Sun: 9AM – 7PM',
-        rating: '4.6/5 (21 reviews)',
-        vibe: 'Daily café & pastry stop open all week in Hinigaran.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJ73Cp5yykrjMRPNimL_tgzAI'
-      },
-      {
-        id: 'hide-out-cafe',
-        name: 'Hide Out Cafe',
-        address: '7RGX+2JC, Coruna St, Hinigaran, Negros Occidental',
-        hours: 'Mon–Sun: 6AM – 8PM',
-        rating: '4.1/5 (15 reviews)',
-        vibe: 'Early-opening café along Coruna St in Hinigaran.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJdf5i1bKlrjMRSNfjfYy88oQ'
-      },
-      {
-        id: 'kezzo-cafe',
-        name: 'Kezzo Cafe',
-        address: '7V66+WX6, Guihulngan - Isabela - Hinigaran Rd, Hinigaran, Negros Occidental',
-        hours: 'Mon–Sat: 9AM – 8PM, Sun: 9AM – 7PM',
-        rating: '4.8/5 (14 reviews)',
-        vibe: 'Café along Guihulngan - Isabela - Hinigaran Rd.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJe0uhhnSnrjMRHApaWLpLDqE'
-      },
-      {
-        id: 'coyos-cafe',
-        name: "Coyo's Cafe",
-        address: '7VF2+3QC, Quezon St, Hinigaran, Negros Occidental',
-        hours: 'Mon–Sun: 9AM – 8PM',
-        rating: '4.4/5 (95 reviews)',
-        vibe: 'Café on Quezon St open daily until evening.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJYUdKYS2krjMRPG_yTbDFmhk'
-      },
-      {
-        id: 'hacienda-cafe',
-        name: 'Hacienda Cafe & Events Hub',
-        address: 'Barangay Pilar, Pilar, Hinigaran, 6106 Negros Occidental',
-        hours: 'Mon: Closed, Tue–Sun: 11AM – 8PM',
-        rating: '5.0/5 (4 reviews)',
-        vibe: 'Café and gathering hub in Barangay Pilar, Hinigaran.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJTccnV9GnrjMRmRNcaoOArzQ'
-      },
-      {
-        id: 'baletea-milktea',
-        name: 'BaLeTEA Milktea Shop',
-        address: '7VF2+46M, Hinigaran, Negros Occidental',
-        hours: 'Mon–Sat: 11AM – 7PM, Sun: Closed',
-        rating: '4.8/5 (12 reviews)',
-        vibe: 'Tea & coffee stop in Hinigaran open Monday to Saturday.',
-        mapsUrl: 'https://www.google.com/maps/place//data=!4m2!3m1!19sChIJQQngdKylrjMRL4LYdThk7Lk'
-      }
-    ];
-
-    const DEFAULT_BOOKS = {
-      piranesi: {
-        id: 'piranesi',
-        title: 'Piranesi',
-        author: 'Susanna Clarke',
-        year: '2020',
-        pages: 245,
-        isbn: '9781635575637',
-        genre: 'Mythic Mystery / Speculative Fiction',
-        meta: '2020 • 245 pages',
-        source: 'Featured Novel',
-        catalogUrl: 'https://books.google.com/books?q=Piranesi+Susanna+Clarke',
-        vibe: 'Endless flooded marble halls, tidal rhythms & recovered memory',
-        coverImg: 'https://covers.openlibrary.org/b/isbn/9781635575637-L.jpg',
-        spineColor: '#5b6e7d',
-        summary: 'Narrated through meticulous journals, Piranesi lives inside an immense, tidal labyrinth of classical statues and ocean-fed halls, charting the water and caring for human skeletons. As he meets only one regular companion—known as the Other—and notices mysterious messages left across the halls, fragments of his forgotten past begin to surface.',
-        whyReadIt: 'Combines atmospheric wonder with a gripping mystery about memory, manipulation, and how a person defines themselves when their past is obscured.',
-        settingAtmosphere: 'An infinite, echoing House of marble statues, shifting tides, and clouds drifting through upper halls—both serene sanctuary and quiet trap.',
-        characters: 'Piranesi / Matthew Rose Sorensen (devoted diarist and observer of the tides), The Other / Dr. Valentine Ketterley (researcher chasing secret knowledge), Laurence Arne-Sayles (enigmatic mentor figure).',
-        themes: [
-          'Memory, Identity & Selfhood',
-          'Wonder vs. Exploitative Ambition',
-          'Perception, Trust & Truth'
-        ],
-        takeaways: [
-          'How we interpret our surroundings shapes what we overlook or accept as normal.',
-          'Curiosity becomes destructive when it treats people or worlds merely as instruments.',
-          'Reclaiming memory requires confronting uncomfortable truths.'
-        ],
-        insight: 'Piranesi’s gentle attentiveness to the House contrasts sharply with those who sought power over it.',
-        chapters: [
-          { title: 'I. Journals of the Tides', desc: 'Piranesi documents daily tides, statues, and his meetings with the Other.' },
-          { title: 'II. Clues in the Halls', desc: 'Unexplained markings and references to "16" challenge what Piranesi assumes is true.' },
-          { title: 'III. Unraveling the Past', desc: 'Journal entries and outside encounters piece together how Piranesi came to be in the House.' },
-          { title: 'IV. Return & Reckoning', desc: 'Piranesi weighs his life inside the House against the reality waiting beyond it.' }
-        ],
-        songMood: 'Resonant ambient piano, tide-like swells & quiet mystery',
-        songs: [
-          { title: 'Experience', artist: 'Ludovico Einaudi', vibe: 'Building wonder and emotional revelation' },
-          { title: 'No Surprises', artist: 'Radiohead', vibe: 'Quiet unease beneath calm surfaces' },
-          { title: 'The Night We Met', artist: 'Lord Huron', vibe: 'Haunting memory and longing' }
-        ],
-        filmNotes: 'Frequently discussed in literary circles and essay adaptations for its puzzle-box structure and imagery.',
-        differences: 'Its first-person journal format is central to the mystery, withholding key context until Piranesi uncovers it himself.',
-        streams: ['Audiobook Editions', 'Book Club Guides'],
-        quiz: {
-          question: 'How does Piranesi primarily record his life and observations in the House?',
-          options: ['In detailed journals tracking tides, statues, and events', 'On audio cassettes', 'In painted murals only', 'Through letters to a newspaper'],
-          correct: 0
-        },
-        readLinks: [
-          { name: 'Google Books', url: 'https://books.google.com/books?q=Piranesi+Susanna+Clarke' },
-          { name: 'Open Library', url: 'https://openlibrary.org/search?q=Piranesi+Susanna+Clarke' }
-        ],
-        storyPlotNote: 'Piranesi’s careful journal records slowly reveal who he truly is and why he is in the House.',
-        storyNotes: ['Track how Piranesi’s tone shifts as clues outside his usual routine appear.'],
-        quotes: ['The Beauty of the House is immeasurable; its Kindness infinite.']
-      },
-      noli: {
-        id: 'noli',
-        title: 'Noli Me Tángere',
-        author: 'José Rizal',
-        year: '1887',
-        pages: 406,
-        isbn: '9781463744234',
-        genre: 'Historical Fiction / Social Critique',
-        meta: '1887 • 406 pages',
-        source: 'Featured Classic',
-        catalogUrl: 'https://books.google.com/books?q=Noli+Me+Tangere+Jose+Rizal',
-        vibe: 'Colonial tension, civic reform & moral courage in 19th-century Philippines',
-        coverImg: 'https://covers.openlibrary.org/b/isbn/9781463744234-L.jpg',
-        spineColor: '#9e472a',
-        summary: 'After seven years studying in Europe, young reformist Crisóstomo Ibarra returns to the Philippines hoping to establish a school and honor his late father’s legacy. Instead, he clashes with entrenched abuses of power led by Padre Dámaso, faces heartbreak involving María Clara, and crosses paths with Elías, a fugitive advocating deeper systemic change.',
-        whyReadIt: 'A foundational work of Philippine literature that exposes colonial injustice, social hypocrisy, and the moral cost of silence through vivid, human characters.',
-        settingAtmosphere: 'San Diego and Manila during the late Spanish colonial era—feasts, church courtyards, lakeside gatherings, and sharp social divides.',
-        characters: 'Crisóstomo Ibarra (idealistic reformer seeking progress through education), María Clara (devoted daughter caught between love and family secrets), Padre Dámaso (authoritarian friar), Elías (persecuted boatman urging radical reform), Sisa (grieving mother of Basilio and Crispín).',
-        themes: [
-          'Abuse of Power & Social Injustice',
-          'Education, Reform vs. Revolution',
-          'Sacrifice, Family & Moral Courage'
-        ],
-        takeaways: [
-          'Addressing deep-rooted injustice requires courage, clarity, and solidarity.',
-          'Institutional hypocrisy harms ordinary people—from families like Sisa’s to reformers like Ibarra.',
-          'Personal love and public duty often collide under oppressive systems.'
-        ],
-        insight: 'Conversations between Ibarra and Elías highlight the tension between gradual reform and urgent systemic overhaul.',
-        chapters: [
-          { title: 'I. Homecoming & Memory', desc: 'Ibarra returns to Manila and San Diego, learning of his father Don Rafael’s tragic fate.' },
-          { title: 'II. The School & Rising Friction', desc: 'Plans for a town school spark both hope and hostility from powerful figures.' },
-          { title: 'III. Secrets & Betrayal', desc: 'A fabricated uprising, family revelations, and shifting alliances upend Ibarra’s plans.' },
-          { title: 'IV. Flight & Aftermath', desc: 'Elías helps Ibarra escape as the novel closes on unresolved reckoning and hope for the next generation.' }
-        ],
-        songMood: 'Earnest acoustic, reflective strings & solemn historical weight',
-        songs: [
-          { title: 'Tatsulok', artist: 'Bamboo', vibe: 'Sharp reflection on power imbalance and social hierarchy' },
-          { title: 'Upuan', artist: 'Gloc-9', vibe: 'Direct look at privilege versus everyday hardship' },
-          { title: 'One More Light', artist: 'Linkin Park', vibe: 'Sorrow for lives broken by cruelty and neglect' }
-        ],
-        filmNotes: 'Adapted across Philippine film, television, and stage productions, including notable classic and modern retellings.',
-        differences: 'Stage and screen adaptations condense secondary subplots and political debates to focus on core dramatic scenes.',
-        streams: ['Stage & Film Adaptations', 'Study Editions'],
-        quiz: {
-          question: 'What major project does Crisóstomo Ibarra aim to build in San Diego to uplift the town?',
-          options: ['A schoolhouse', 'A lighthouse', 'A theater hall', 'A railway station'],
-          correct: 0
-        },
-        readLinks: [
-          { name: 'Google Books', url: 'https://books.google.com/books?q=Noli+Me+Tangere+Jose+Rizal' },
-          { name: 'Open Library', url: 'https://openlibrary.org/search?q=Noli+Me+Tangere+Jose+Rizal' }
-        ],
-        storyPlotNote: 'Ibarra’s effort to build a school and marry María Clara unravels amid colonial persecution and hidden family truths.',
-        storyNotes: ['Compare Ibarra’s faith in reform with Elías’s lived experience of injustice.'],
-        quotes: ['I die without seeing the dawn break upon my homeland.']
-      },
-      phantom: {
-        id: 'phantom',
-        title: 'The Phantom of the Opera',
-        author: 'Gaston Leroux',
-        year: '1910',
-        pages: 356,
-        isbn: '9781593082952',
-        genre: 'Gothic Mystery / Romance',
-        meta: '1910 • 356 pages',
-        source: 'Featured Classic',
-        catalogUrl: 'https://books.google.com/books?q=The+Phantom+of+the+Opera+Gaston+Leroux',
-        vibe: 'Subterranean opera house secrets, masked obsession & tragic devotion',
-        coverImg: 'https://covers.openlibrary.org/b/isbn/9781593082952-L.jpg',
-        spineColor: '#6d597a',
-        summary: 'Beneath the Palais Garnier in Paris, a disfigured musical genius known as the Opera Ghost secretly tutors young soprano Christine Daaé while terrorizing the theater’s managers. When Christine’s childhood sweetheart Raoul steps forward to protect her, obsession, disguise, and subterranean intrigue collide.',
-        whyReadIt: 'Blends theatrical suspense, gothic atmosphere, and passionate romantic tension with a haunting moral question about love, identity, and self-sacrifice.',
-        settingAtmosphere: 'Late-19th-century Paris—gilded opera boxes, backstage dressing rooms, and shadowy labyrinthine cellars beneath an underground lake.',
-        characters: 'Christine Daaé (gifted young soprano), Erik / The Phantom (brilliant, scarred musical prodigy), Raoul de Chagny (loyal childhood friend and suitor).',
-        themes: [
-          'Obsession vs. True Devotion',
-          'Appearance, Masking & Identity',
-          'Artistic Genius & Isolation'
-        ],
-        takeaways: [
-          'Loving someone means letting them choose freely rather than possessing them.',
-          'Hiding behind masks can shield pain, yet deepens isolation.',
-          'Empathy can reach even a guarded heart when fear gives way to compassion.'
-        ],
-        insight: 'The turning point comes not from force, but from recognizing the shared humanity beneath the mask.',
-        chapters: [
-          { title: 'I. The Ghost of the Opera', desc: 'Strange occurrences and Box Five demands unsettle the new managers of the Paris Opera.' },
-          { title: 'II. The Angel of Music', desc: 'Christine’s sudden vocal triumph captivates the audience and draws Raoul back into her life.' },
-          { title: 'III. Into the Cellars', desc: 'Secrets of Erik’s past and the hidden passages beneath the opera house come to light.' },
-          { title: 'IV. The Final Choice', desc: 'A high-stakes confrontation tests love, mercy, and sacrifice.' }
-        ],
-        songMood: 'Dramatic strings, gothic piano & sweeping theatrical swells',
-        songs: [
-          { title: 'The Phantom of the Opera', artist: 'Andrew Lloyd Webber', vibe: 'Iconic driving theatrical motif for underground intrigue' },
-          { title: 'No Surprises', artist: 'Radiohead', vibe: 'Haunting quiet tension beneath grand facades' },
-          { title: 'Silver Springs', artist: 'Fleetwood Mac', vibe: 'Lingering emotional ache and unresolved devotion' }
-        ],
-        filmNotes: 'Adapted famously for stage and screen, including the 2004 film and classic silent/sound adaptations.',
-        differences: 'Stage and film versions heighten musical spectacle and romance while condensing investigative framing details.',
-        streams: ['Stage & Film Classics', 'Audiobook Editions'],
-        quiz: {
-          question: 'Where does the Phantom live and operate in the story?',
-          options: ['Beneath the Paris Opera House', 'A lighthouse in Brittany', 'A clocktower in Vienna', 'A library in London'],
-          correct: 0
-        },
-        readLinks: [
-          { name: 'Google Books', url: 'https://books.google.com/books?q=The+Phantom+of+the+Opera+Gaston+Leroux' },
-          { name: 'Open Library', url: 'https://openlibrary.org/search?q=The+Phantom+of+the+Opera+Gaston+Leroux' }
-        ],
-        storyPlotNote: 'Christine’s rising star at the Paris Opera draws her deeper into Erik’s hidden world and Raoul’s protective pursuit.',
-        storyNotes: ['Pay attention to how Erik’s music reflects both his brilliance and his loneliness.'],
-        quotes: ['Sing for me, my angel of music!']
-      },
-      witch_portobello: {
-        id: 'witch_portobello',
-        title: 'The Witch of Portobello',
-        author: 'Paulo Coelho',
-        year: '2006',
-        pages: 280,
-        isbn: '9780061332544',
-        genre: 'Philosophical Fiction',
-        meta: '2006 • 280 pages',
-        source: 'Featured Novel',
-        catalogUrl: 'https://books.google.com/books?q=The+Witch+of+Portobello+Paulo+Coelho',
-        vibe: 'Mystical self-discovery, sacred dance & unconventional truth',
-        coverImg: 'https://covers.openlibrary.org/b/isbn/9780061332544-L.jpg',
-        spineColor: '#9e472a',
-        summary: 'Told through interlocking voices of those who knew her, the novel traces Athena (born Sherine Khalil)—an adopted woman searching for spiritual meaning from Transylvania and London to Dubai and Portobello—who embraces sacred dance and intuition even as society judges her.',
-        whyReadIt: 'Offers a thought-provoking look at authenticity, spiritual curiosity, and the friction between free spirits and rigid social expectations.',
-        settingAtmosphere: 'Contrasting spaces from bustling Portobello street life and London gatherings to quiet moments of reflection and movement.',
-        characters: 'Athena / Sherine Khalil (seeker and teacher of sacred dance), Heron (journalist piecing together her story), Andrea & Deirdre (close confidants).',
-        themes: [
-          'Authenticity vs. Social Judgment',
-          'Intuition, Spirituality & Surrender',
-          'Perspective & Memory Across Multiple Voices'
-        ],
-        takeaways: [
-          'Living unapologetically on your own terms often challenges those around you.',
-          'Truth can feel multi-layered depending on the lens of each observer.',
-          'Courage involves trusting your inner voice even when the path is misunderstood.'
-        ],
-        insight: 'Each narrator reveals a different facet of Athena—showing how people project their own hopes and fears onto someone bold.',
-        chapters: [
-          { title: 'I. The Search Begins', desc: 'Early questions of identity and belonging shape Athena’s journey.' },
-          { title: 'II. Awakening & Movement', desc: 'Sacred dance and inner conviction unlock a new way of experiencing the world.' },
-          { title: 'III. Portobello & Spotlight', desc: 'Her growing influence draws admirers alongside fierce skepticism.' },
-          { title: 'IV. Voices After the Silence', desc: 'Interviews reflect on the meaning and cost of her choices.' }
-        ],
-        songMood: 'Meditative acoustic, rhythmic percussion & soulful reflection',
-        songs: [
-          { title: 'Waiting Room', artist: 'Phoebe Bridgers', vibe: 'Quiet questioning and emotional honesty' },
-          { title: 'The Night We Met', artist: 'Lord Huron', vibe: 'Reflective longing and lingering memory' },
-          { title: 'Wonderwall', artist: 'Oasis', vibe: 'Searching for certainty and connection' }
-        ],
-        filmNotes: 'Explored through literary book clubs, reflective essays, and spoken-word adaptations.',
-        differences: 'Its mosaic of first-person testimonies relies on shifting perspectives that shape how each reader judges the protagonist.',
-        streams: ['Book Club Guides', 'Audiobook Editions'],
-        quiz: {
-          question: 'How is Athena’s story primarily narrated in The Witch of Portobello?',
-          options: ['Through multiple voices and testimonies of people who knew her', 'Strictly as a courtroom transcript', 'As a science-fiction logbook', 'Through a single child’s diary'],
-          correct: 0
-        },
-        readLinks: [
-          { name: 'Google Books', url: 'https://books.google.com/books?q=The+Witch+of+Portobello+Paulo+Coelho' },
-          { name: 'Open Library', url: 'https://openlibrary.org/search?q=The+Witch+of+Portobello+Paulo+Coelho' }
-        ],
-        storyPlotNote: 'Multiple witnesses piece together Athena’s life, beliefs, and impact.',
-        storyNotes: ['Notice how each speaker’s bias colors how they remember Athena.'],
-        quotes: ['Forget your name, forget where you come from, and let yourself be carried away by the movement.']
-      },
-      frankenstein: {
-        id: 'frankenstein',
-        title: 'Frankenstein',
-        author: 'Mary Shelley',
-        year: '1818',
-        pages: 280,
-        isbn: '9780486282114',
-        genre: 'Gothic Science Fiction / Tragedy',
-        meta: '1818 • 280 pages',
-        source: 'Featured Classic',
-        catalogUrl: 'https://books.google.com/books?q=Frankenstein+Mary+Shelley',
-        vibe: 'Arctic solitude, unchecked ambition & the price of abandonment',
-        coverImg: 'https://covers.openlibrary.org/b/isbn/9780486282114-L.jpg',
-        spineColor: '#5b6e7d',
-        summary: 'Obsessed with conquering death and unlocking the secret of life, scientist Victor Frankenstein assembles and animates a sentient being—only to recoil in horror and abandon his creation. Cast out into a cruel world, the creature educates himself, craves companionship, and turns toward vengeance when rejected.',
-        whyReadIt: 'A gripping tragedy about responsibility, empathy, and the dangers of pursuing knowledge without compassion or foresight.',
-        settingAtmosphere: 'From university laboratories and alpine peaks to windswept Arctic ice—a cold, sublime landscape mirroring isolation and obsession.',
-        characters: 'Victor Frankenstein (ambitious scientist), The Creature (eloquent, rejected being seeking connection), Robert Walton (Arctic explorer framing the tale).',
-        themes: [
-          'Creator Responsibility & Unchecked Ambition',
-          'Isolation, Rejection & Compassion',
-          'Nature, Science & Moral Consequence'
-        ],
-        takeaways: [
-          'Creating something—or entering a bond—carries ongoing moral responsibility.',
-          'Cruelty and isolation can twist a longing for belonging into bitterness.',
-          'True strength requires emotional wisdom alongside intellect.'
-        ],
-        insight: 'The tragedy stems less from science itself than from Victor abandoning what he brought into the world.',
-        chapters: [
-          { title: 'I. Walton’s Letters & Victor’s Youth', desc: 'Arctic exploration frames Victor’s early fascination with natural philosophy.' },
-          { title: 'II. The Spark & Abandonment', desc: 'Victor succeeds in giving life, panics at the result, and flees his duty.' },
-          { title: 'III. The Creature’s Education', desc: 'Observing the De Lacey family teaches the creature language, tenderness, and pain.' },
-          { title: 'IV. Pursuit Across the Ice', desc: 'Escalating grief drives creator and creation toward a fatal reckoning in the north.' }
-        ],
-        songMood: 'Moody orchestral, somber piano & storm-swept tension',
-        songs: [
-          { title: 'No Surprises', artist: 'Radiohead', vibe: 'Cold, haunting inevitability' },
-          { title: 'One More Light', artist: 'Linkin Park', vibe: 'Sorrow over lost connection and regret' },
-          { title: 'Heroes', artist: 'David Bowie', vibe: 'Defiant longing amid high stakes' }
-        ],
-        filmNotes: 'Inspires countless films and adaptations exploring monsters, makers, and modern science.',
-        differences: 'Popular culture often reverses the creature’s eloquence and depth, whereas Shelley’s novel highlights his articulate plea for empathy.',
-        streams: ['Classic Film Adaptations', 'Audiobook Editions'],
-        quiz: {
-          question: 'What is Victor Frankenstein’s primary failing after animating the creature?',
-          options: ['He abandons the creature out of fear and revulsion', 'He locks the creature in a castle library', 'He publishes the notes immediately', 'He moves to Australia'],
-          correct: 0
-        },
-        readLinks: [
-          { name: 'Google Books', url: 'https://books.google.com/books?q=Frankenstein+Mary+Shelley' },
-          { name: 'Open Library', url: 'https://openlibrary.org/search?q=Frankenstein+Mary+Shelley' }
-        ],
-        storyPlotNote: 'Victor’s rejection of his creation sets off a chain of sorrow across Europe and the Arctic.',
-        storyNotes: ['Compare how Victor judges appearances versus how the creature learns empathy.'],
-        quotes: ['I ought to be thy Adam, but I am rather the fallen angel.']
-      },
-      perks: {
-        id: 'perks',
-        title: 'The Perks of Being a Wallflower',
-        author: 'Stephen Chbosky',
-        year: '1999',
-        pages: 213,
-        isbn: '9780671027346',
-        genre: 'Coming-of-Age / Epistolary Fiction',
-        meta: '1999 • 213 pages',
-        source: 'Featured Classic',
-        catalogUrl: 'https://books.google.com/books?q=The+Perks+of+Being+a+Wallflower',
-        vibe: 'Mixtape nights, late-night drives & quiet healing',
-        coverImg: 'https://covers.openlibrary.org/b/isbn/9780671027346-L.jpg',
-        spineColor: '#b85d3b',
-        summary: 'Written as a series of intimate letters by Charlie, an introverted freshman navigating high school while processing trauma, grief, and the life-changing impact of unconditional friendship. Through Sam, Patrick, and shared mixtapes, he begins moving from quiet observer to active participant.',
-        whyReadIt: 'This emotionally raw coming-of-age story captures teenage loneliness, trauma, and healing with genuine tenderness, ideal for readers drawn to character-driven fiction about finding belonging.',
-        settingAtmosphere: 'Early-1990s suburban Pittsburgh high school hallways, diners, parties, and late-night highway tunnel drives bathed in nostalgic indie music and shifting seasons.',
-        characters: 'Charlie Kelmeckis (observant freshman narrator), Sam (warm, free-spirited senior), Patrick (witty, resilient senior & mixtape curator).',
-        themes: [
-          'Observation vs. Active Participation',
-          'Trauma, Memory & Emotional Healing',
-          'Unconditional Acceptance & Belonging'
-        ],
-        takeaways: [
-          'We accept the love we think we deserve.',
-          'Participating in life requires vulnerability, even when it feels unsafe.',
-          'Friendship and creative expression provide critical support structures.'
-        ],
-        insight: 'Transition from watching life unfold from the sidelines to actively participating in your own relationships and experiences.',
-        chapters: [
-          { title: 'Part 1 — High School Begins', desc: 'Charlie starts high school, writes letters to an anonymous recipient, and meets upperclassmen Sam and Patrick.' },
-          { title: 'Part 2 — The Mixtapes & Rocky Horror', desc: 'Charlie is introduced to underground music, high school parties, and Rocky Horror; he experiences feeling infinite.' },
-          { title: 'Part 3 — Truth or Dare Shift', desc: 'Social tensions arise when Charlie makes a misstep in his dating life, briefly isolating him from the group.' },
-          { title: 'Part 4 — Graduation & Recovery', desc: 'As friends prepare for college, past trauma resurfaces, leading to a mental health breakdown and recovery.' }
-        ],
-        songMood: 'Indie mixtapes, tunnel anthems & bittersweet growing-up tracks',
-        songs: [
-          { title: 'Heroes', artist: 'David Bowie', vibe: 'The iconic tunnel drive song where Charlie feels infinite' },
-          { title: 'Asleep', artist: 'The Smiths', vibe: 'Charlie’s comfort song featured heavily on his mixtape' },
-          { title: 'Landslide', artist: 'Fleetwood Mac', vibe: 'Captures the emotional transition of growing up and changing' },
-          { title: 'Dear April', artist: 'Frank Ocean', vibe: 'Intimate indie reflection matching Charlie’s letter style' }
-        ],
-        filmNotes: 'Directed by author Stephen Chbosky (2012) starring Logan Lerman, Emma Watson, and Ezra Miller.',
-        differences: 'Keeps the emotional core intact while streamlining subplots like Charlie’s sister’s pregnancy and extended family backstory.',
-        streams: ['Paramount+', 'Amazon Prime', 'Apple TV'],
-        quiz: {
-          question: 'Who introduces Charlie to mixtapes and the Rocky Horror Picture Show?',
-          options: ['Sam and Patrick', 'His sister', 'Mr. Anderson', 'Michael'],
-          correct: 0
-        },
-        readLinks: [
-          { name: 'Google Books', url: 'https://books.google.com/books?q=The+Perks+of+Being+a+Wallflower' },
-          { name: 'Open Library', url: 'https://openlibrary.org/search?q=The+Perks+of+Being+a+Wallflower' },
-          { name: 'Libby / OverDrive', url: 'https://libbyapp.com' }
-        ],
-        storyPlotNote: 'Charlie writes anonymous letters to "friend" while finding his voice through Sam, Patrick, and shared mixtapes.',
-        storyNotes: [
-          'Tunnel scene marks Charlie shifting from quiet observer to feeling part of the group.',
-          'Secret Santa & Rocky Horror nights build his bond with Sam and Patrick.'
-        ],
-        quotes: [
-          'And in that moment, I swear we were infinite.',
-          'We accept the love we think we deserve.'
-        ]
-      }
-    };
-
-    const GENRE_SOUNDTRACKS = {
-      fantasy: {
-        mood: 'Sweeping orchestral, folk storytelling & mythical adventure',
-        songs: [
-          { title: 'I See Fire', artist: 'Ed Sheeran', vibe: 'Acoustic ballad made for long journeys and ancient lore' },
-          { title: 'Experience', artist: 'Ludovico Einaudi', vibe: 'Building instrumental momentum for world-shaking chapters' },
-          { title: 'Soldier, Poet, King', artist: 'The Oh Hellos', vibe: 'Lively folk rhythm for quests and prophecies' }
-        ]
-      },
-      romance: {
-        mood: 'Soft acoustic, yearning indie & warm evening melodies',
-        songs: [
-          { title: 'Fearless', artist: 'Taylor Swift', vibe: 'Golden-hour rush of falling headfirst into a story' },
-          { title: 'Iris', artist: 'Goo Goo Dolls', vibe: 'Classic emotional swell for unspoken devotion' },
-          { title: 'About You', artist: 'The 1975', vibe: 'Dreamy, nostalgic atmosphere for lingering glances' }
-        ]
-      },
-      thriller: {
-        mood: 'Shadowy tension, dark synth & late-night suspense',
-        songs: [
-          { title: 'No Surprises', artist: 'Radiohead', vibe: 'Eerie calm beneath an unsettling mystery' },
-          { title: 'Running Up That Hill', artist: 'Kate Bush', vibe: 'Urgent pulse for high-stakes turning points' },
-          { title: 'Cellophane', artist: 'FKA twigs', vibe: 'Fragile, haunting tension when secrets unravel' }
-        ]
-      },
-      literary: {
-        mood: 'Reflective piano, indie folk & thoughtful page-turning calm',
-        songs: [
-          { title: 'The Night We Met', artist: 'Lord Huron', vibe: 'Bittersweet memory and quiet character reflection' },
-          { title: 'Waiting Room', artist: 'Phoebe Bridgers', vibe: 'Intimate acoustic storytelling for slow chapters' },
-          { title: 'Silver Springs', artist: 'Fleetwood Mac', vibe: 'Deep emotional resonance that lingers after the final page' }
-        ]
-      }
-    };
-
-    const COFFEE_MENU = [
-      { name: 'Oat Latte', note: 'Smooth and creamy for slow, reflective chapters.' },
-      { name: 'Brown Sugar Shaken Espresso', note: 'Crisp energy for plot twists and late-night reading.' },
-      { name: 'Honey Matcha', note: 'Calm, grounded focus for dense paragraphs.' },
-      { name: 'Spiced Mocha', note: 'Rich and cozy for rainy evenings and big reveals.' }
-    ];
-
-    const SPINE_COLORS = ['#b85d3b', '#4f6d58', '#8c5a3c', '#5b6e7d', '#9e472a', '#6d597a'];
-
-    let state = {
-      activeView: 'booth',
-      activeBookId: 'perks',
-      selectedShelfBookId: 'perks',
-      books: { ...DEFAULT_BOOKS },
-      bookshelfIds: ['perks'],
-      selectedDrink: 'Oat Latte',
-      selectedSpot: 'NOMADS • Jacinto St, Barangay 3',
-      shelfFinish: 'wood-shelf',
-      showAllSongs: true,
-      progress: {},
-      ratings: {},
-      readIds: [],
-      corkboardPins: [
-        { id: 'pin-1', type: 'note', title: 'Custom Caption', text: 'Warm coffee & first chapter notes.', color: 'terracotta', x: 24, y: 26, rot: -2 },
-        { id: 'pin-2', type: 'note', title: 'Scene Sketch Note', text: 'Pin any photo with your own caption or draw below.', color: 'sage', x: 260, y: 48, rot: 2 }
-      ],
-      lastBoothSnapDataUrl: null,
-      goldenHourTint: true
-    };
-
-    let cameraStream = null;
-    let lastSearchCandidates = [];
-    let isDrawing = false;
-    let isEraserMode = false;
-    let lastDrawX = 0;
-    let lastDrawY = 0;
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          state = {
-            ...state,
-            ...parsed,
-            books: { ...DEFAULT_BOOKS, ...(parsed.books || {}) }
-          };
-          if (!state.bookshelfIds || state.bookshelfIds.length === 0) {
-            state.bookshelfIds = [state.activeBookId || 'perks'];
-          }
-          if (!state.books[state.selectedShelfBookId]) {
-            state.selectedShelfBookId = state.bookshelfIds[0] || state.activeBookId || 'perks';
-          }
+        if (!cleanName) {
+          return { ok: false, message: "Please enter your name." };
         }
-      } catch (e) {
-        console.warn('Could not load saved state:', e);
-      }
-    }
 
-    function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        console.warn('Could not save state:', e);
-      }
-    }
-
-    function switchPrimaryView(viewName) {
-      state.activeView = viewName;
-      saveState();
-
-      const views = {
-        booth: document.getElementById('view-booth'),
-        bookshelf: document.getElementById('view-bookshelf'),
-        corkboard: document.getElementById('view-corkboard'),
-        hinigaran: document.getElementById('view-hinigaran')
-      };
-
-      Object.entries(views).forEach(([key, el]) => {
-        if (el) el.classList.toggle('hidden', key !== viewName);
-      });
-
-      const navMap = {
-        booth: 'navBoothBtn',
-        bookshelf: 'navBookshelfBtn',
-        corkboard: 'navCorkboardBtn',
-        hinigaran: 'navHinigaranBtn'
-      };
-
-      Object.entries(navMap).forEach(([key, btnId]) => {
-        const btn = document.getElementById(btnId);
-        if (!btn) return;
-        if (key === viewName) {
-          btn.classList.add('ring-2', 'ring-amber-600', 'font-bold');
-        } else {
-          btn.classList.remove('ring-2', 'ring-amber-600', 'font-bold');
+        if (!/^\d{4}$/.test(cleanPin)) {
+          return { ok: false, message: "PIN must be exactly 4 digits (0–9)." };
         }
-      });
 
-      if (viewName === 'corkboard') {
-        setTimeout(() => renderCorkboard(), 30);
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function showBanner(msg) {
-      const banner = document.getElementById('statusBanner');
-      const text = document.getElementById('statusBannerText');
-      if (!banner || !text) return;
-      text.textContent = msg;
-      banner.classList.remove('hidden');
-    }
-
-    function hideBanner() {
-      document.getElementById('statusBanner')?.classList.add('hidden');
-    }
-
-    function slugifyBookId(title, author = '') {
-      return `${title}-${author}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 64) || 'book-' + Date.now();
-    }
-
-    function stripHtml(html) {
-      const div = document.createElement('div');
-      div.innerHTML = html || '';
-      return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
-    }
-
-    function pickSoundtrackForSubjects(subjectsText) {
-      const s = (subjectsText || '').toLowerCase();
-      if (s.includes('fantasy') || s.includes('magic') || s.includes('myth') || s.includes('sci-fi') || s.includes('science fiction') || s.includes('adventure')) {
-        return GENRE_SOUNDTRACKS.fantasy;
-      }
-      if (s.includes('romance') || s.includes('love') || s.includes('young adult')) {
-        return GENRE_SOUNDTRACKS.romance;
-      }
-      if (s.includes('thriller') || s.includes('mystery') || s.includes('horror') || s.includes('gothic') || s.includes('crime') || s.includes('suspense')) {
-        return GENRE_SOUNDTRACKS.thriller;
-      }
-      return GENRE_SOUNDTRACKS.literary;
-    }
-
-    function synthesizeBookFromRecord(rec, customCoverOverride = null) {
-      const title = rec.title || 'Untitled Book';
-      const author = rec.author || 'Unknown Author';
-      const year = rec.year || 'n.d.';
-      const pages = rec.pages || 0;
-      const isbn = rec.isbn || '';
-      const genre = rec.genre || 'General Literature';
-      const rawSubjects = Array.isArray(rec.subjects) && rec.subjects.length ? rec.subjects : [genre];
-      const subjects = rawSubjects
-        .map(s => String(s).split('/')[0].trim())
-        .filter(Boolean);
-      const rawDesc = stripHtml(rec.description || '');
-      const id = slugifyBookId(title, author);
-      const color = SPINE_COLORS[Math.abs(id.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % SPINE_COLORS.length];
-
-      const cleanSubjectsLabel = subjects.slice(0, 3).join(', ') || genre;
-
-      const summary = rawDesc.length > 35
-        ? rawDesc
-        : `"${title}" by ${author}${year !== 'n.d.' ? ` (${year})` : ''} is cataloged under ${cleanSubjectsLabel}${pages ? ` (${pages} pages)` : ''}. Its narrative follows characters navigating pivotal decisions, shifting relationships, and central conflicts rooted in ${cleanSubjectsLabel.toLowerCase()}.`;
-
-      const sentences = summary
-        .split(/(?<=[.!?])\s+/)
-        .map(s => s.trim())
-        .filter(s => s.length > 15);
-
-      const s1 = sentences[0] || `"${title}" by ${author} opens its central premise and world.`;
-      const s2 = sentences[1] || `As the story progresses, tensions and relationships among characters deepen around ${cleanSubjectsLabel.toLowerCase()}.`;
-      const s3 = sentences[2] || `Key choices test loyalty, identity, and conviction before the narrative reaches its turning point.`;
-      const s4 = sentences[sentences.length - 1] || `The resolution leaves a lasting impression shaped by ${author}'s approach to ${genre.toLowerCase()}.`;
-
-      const soundtrack = pickSoundtrackForSubjects(`${genre} ${subjects.join(' ')}`);
-
-      const coverImg = customCoverOverride
-        || rec.coverImg
-        || (isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=240&q=80');
-
-      const subjectThemes = subjects.slice(0, 3).map(sub => sub.charAt(0).toUpperCase() + sub.slice(1));
-      while (subjectThemes.length < 3) {
-        subjectThemes.push([
-          `Character Choices & Consequences in ${genre}`,
-          `Relationships, Loyalty & Tension`,
-          `Perspective, Growth & Resolution`
-        ][subjectThemes.length]);
-      }
-
-      const existing = state.books[id];
-
-      const whyReadIt = rawDesc.length > 35
-        ? `Offers a substantive ${genre.toLowerCase()} read by ${author}${year !== 'n.d.' ? ` (${year})` : ''}, centered on ${subjectThemes.slice(0, 2).join(' and ').toLowerCase()} with clear narrative momentum from opening premise to resolution.`
-        : `A focused ${genre.toLowerCase()} work by ${author}${year !== 'n.d.' ? ` (${year})` : ''} touching on ${cleanSubjectsLabel.toLowerCase()}—worth reading for how its characters respond to pressure and change.`;
-
-      const settingAtmosphere = `Grounded in the world of "${title}" (${cleanSubjectsLabel}), shifting in tone and atmosphere as ${author} develops scenes across ${s1.toLowerCase().replace(/[.!?]+$/, '')}.`;
-
-      const chapters = [
-        { title: 'I. Opening Premise & World', desc: s1 },
-        { title: 'II. Escalation & Conflict', desc: s2 },
-        { title: 'III. Turning Point & Stakes', desc: s3 },
-        { title: 'IV. Climax & Aftermath', desc: s4 }
-      ];
-
-      const takeaways = [
-        s1,
-        s2,
-        `Key themes in "${title}" revolve around ${subjectThemes.join(', ')}.`
-      ];
-
-      // Build smart quiz options using real catalog context when available
-      const quizQuestion = `Which work is written by ${author}?`;
-      const distractors = Object.values(state.books)
-        .filter(b => b.title && b.title !== title)
-        .map(b => b.title);
-      const fallbackTitles = [
-        'The Perks of Being a Wallflower',
-        'The Phantom of the Opera',
-        'Frankenstein',
-        'Piranesi',
-        'Noli Me Tángere'
-      ].filter(t => t !== title);
-      const allOptions = [title, ...distractors, ...fallbackTitles]
-        .filter((v, i, arr) => arr.indexOf(v) === i)
-        .slice(0, 4);
-      // Shuffle deterministically based on id so answer isn't always first
-      const shift = Math.abs(id.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % allOptions.length;
-      const rotated = allOptions.slice(shift).concat(allOptions.slice(0, shift));
-      const correctIdx = Math.max(0, rotated.indexOf(title));
-
-      return {
-        id,
-        title,
-        author,
-        year,
-        pages,
-        isbn,
-        genre,
-        meta: `${year !== 'n.d.' ? year : 'Catalog Edition'}${pages ? ` • ${pages} pages` : ''}${isbn ? ` • ISBN ${isbn}` : ''}`,
-        source: rec.source || 'Open Library & Google Books',
-        catalogUrl: rec.catalogUrl || `https://books.google.com/books?q=${encodeURIComponent(title + ' ' + author)}`,
-        vibe: `${genre} • ${soundtrack.mood.split(',')[0]}`,
-        coverImg,
-        spineColor: color,
-        summary,
-        whyReadIt,
-        settingAtmosphere,
-        characters: `Primary focus on the central figures of "${title}" by ${author}, examined through ${cleanSubjectsLabel.toLowerCase()}.`,
-        themes: subjectThemes,
-        takeaways,
-        insight: `Trace how ${author} connects ${subjectThemes[0].toLowerCase()} with ${s4.toLowerCase().replace(/[.!?]+$/, '')}.`,
-        chapters,
-        songMood: soundtrack.mood,
-        songs: soundtrack.songs,
-        filmNotes: `Search for screen adaptations, stage versions, audiobooks, or critical discussions of "${title}" by ${author}.`,
-        differences: `Adaptations of "${title}" typically compress inner monologue and secondary subplots to fit runtime or format constraints.`,
-        streams: ['Trailers & Clips', 'Audiobook Editions', 'Discussions & Reviews'],
-        quiz: {
-          question: quizQuestion,
-          options: rotated,
-          correct: correctIdx
-        },
-        readLinks: [
-          { name: 'Google Books', url: `https://books.google.com/books?q=${encodeURIComponent(title + ' ' + author)}` },
-          { name: 'Open Library', url: `https://openlibrary.org/search?q=${encodeURIComponent(title + ' ' + author)}` },
-          { name: 'WorldCat Libraries', url: `https://search.worldcat.org/search?q=${encodeURIComponent(title + ' ' + author)}` }
-        ],
-        storyPlotNote: existing?.storyPlotNote || '',
-        storyNotes: existing?.storyNotes || [s1, s2],
-        quotes: existing?.quotes || [s1]
-      };
-    }
-
-    async function searchUniversalBooks(rawQuery, field = 'all') {
-      const q = rawQuery.trim();
-      const cleanedIsbn = q.replace(/[^0-9Xx]/g, '');
-      const isIsbn = field === 'isbn' || (field === 'all' && (cleanedIsbn.length === 10 || cleanedIsbn.length === 13) && /^\d+[0-9Xx]$/.test(cleanedIsbn));
-
-      let gbQuery = encodeURIComponent(q);
-      let olUrl = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=8`;
-
-      if (isIsbn) {
-        gbQuery = `isbn:${cleanedIsbn}`;
-        olUrl = `https://openlibrary.org/search.json?isbn=${cleanedIsbn}&limit=8`;
-      } else if (field === 'title') {
-        gbQuery = `intitle:${encodeURIComponent(q)}`;
-        olUrl = `https://openlibrary.org/search.json?title=${encodeURIComponent(q)}&limit=8`;
-      } else if (field === 'author') {
-        gbQuery = `inauthor:${encodeURIComponent(q)}`;
-        olUrl = `https://openlibrary.org/search.json?author=${encodeURIComponent(q)}&limit=8`;
-      }
-
-      const gbUrl = `https://www.googleapis.com/books/v1/volumes?q=${gbQuery}&maxResults=8`;
-
-      const [gbRes, olRes] = await Promise.allSettled([
-        fetch(gbUrl).then(r => r.ok ? r.json() : null),
-        fetch(olUrl).then(r => r.ok ? r.json() : null)
-      ]);
-
-      const candidates = [];
-      const seenKeys = new Set();
-
-      if (gbRes.status === 'fulfilled' && gbRes.value?.items) {
-        for (const item of gbRes.value.items) {
-          const info = item.volumeInfo || {};
-          if (!info.title) continue;
-          const author = (info.authors && info.authors.join(', ')) || 'Unknown Author';
-          const dedupKey = `${info.title.toLowerCase()}::${author.toLowerCase()}`;
-          if (seenKeys.has(dedupKey)) continue;
-          seenKeys.add(dedupKey);
-
-          const identifiers = info.industryIdentifiers || [];
-          const isbn13 = identifiers.find(i => i.type === 'ISBN_13')?.identifier;
-          const isbn10 = identifiers.find(i => i.type === 'ISBN_10')?.identifier;
-          const thumb = info.imageLinks?.thumbnail || info.imageLinks?.smallThumbnail;
-          const coverImg = thumb ? thumb.replace(/^http:/, 'https:').replace('&edge=curl', '') : null;
-
-          candidates.push({
-            title: info.title,
-            author,
-            year: (info.publishedDate || '').slice(0, 4) || 'n.d.',
-            pages: info.pageCount || 0,
-            isbn: isbn13 || isbn10 || (isIsbn ? cleanedIsbn : ''),
-            genre: (info.categories && info.categories[0]) || 'General Literature',
-            subjects: info.categories || [],
-            description: info.description || '',
-            coverImg,
-            catalogUrl: info.infoLink || info.previewLink || '',
-            source: 'Google Books'
-          });
-        }
-      }
-
-      if (olRes.status === 'fulfilled' && olRes.value?.docs) {
-        for (const doc of olRes.value.docs) {
-          if (!doc.title) continue;
-          const author = (doc.author_name && doc.author_name.join(', ')) || 'Unknown Author';
-          const dedupKey = `${doc.title.toLowerCase()}::${author.toLowerCase()}`;
-          if (seenKeys.has(dedupKey)) continue;
-          seenKeys.add(dedupKey);
-
-          const isbn = (doc.isbn && doc.isbn[0]) || (isIsbn ? cleanedIsbn : '');
-          const coverImg = doc.cover_i
-            ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`
-            : (isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg` : null);
-
-          candidates.push({
-            title: doc.title,
-            author,
-            year: doc.first_publish_year ? String(doc.first_publish_year) : 'n.d.',
-            pages: doc.number_of_pages_median || 0,
-            isbn,
-            genre: (doc.subject && doc.subject[0]) || 'World Catalog',
-            subjects: (doc.subject || []).slice(0, 5),
-            description: typeof doc.first_sentence === 'string'
-              ? doc.first_sentence
-              : (Array.isArray(doc.first_sentence) ? doc.first_sentence[0] : ''),
-            coverImg,
-            catalogUrl: doc.key ? `https://openlibrary.org${doc.key}` : '',
-            source: 'Open Library'
-          });
-        }
-      }
-
-      return candidates;
-    }
-
-    async function lookupAndSelectBook(query, field = 'all', customCoverOverride = null) {
-      const feedback = document.getElementById('scanFeedback');
-      if (feedback) feedback.textContent = `Searching catalogs for "${query}"...`;
-
-      try {
-        const candidates = await searchUniversalBooks(query, field);
-        lastSearchCandidates = candidates;
-
-        if (candidates.length > 0) {
-          const topBook = synthesizeBookFromRecord(candidates[0], customCoverOverride);
-          state.books[topBook.id] = topBook;
-          state.activeBookId = topBook.id;
-          state.selectedShelfBookId = topBook.id;
-          if (topBook.pages > 0) {
-            document.getElementById('currentPageInput').value = state.progress[topBook.id]?.current || '';
-            document.getElementById('totalPagesInput').value = state.progress[topBook.id]?.total || topBook.pages;
-          }
-          saveState();
-          renderSearchMatches(candidates);
-          renderAll();
-          if (feedback) feedback.textContent = `Loaded full info for "${topBook.title}" by ${topBook.author}. Click "+ Add to Bookshelf" to save it.`;
-          return topBook;
-        } else {
-          const fallbackBook = synthesizeBookFromRecord({
-            title: query,
-            author: 'Custom Catalog Entry',
-            genre: 'Reader Entry',
-            source: 'Custom Card'
-          }, customCoverOverride);
-          state.books[fallbackBook.id] = fallbackBook;
-          state.activeBookId = fallbackBook.id;
-          state.selectedShelfBookId = fallbackBook.id;
-          saveState();
-          renderSearchMatches([]);
-          renderAll();
-          if (feedback) feedback.textContent = `Created book card for "${query}". Click "+ Add to Bookshelf" to save it.`;
-          return fallbackBook;
-        }
-      } catch (err) {
-        console.error(err);
-        if (feedback) feedback.textContent = 'Lookup hiccup—created a local card instead.';
-      }
-    }
-
-    function addActiveBookToBookshelf(bookId = null) {
-      const targetId = bookId || state.activeBookId;
-      const book = state.books[targetId];
-      if (!book) return;
-
-      if (!state.bookshelfIds.includes(targetId)) {
-        state.bookshelfIds.push(targetId);
-      }
-      state.selectedShelfBookId = targetId;
-      saveState();
-      renderActiveBook();
-      renderBookshelf();
-      showBanner(`Added "${book.title}" to your Bookshelf with its own Story Notes & Nightstand.`);
-    }
-
-    function openActiveBookInNook() {
-      const targetId = state.activeBookId;
-      if (!state.bookshelfIds.includes(targetId)) {
-        state.bookshelfIds.push(targetId);
-      }
-      state.selectedShelfBookId = targetId;
-      saveState();
-      renderBookshelf();
-      switchPrimaryView('bookshelf');
-    }
-
-    function renderSearchMatches(candidates) {
-      const wrapper = document.getElementById('searchMatchesWrapper');
-      const list = document.getElementById('searchMatchesList');
-      if (!wrapper || !list) return;
-
-      if (!candidates || candidates.length <= 1) {
-        wrapper.classList.add('hidden');
-        return;
-      }
-
-      wrapper.classList.remove('hidden');
-      list.innerHTML = candidates.map((c, idx) => `
-        <button
-          type="button"
-          onclick="selectSearchCandidate(${idx})"
-          class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-amber-100/70 border border-stone-800/20 flex items-center justify-between gap-2 transition"
-        >
-          <div class="min-w-0">
-            <p class="text-xs font-bold text-stone-900 truncate">${c.title}</p>
-            <p class="text-[11px] text-stone-600 truncate">${c.author} • ${c.year} • ${c.source}</p>
-          </div>
-          <span class="text-[11px] font-semibold text-[#b85d3b] shrink-0">Load ✦</span>
-        </button>
-      `).join('');
-    }
-
-    function selectSearchCandidate(idx) {
-      const rec = lastSearchCandidates[idx];
-      if (!rec) return;
-      const book = synthesizeBookFromRecord(rec);
-      state.books[book.id] = book;
-      state.activeBookId = book.id;
-      state.selectedShelfBookId = book.id;
-      saveState();
-      renderAll();
-      showBanner(`Loaded "${book.title}" (${book.source}).`);
-    }
-
-    function selectPresetBook(bookId) {
-      const book = state.books[bookId] || DEFAULT_BOOKS[bookId];
-      if (!book) return;
-      state.books[book.id] = book;
-      state.activeBookId = book.id;
-      state.selectedShelfBookId = book.id;
-      saveState();
-      renderAll();
-      showBanner(`Loaded rich story dossier for "${book.title}" by ${book.author}.`);
-    }
-
-    function triggerQuickSearch(query) {
-      const input = document.getElementById('scanTitleInput');
-      if (input) input.value = query;
-      runScanAnimation(() => lookupAndSelectBook(query, 'all'));
-    }
-
-    function handleScanSubmit(event) {
-      event.preventDefault();
-      const input = document.getElementById('scanTitleInput');
-      const field = document.getElementById('searchFieldSelect')?.value || 'all';
-      const val = input.value.trim();
-      if (!val) {
-        document.getElementById('scanFeedback').textContent = 'Enter any book title, author, or ISBN first.';
-        return;
-      }
-      runScanAnimation(() => {
-        lookupAndSelectBook(val, field);
-      });
-    }
-
-    function runScanAnimation(callback) {
-      const beam = document.getElementById('scanBeam');
-      const flash = document.getElementById('flash-overlay');
-      const stamp = document.getElementById('boothTimestamp');
-      if (beam) beam.classList.remove('hidden');
-      if (flash) {
-        flash.style.opacity = '0.75';
-        setTimeout(() => { flash.style.opacity = '0'; }, 220);
-      }
-      if (stamp) {
-        const now = new Date();
-        stamp.textContent = now.toTimeString().slice(0, 8);
-      }
-      setTimeout(() => {
-        if (beam) beam.classList.add('hidden');
-        if (typeof callback === 'function') callback();
-      }, 420);
-    }
-
-    function toggleFilmTint() {
-      state.goldenHourTint = !state.goldenHourTint;
-      const overlay = document.getElementById('filmOverlay');
-      const btn = document.getElementById('filmTintBtn');
-      if (overlay) overlay.classList.toggle('opacity-0', !state.goldenHourTint);
-      if (btn) btn.textContent = state.goldenHourTint ? 'Golden Hour Cam' : 'Clean Lens';
-      saveState();
-    }
-
-    async function toggleCamera() {
-      const video = document.getElementById('webcam-video');
-      const preview = document.getElementById('scanned-image-preview');
-      const idle = document.getElementById('idleBoothPlaceholder');
-      const btn = document.getElementById('cameraToggleBtn');
-      const snapBtn = document.getElementById('snapBarcodeBtn');
-      const status = document.getElementById('camera-status');
-
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(t => t.stop());
-        cameraStream = null;
-        video.classList.add('hidden');
-        snapBtn?.classList.add('hidden');
-        if (!state.lastBoothSnapDataUrl) idle.classList.remove('hidden');
-        btn.textContent = 'Start Camera';
-        return;
-      }
-
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        video.srcObject = cameraStream;
-        video.classList.remove('hidden');
-        preview.classList.add('hidden');
-        idle.classList.add('hidden');
-        snapBtn?.classList.remove('hidden');
-        btn.textContent = 'Stop Camera';
-      } catch (err) {
-        if (status) status.textContent = 'Camera unavailable—upload a cover image or search any title above.';
-        showBanner('Camera unavailable; upload a cover image or search any book title.');
-      }
-    }
-
-    async function detectIsbnFromSource(imageSource) {
-      if (!('BarcodeDetector' in window)) return null;
-      try {
-        const detector = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128'] });
-        const codes = await detector.detect(imageSource);
-        for (const c of codes) {
-          const digits = (c.rawValue || '').replace(/[^0-9Xx]/g, '');
-          if (digits.length === 10 || digits.length === 13) return digits;
-        }
-      } catch (e) {
-        console.warn('Barcode detection skipped:', e);
-      }
-      return null;
-    }
-
-    async function extractCoverTextViaOcr(imageSource) {
-      if (typeof Tesseract === 'undefined') return '';
-      const feedback = document.getElementById('scanFeedback');
-      if (feedback) feedback.textContent = 'Reading cover text via OCR...';
-      try {
-        const result = await Tesseract.recognize(imageSource, 'eng');
-        const rawText = (result?.data?.text || '')
-          .split('
-')
-          .map(line => line.replace(/[^a-zA-Z0-9\s:'-]/g, '').trim())
-          .filter(line => line.length >= 3)
-          .slice(0, 3)
-          .join(' ');
-        return rawText.slice(0, 80).trim();
-      } catch (e) {
-        console.warn('OCR skipped:', e);
-        return '';
-      }
-    }
-
-    async function captureFrameAndScan() {
-      const video = document.getElementById('webcam-video');
-      if (!cameraStream || !video) return;
-
-      const canvas = document.getElementById('captureCanvas');
-      canvas.width = video.videoWidth || 480;
-      canvas.height = video.videoHeight || 720;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      state.lastBoothSnapDataUrl = dataUrl;
-
-      runScanAnimation(async () => {
-        const isbn = await detectIsbnFromSource(canvas);
-        if (isbn) {
-          document.getElementById('scanTitleInput').value = isbn;
-          await lookupAndSelectBook(isbn, 'isbn', dataUrl);
-          return;
-        }
-        const typedTitle = document.getElementById('scanTitleInput')?.value.trim();
-        if (typedTitle) {
-          await lookupAndSelectBook(typedTitle, 'all', dataUrl);
-          return;
-        }
-        const ocrQuery = await extractCoverTextViaOcr(canvas);
-        if (ocrQuery) {
-          document.getElementById('scanTitleInput').value = ocrQuery;
-          await lookupAndSelectBook(ocrQuery, 'all', dataUrl);
-        } else {
-          document.getElementById('scanFeedback').textContent = 'Snapshot captured! Type the book title or ISBN above.';
-        }
-      });
-    }
-
-    function handleCoverFileUpload(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        state.lastBoothSnapDataUrl = dataUrl;
-        const preview = document.getElementById('scanned-image-preview');
-        const video = document.getElementById('webcam-video');
-        const idle = document.getElementById('idleBoothPlaceholder');
-        preview.src = dataUrl;
-        preview.classList.remove('hidden');
-        video.classList.add('hidden');
-        idle.classList.add('hidden');
-
-        preview.onload = async () => {
-          runScanAnimation(async () => {
-            const detectedIsbn = await detectIsbnFromSource(preview);
-            if (detectedIsbn) {
-              document.getElementById('scanTitleInput').value = detectedIsbn;
-              await lookupAndSelectBook(detectedIsbn, 'isbn', dataUrl);
-              return;
-            }
-            const typedTitle = document.getElementById('scanTitleInput')?.value.trim();
-            if (typedTitle) {
-              await lookupAndSelectBook(typedTitle, 'all', dataUrl);
-              return;
-            }
-            const ocrText = await extractCoverTextViaOcr(preview);
-            const cleanedFilename = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ').trim();
-            const query = ocrText || cleanedFilename;
-            if (query) {
-              document.getElementById('scanTitleInput').value = query;
-              await lookupAndSelectBook(query, 'all', dataUrl);
-            }
-          });
-        };
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function pinCurrentBoothPhoto() {
-      const video = document.getElementById('webcam-video');
-      let imgSrc = state.lastBoothSnapDataUrl;
-
-      if (cameraStream && video && !video.classList.contains('hidden')) {
-        const canvas = document.getElementById('captureCanvas');
-        canvas.width = video.videoWidth || 400;
-        canvas.height = video.videoHeight || 600;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        imgSrc = canvas.toDataURL('image/jpeg', 0.85);
-        state.lastBoothSnapDataUrl = imgSrc;
-      }
-
-      const book = state.books[state.activeBookId];
-      const customCaption = prompt('What caption do you want on this pinned photo?', book ? `${book.title} — ${state.selectedSpot}` : 'My book booth snap');
-      if (customCaption === null) return;
-
-      state.corkboardPins.push({
-        id: 'pin-' + Date.now(),
-        type: imgSrc ? 'photo' : 'note',
-        title: book ? book.title : 'Booth Snap',
-        text: customCaption.trim() || `${state.selectedDrink} • ${state.selectedSpot}`,
-        imgUrl: imgSrc || book?.coverImg || null,
-        color: 'terracotta',
-        x: 36 + ((state.corkboardPins.length * 42) % 240),
-        y: 36 + ((state.corkboardPins.length * 34) % 140),
-        rot: (state.corkboardPins.length % 2 === 0 ? -3 : 3)
-      });
-      saveState();
-      renderCorkboard();
-      showBanner('Pinned snap with your custom caption to the Corkboard!');
-    }
-
-    function handleAddCorkboardPin(event) {
-      event.preventDefault();
-      const caption = document.getElementById('corkCaptionInput').value.trim() || 'Custom caption';
-      const urlInput = document.getElementById('corkImageUrlInput').value.trim();
-      const color = document.getElementById('corkPinColorSelect').value;
-      const imgUrl = urlInput || state.lastBoothSnapDataUrl || null;
-
-      state.corkboardPins.push({
-        id: 'pin-' + Date.now(),
-        type: imgUrl ? 'photo' : 'note',
-        title: imgUrl ? 'Pinned Photo' : 'Custom Caption Note',
-        text: caption,
-        imgUrl,
-        color,
-        x: 40 + ((state.corkboardPins.length * 48) % 260),
-        y: 40 + ((state.corkboardPins.length * 36) % 150),
-        rot: ((state.corkboardPins.length % 3) - 1) * 2.5
-      });
-      document.getElementById('corkCaptionInput').value = '';
-      document.getElementById('corkImageUrlInput').value = '';
-      saveState();
-      renderCorkboard();
-    }
-
-    function handleCorkboardFileUpload(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const typedCaption = document.getElementById('corkCaptionInput')?.value.trim();
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const chosenCaption = typedCaption || prompt('Enter a caption for this pinned photo:') || file.name.replace(/\.[^/.]+$/, '');
-        state.corkboardPins.push({
-          id: 'pin-' + Date.now(),
-          type: 'photo',
-          title: file.name.replace(/\.[^/.]+$/, ''),
-          text: chosenCaption.trim() || 'Pinned photo',
-          imgUrl: e.target.result,
-          color: 'amber',
-          x: 50 + ((state.corkboardPins.length * 45) % 240),
-          y: 45 + ((state.corkboardPins.length * 35) % 140),
-          rot: -2
-        });
-        if (document.getElementById('corkCaptionInput')) document.getElementById('corkCaptionInput').value = '';
-        saveState();
-        renderCorkboard();
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function editCorkboardCaption(pinId) {
-      const pin = state.corkboardPins.find(p => p.id === pinId);
-      if (!pin) return;
-      const updated = prompt('Edit caption for this pin:', pin.text);
-      if (updated === null) return;
-      pin.text = updated.trim() || pin.text;
-      saveState();
-      renderCorkboard();
-    }
-
-    function addTextNotePin() {
-      const typedCaption = document.getElementById('corkCaptionInput')?.value.trim();
-      state.corkboardPins.push({
-        id: 'pin-' + Date.now(),
-        type: 'note',
-        title: 'Custom Note',
-        text: typedCaption || `Sipping ${state.selectedDrink} at ${state.selectedSpot}.`,
-        color: 'sage',
-        x: 60 + ((state.corkboardPins.length * 44) % 250),
-        y: 50 + ((state.corkboardPins.length * 32) % 150),
-        rot: 2
-      });
-      if (document.getElementById('corkCaptionInput')) document.getElementById('corkCaptionInput').value = '';
-      saveState();
-      renderCorkboard();
-    }
-
-    function removeCorkboardPin(id) {
-      state.corkboardPins = state.corkboardPins.filter(p => p.id !== id);
-      saveState();
-      renderCorkboard();
-    }
-
-    function renderCorkboard() {
-      const layer = document.getElementById('corkboardPinsLayer');
-      if (!layer) return;
-      const colorMap = {
-        terracotta: 'bg-[#b85d3b]',
-        sage: 'bg-[#4f6d58]',
-        amber: 'bg-amber-500'
-      };
-
-      layer.innerHTML = state.corkboardPins.map(pin => `
-        <div
-          data-pin-id="${pin.id}"
-          onpointerdown="startPinDrag(event, '${pin.id}')"
-          style="left: ${pin.x}px; top: ${pin.y}px; transform: rotate(${pin.rot}deg);"
-          class="absolute cursor-grab active:cursor-grabbing w-56 bg-[#fffdf9] border-2 border-stone-900 rounded-xl p-3 shadow-md select-none touch-none"
-        >
-          <div class="flex items-center justify-between mb-1.5">
-            <span class="pushpin-head ${colorMap[pin.color] || colorMap.terracotta}"></span>
-            <div class="flex items-center gap-1">
-              <button type="button" onclick="event.stopPropagation(); editCorkboardCaption('${pin.id}')" class="text-[11px] font-semibold text-[#b85d3b] hover:underline px-1">Caption</button>
-              <button type="button" onclick="event.stopPropagation(); removeCorkboardPin('${pin.id}')" class="text-xs text-stone-500 hover:text-stone-900 font-bold px-1" aria-label="Remove pin">✕</button>
-            </div>
-          </div>
-          ${pin.imgUrl ? `<img src="${pin.imgUrl}" alt="${pin.title}" class="w-full h-28 object-cover rounded-lg border border-stone-800/20 mb-2 pointer-events-none" />` : ''}
-          <p class="text-[11px] font-bold uppercase tracking-wider text-stone-500 truncate">${pin.title}</p>
-          <p class="font-sketch text-base text-stone-900 leading-snug mt-0.5">${pin.text}</p>
-        </div>
-      `).join('');
-    }
-
-    function startPinDrag(event, pinId) {
-      if (event.target.closest('button')) return;
-      const pin = state.corkboardPins.find(p => p.id === pinId);
-      const stage = document.getElementById('corkboardStage');
-      if (!pin || !stage) return;
-
-      const startX = event.clientX;
-      const startY = event.clientY;
-      const origX = pin.x;
-      const origY = pin.y;
-
-      function onMove(moveEvent) {
-        const maxX = Math.max(20, stage.clientWidth - 245);
-        const maxY = Math.max(20, stage.clientHeight - 170);
-        pin.x = Math.min(maxX, Math.max(8, origX + (moveEvent.clientX - startX)));
-        pin.y = Math.min(maxY, Math.max(8, origY + (moveEvent.clientY - startY)));
-        renderCorkboard();
-      }
-
-      function onUp() {
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onUp);
-        saveState();
-      }
-
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onUp);
-    }
-
-    // Freehand Sketchpad Canvas Logic
-    function initSketchpad() {
-      const canvas = document.getElementById('sketchpadCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#fffefa';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      function getPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
         return {
-          x: (e.clientX - rect.left) * scaleX,
-          y: (e.clientY - rect.top) * scaleY
+          ok: true,
+          message: `Saved entry for ${cleanName} (PIN verified format).`,
+          data: { name: cleanName, pin: cleanPin }
         };
       }
 
-      canvas.onpointerdown = function(e) {
-        isDrawing = true;
-        const pos = getPos(e);
-        lastDrawX = pos.x;
-        lastDrawY = pos.y;
-      };
+      function initPinForm() {
+        const form = document.getElementById("pinForm");
+        const nameInput = document.getElementById("userName");
+        const pinInput = document.getElementById("userPin");
+        const submitBtn = document.getElementById("submitBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const statusBox = document.getElementById("statusBox");
 
-      canvas.onpointermove = function(e) {
-        if (!isDrawing) return;
-        const pos = getPos(e);
-        const color = document.getElementById('drawColorInput')?.value || '#2b1d14';
-        const size = parseInt(document.getElementById('drawSizeInput')?.value || '4', 10) || 4;
+        if (!form || !nameInput || !pinInput || !statusBox) return;
 
-        ctx.beginPath();
-        ctx.moveTo(lastDrawX, lastDrawY);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.strokeStyle = isEraserMode ? '#fffefa' : color;
-        ctx.lineWidth = isEraserMode ? size * 3 : size;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
+        function showStatus(result) {
+          statusBox.textContent = result.message;
+          statusBox.className = "status " + (result.ok ? "success" : "error");
+        }
 
-        lastDrawX = pos.x;
-        lastDrawY = pos.y;
-      };
+        function handleSubmission(event) {
+          if (event && typeof event.preventDefault === "function") {
+            event.preventDefault();
+          }
+          const result = submitNameAndPin(nameInput.value, pinInput.value);
+          showStatus(result);
+        }
 
-      const stopDraw = () => { isDrawing = false; };
-      canvas.onpointerup = stopDraw;
-      canvas.onpointerleave = stopDraw;
-    }
+        pinInput.addEventListener("input", function () {
+          pinInput.value = pinInput.value.replace(/\D/g, "").slice(0, 4);
+        });
 
-    function toggleEraserMode() {
-      isEraserMode = !isEraserMode;
-      const btn = document.getElementById('eraserToggleBtn');
-      if (btn) btn.textContent = `Eraser: ${isEraserMode ? 'On' : 'Off'}`;
-    }
+        form.addEventListener("submit", handleSubmission);
 
-    function clearSketchCanvas() {
-      const canvas = document.getElementById('sketchpadCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#fffefa';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+        if (submitBtn) {
+          submitBtn.addEventListener("click", function (event) {
+            if (form.tagName !== "FORM") {
+              handleSubmission(event);
+            }
+          });
+        }
 
-    function pinDrawingToCorkboard() {
-      const canvas = document.getElementById('sketchpadCanvas');
-      if (!canvas) return;
-      const dataUrl = canvas.toDataURL('image/png');
-      const captionInput = document.getElementById('sketchCaptionInput');
-      const caption = (captionInput?.value || '').trim() || 'Hand-drawn sketch';
+        if (clearBtn) {
+          clearBtn.addEventListener("click", function () {
+            nameInput.value = "";
+            pinInput.value = "";
+            statusBox.textContent = "";
+            statusBox.className = "status";
+            nameInput.focus();
+          });
+        }
 
-      state.corkboardPins.push({
-        id: 'pin-' + Date.now(),
-        type: 'photo',
-        title: 'Sketch Drawing',
-        text: caption,
-        imgUrl: dataUrl,
-        color: 'terracotta',
-        x: 45 + ((state.corkboardPins.length * 46) % 240),
-        y: 45 + ((state.corkboardPins.length * 34) % 140),
-        rot: -1.5
-      });
-      if (captionInput) captionInput.value = '';
-      saveState();
-      renderCorkboard();
-      showBanner('Pinned your drawing with its caption onto the Corkboard!');
-    }
-
-    function selectDrink(drinkName) {
-      state.selectedDrink = drinkName;
-      saveState();
-      renderCoffeeBoard();
-      renderReceipt();
-    }
-
-    function renderCoffeeBoard() {
-      const badge = document.getElementById('cafeCupBadge');
-      const buttons = document.getElementById('coffeeMenuButtons');
-      const note = document.getElementById('coffeePairingNote');
-      const activeObj = COFFEE_MENU.find(d => d.name === state.selectedDrink) || COFFEE_MENU[0];
-
-      if (badge) badge.textContent = activeObj.name;
-      if (note) note.textContent = activeObj.note;
-      if (buttons) {
-        buttons.innerHTML = COFFEE_MENU.map(item => {
-          const isSelected = item.name === activeObj.name;
-          return `
-            <button
-              type="button"
-              onclick="selectDrink('${item.name.replace(/'/g, "\'")}')"
-              class="text-xs px-2.5 py-1 rounded-lg border font-medium transition ${isSelected ? 'bg-amber-300 text-stone-950 border-amber-200 font-bold' : 'bg-white/10 text-amber-100 border-amber-200/20 hover:bg-white/20'}"
-            >
-              ${item.name}
-            </button>
-          `;
-        }).join('');
+        window.submitNameAndPin = submitNameAndPin;
       }
-    }
 
-    function toggleSongListView() {
-      state.showAllSongs = !state.showAllSongs;
-      saveState();
-      renderActiveBook();
-    }
-
-    function toggleBookFinished(bookId) {
-      if (!bookId) return;
-      if (state.readIds.includes(bookId)) {
-        state.readIds = state.readIds.filter(x => x !== bookId);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initPinForm);
       } else {
-        state.readIds.push(bookId);
+        initPinForm();
       }
-      saveState();
-      renderBookshelf();
-    }
-
-    function setRating(stars) {
-      state.ratings[state.activeBookId] = stars;
-      saveState();
-      renderActiveBook();
-      renderReceipt();
-    }
-
-    function saveBookProgress() {
-      const cur = Math.max(0, parseInt(document.getElementById('currentPageInput')?.value || '0', 10) || 0);
-      const tot = Math.max(0, parseInt(document.getElementById('totalPagesInput')?.value || '0', 10) || 0);
-      state.progress[state.activeBookId] = { current: cur, total: tot };
-      saveState();
-      renderReceipt();
-    }
-
-    function checkQuiz(selectedIdx, correctIdx) {
-      const feedback = document.getElementById('quiz-feedback');
-      if (!feedback) return;
-      if (selectedIdx === correctIdx) {
-        feedback.textContent = 'Correct! ✦';
-        feedback.className = 'text-xs font-bold text-emerald-700';
-      } else {
-        feedback.textContent = 'Try again!';
-        feedback.className = 'text-xs font-bold text-[#b85d3b]';
-      }
-    }
-
-    function speakSummary() {
-      const book = state.books[state.activeBookId];
-      if (!book) return;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(`${book.title} by ${book.author}. ${book.summary}`);
-        utter.rate = 0.96;
-        window.speechSynthesis.speak(utter);
-      } else {
-        showBanner('Read-aloud is not supported in this browser.');
-      }
-    }
-
-    function copyTextValue(elementId, label) {
-      const text = document.getElementById(elementId)?.textContent || '';
-      if (!text) return;
-      navigator.clipboard?.writeText(text);
-      showBanner(`Copied ${label} to clipboard.`);
-    }
-
-    function exportStudyPack(format) {
-      const book = state.books[state.activeBookId] || DEFAULT_BOOKS.perks;
-      const yr = book.year && book.year !== 'n.d.' ? book.year : 'n.d.';
-      const prog = state.progress[book.id] || { current: 0, total: book.pages || 0 };
-
-      let content = [
-        `# ${book.title} — Book Info & Study Pack`,
-        `**Author:** ${book.author} (${yr})`,
-        `**Genre:** ${book.genre}`,
-        `**Reading Spot & Cuppa:** ${state.selectedSpot} • ${state.selectedDrink}`,
-        `**Progress:** p.${prog.current} / ${prog.total || book.pages || '—'}`,
-        '',
-        `## Synopsis`,
-        book.summary,
-        '',
-        `## Story Notes`,
-        book.storyPlotNote || '_None yet._',
-        ...(book.storyNotes || []).map(n => `- ${n}`),
-        '',
-        `## Nightstand Quotes`,
-        ...(book.quotes || []).map(q => `> "${q}"`)
-      ].join('
-');
-
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${book.id}-quillfinite-pack.${format}`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showBanner(`Downloaded ${book.title} pack (.${format.toUpperCase()}).`);
-    }
-
-    function renderActiveBook() {
-      const book = state.books[state.activeBookId] || DEFAULT_BOOKS.perks;
-      const isOnShelf = state.bookshelfIds.includes(book.id);
-      const rating = state.ratings[book.id] || 0;
-      const prog = state.progress[book.id] || { current: 0, total: book.pages || 0 };
-
-      const coverEl = document.getElementById('book-cover-img');
-      coverEl.onerror = function() {
-        this.onerror = null;
-        this.src = 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=240&q=80';
-      };
-      coverEl.src = book.coverImg;
-
-      document.getElementById('bookGenreBadge').textContent = book.genre;
-      document.getElementById('bookMetaBadge').textContent = book.meta;
-      document.getElementById('bookSourceBadge').textContent = book.source || 'Catalog';
-      document.getElementById('onShelfBadge').classList.toggle('hidden', !isOnShelf);
-      document.getElementById('addToBookshelfBtn').textContent = isOnShelf ? 'On Bookshelf ✓' : '+ Add to Bookshelf';
-      document.getElementById('bookTitle').textContent = book.title;
-      document.getElementById('bookAuthor').textContent = `by ${book.author}`;
-      document.getElementById('bookVibe').textContent = book.vibe;
-      document.getElementById('bookSynopsis').textContent = book.summary;
-      document.getElementById('bookWhyReadIt').textContent = book.whyReadIt || `"${book.title}" explores ${book.genre.toLowerCase()} with strong emotional and thematic resonance.`;
-      document.getElementById('bookSettingAtmosphere').textContent = book.settingAtmosphere || book.vibe;
-      document.getElementById('bookCharacters').textContent = `Characters & Focus: ${book.characters}`;
-      document.getElementById('bookInsightLine').textContent = book.insight;
-      document.getElementById('bookSongMood').textContent = book.songMood;
-      document.getElementById('bookFilmNotes').textContent = book.filmNotes;
-      document.getElementById('bookDifferencesLine').textContent = `Page to Screen: ${book.differences}`;
-      document.getElementById('currentPageInput').value = prog.current || '';
-      document.getElementById('totalPagesInput').value = prog.total || book.pages || '';
-      document.getElementById('bookTrailerLink').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(book.title + ' ' + book.author + ' adaptation trailer')}`;
-
-      const yr = book.year && book.year !== 'n.d.' ? book.year : 'n.d.';
-      document.getElementById('mlaCitationText').textContent = `${book.author}. ${book.title}. ${yr}.`;
-      document.getElementById('apaCitationText').textContent = `${book.author} (${yr}). ${book.title}.`;
-
-      document.getElementById('bookThemesList').innerHTML = (book.themes || []).map(t =>
-        `<li class="flex items-start gap-2"><span class="text-[#8c7866] font-bold">-</span><span>${t}</span></li>`
-      ).join('');
-
-      document.getElementById('bookTakeawaysList').innerHTML = (book.takeaways || []).map(t =>
-        `<li class="flex items-start gap-2"><span class="text-[#8c7866] font-bold">-</span><span>${t}</span></li>`
-      ).join('');
-
-      document.getElementById('bookChaptersList').innerHTML = (book.chapters || []).map(c => `
-        <div class="p-3 rounded-xl bg-amber-50/60 border border-stone-800/15">
-          <h4 class="font-bold text-xs text-stone-900">${c.title}</h4>
-          <p class="text-xs text-stone-600 mt-1 leading-relaxed">${c.desc}</p>
-        </div>
-      `).join('');
-
-      const songsToShow = state.showAllSongs ? (book.songs || []) : (book.songs || []).slice(0, 2);
-      document.getElementById('songListToggleBtn').textContent = state.showAllSongs ? 'Show Top 2 Only' : `Show All ${(book.songs || []).length} Songs`;
-      document.getElementById('bookSongsList').innerHTML = songsToShow.map((s, idx) => `
-        <li class="p-3 rounded-xl bg-amber-50/50 border border-stone-800/15 flex items-center justify-between gap-3">
-          <div>
-            <p class="text-xs font-bold text-stone-900">${idx + 1}. ${s.title} — <span class="text-[#b85d3b]">${s.artist}</span></p>
-            <p class="font-sketch text-sm text-stone-600">${s.vibe}</p>
-          </div>
-          <a href="https://open.spotify.com/search/${encodeURIComponent(s.title + ' ' + s.artist)}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold px-2.5 py-1.5 sketch-btn bg-white text-stone-900 hover:bg-amber-100 shrink-0">
-            Spotify ↗
-          </a>
-        </li>
-      `).join('');
-
-      document.getElementById('movieStreamBadges').innerHTML = (book.streams || []).map(st =>
-        `<span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white border border-stone-800/15 text-stone-800">${st}</span>`
-      ).join('');
-
-      document.getElementById('ratingStars').innerHTML = [1, 2, 3, 4, 5].map(n => `
-        <button type="button" onclick="setRating(${n})" class="text-base leading-none ${n <= rating ? 'text-amber-500' : 'text-stone-300'}" aria-label="Rate ${n} stars">★</button>
-      `).join('');
-
-      if (book.quiz) {
-        document.getElementById('quiz-feedback').textContent = '';
-        document.getElementById('quiz-question').textContent = book.quiz.question;
-        document.getElementById('quiz-options').innerHTML = book.quiz.options.map((opt, idx) => `
-          <button type="button" onclick="checkQuiz(${idx}, ${book.quiz.correct})" class="w-full text-left px-3 py-2 rounded-xl bg-white hover:bg-amber-50 border border-stone-800/20 text-xs font-semibold text-stone-800 transition">
-            ${opt}
-          </button>
-        `).join('');
-      }
-
-      document.getElementById('read-links').innerHTML = (book.readLinks || []).map(l =>
-        `<a href="${l.url || '#'}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold px-3 py-1.5 sketch-btn bg-white hover:bg-amber-50 text-stone-800">${l.name} ↗</a>`
-      ).join('');
-
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-      renderReceipt();
-    }
-
-    function renderReceipt() {
-      const book = state.books[state.activeBookId] || DEFAULT_BOOKS.perks;
-      const prog = state.progress[book.id] || { current: 0, total: book.pages || 0 };
-      const rating = state.ratings[book.id] || 0;
-      const total = prog.total || book.pages || 0;
-      const pct = total > 0 ? Math.min(100, Math.round((prog.current / total) * 100)) : 0;
-
-      document.getElementById('receiptTitleLine').textContent = book.title;
-      document.getElementById('receiptDrinkLine').textContent = state.selectedDrink;
-      document.getElementById('receiptSpotLine').textContent = state.selectedSpot;
-      document.getElementById('receiptSummaryLine').textContent = total > 0 ? `p.${prog.current} / ${total}` : `p.${prog.current}`;
-      document.getElementById('receiptRatingLine').textContent = rating > 0 ? `${'★'.repeat(rating)} (${rating}/5)` : 'Unrated';
-      document.getElementById('receiptQuoteLine').textContent = book.quotes?.[0] ? `“${book.quotes[0].slice(0, 140)}”` : '';
-      document.getElementById('pageProgressPercent').textContent = `${pct}%`;
-      document.getElementById('pageProgressBar').style.width = `${pct}%`;
-    }
-
-    function copyReadingReceipt() {
-      const title = document.getElementById('receiptTitleLine')?.textContent || '';
-      const cuppa = document.getElementById('receiptDrinkLine')?.textContent || '';
-      const spot = document.getElementById('receiptSpotLine')?.textContent || '';
-      const progress = document.getElementById('receiptSummaryLine')?.textContent || '';
-      const text = `QUILLFINITE RECEIPT — ${title} | Cuppa: ${cuppa} | Spot: ${spot} | Progress: ${progress}`;
-      navigator.clipboard?.writeText(text);
-      showBanner('Copied your reading receipt to clipboard.');
-    }
-
-    function printReadingReceipt() {
-      window.print();
-    }
-
-    function setShelfFinish(finish) {
-      state.shelfFinish = finish;
-      saveState();
-      renderBookshelf();
-    }
-
-    function selectBookshelfBook(bookId) {
-      if (!state.books[bookId]) return;
-      state.selectedShelfBookId = bookId;
-      saveState();
-      renderBookshelf();
-    }
-
-    function renderBookshelf() {
-      const cabinet = document.getElementById('bookcaseCabinet');
-      const stats = document.getElementById('shelfStatsText');
-      const selector = document.getElementById('perBookSelector');
-      if (!cabinet) return;
-
-      const shelvedBooks = state.bookshelfIds
-        .map(id => state.books[id])
-        .filter(Boolean);
-
-      if (!shelvedBooks.some(b => b.id === state.selectedShelfBookId)) {
-        state.selectedShelfBookId = shelvedBooks[0]?.id || state.activeBookId;
-      }
-
-      const activeShelfBook = state.books[state.selectedShelfBookId] || DEFAULT_BOOKS.perks;
-
-      if (stats) {
-        stats.textContent = `${shelvedBooks.length} book(s) on your shelf • Selected: "${activeShelfBook.title}"`;
-      }
-
-      document.getElementById('shelfFinishSelect').value = state.shelfFinish;
-
-      if (selector) {
-        selector.innerHTML = shelvedBooks.map(b =>
-          `<option value="${b.id}" ${b.id === activeShelfBook.id ? 'selected' : ''}>${b.title}</option>`
-        ).join('');
-      }
-
-      const finishClass = state.shelfFinish;
-      const rows = [];
-      for (let i = 0; i < Math.max(1, Math.ceil(shelvedBooks.length / 5)); i++) {
-        rows.push(shelvedBooks.slice(i * 5, i * 5 + 5));
-      }
-
-      cabinet.innerHTML = rows.map(row => `
-        <div class="space-y-0">
-          <div class="min-h-[144px] px-3 pt-4 flex flex-wrap items-end gap-3">
-            ${row.length === 0 ? `<p class="font-sketch text-base text-stone-600 pb-3">No books on your shelf yet—use "+ Add to Bookshelf" in the Book Booth.</p>` : row.map(b => {
-              const isSelected = b.id === activeShelfBook.id;
-              return `
-                <button
-                  type="button"
-                  onclick="selectBookshelfBook('${b.id}')"
-                  style="background-color: ${b.spineColor || '#b85d3b'};"
-                  class="w-24 sm:w-28 h-32 rounded-t-lg border-2 border-stone-900 p-2.5 text-left text-amber-50 flex flex-col justify-between shadow-sm hover:-translate-y-1 transition ${isSelected ? 'ring-4 ring-amber-300' : ''}"
-                >
-                  <span class="text-[10px] font-mono uppercase opacity-80 line-clamp-1">${(b.genre || 'Book').split('/')[0]}</span>
-                  <span class="font-display text-xs font-bold leading-snug line-clamp-3">${b.title}</span>
-                  <span class="text-[10px] opacity-85 truncate">${b.author}</span>
-                </button>
-              `;
-            }).join('')}
-          </div>
-          <div class="${finishClass} h-4 rounded-sm"></div>
-        </div>
-      `).join('');
-
-      renderPerBookSections(activeShelfBook);
-    }
-
-    function renderPerBookSections(book) {
-      const isFinished = state.readIds.includes(book.id);
-
-      document.getElementById('perBookStoryNotesHeading').textContent = `Story Notes • ${book.title}`;
-      document.getElementById('perBookStoryOwnerLabel').textContent = book.title;
-      document.getElementById('perBookPlotNoteInput').value = book.storyPlotNote || '';
-
-      const notesList = document.getElementById('perBookStoryNotesList');
-      const notes = book.storyNotes || [];
-      notesList.innerHTML = notes.map((n, idx) => `
-        <li class="flex items-start justify-between gap-2 p-3 rounded-xl bg-amber-50/70 border border-stone-800/15 text-xs sm:text-sm text-stone-800">
-          <span>• ${n}</span>
-          <button type="button" onclick="deletePerBookStoryNote(${idx})" class="text-xs text-stone-400 hover:text-stone-900 px-1" aria-label="Delete story note">✕</button>
-        </li>
-      `).join('');
-
-      document.getElementById('perBookNightstandHeading').textContent = `Nightstand • ${book.title}`;
-      document.getElementById('perBookNightstandOwnerLabel').textContent = book.title;
-      document.getElementById('perBookFinishedBtn').textContent = isFinished ? 'Finished ✓' : 'Mark Finished';
-
-      const quotesList = document.getElementById('perBookNightstandQuotesList');
-      const quotes = book.quotes || [];
-      quotesList.innerHTML = quotes.map((q, idx) => `
-        <blockquote class="rounded-xl border-2 border-stone-800/15 bg-amber-50/70 p-3.5 font-sketch text-lg text-stone-900 flex items-start justify-between gap-2">
-          <span>“${q}”</span>
-          <button type="button" onclick="deletePerBookQuote(${idx})" class="text-xs font-sans text-stone-400 hover:text-stone-900 px-1" aria-label="Delete quote">✕</button>
-        </blockquote>
-      `).join('');
-    }
-
-    function savePerBookStoryNotes() {
-      const book = state.books[state.selectedShelfBookId];
-      if (!book) return;
-      book.storyPlotNote = document.getElementById('perBookPlotNoteInput')?.value || '';
-      saveState();
-    }
-
-    function handleAddPerBookStoryNote(event) {
-      event.preventDefault();
-      const input = document.getElementById('newPerBookStoryBulletInput');
-      const val = input.value.trim();
-      if (!val) return;
-      const book = state.books[state.selectedShelfBookId];
-      if (!book) return;
-      book.storyNotes = book.storyNotes || [];
-      book.storyNotes.push(val);
-      input.value = '';
-      saveState();
-      renderPerBookSections(book);
-    }
-
-    function deletePerBookStoryNote(idx) {
-      const book = state.books[state.selectedShelfBookId];
-      if (!book || !book.storyNotes) return;
-      book.storyNotes.splice(idx, 1);
-      saveState();
-      renderPerBookSections(book);
-    }
-
-    function handleAddPerBookNightstandQuote(event) {
-      event.preventDefault();
-      const input = document.getElementById('newPerBookQuoteInput');
-      const val = input.value.trim();
-      if (!val) return;
-      const book = state.books[state.selectedShelfBookId];
-      if (!book) return;
-      book.quotes = book.quotes || [];
-      book.quotes.push(val);
-      input.value = '';
-      saveState();
-      renderPerBookSections(book);
-      renderReceipt();
-    }
-
-    function deletePerBookQuote(idx) {
-      const book = state.books[state.selectedShelfBookId];
-      if (!book || !book.quotes) return;
-      book.quotes.splice(idx, 1);
-      saveState();
-      renderPerBookSections(book);
-    }
-
-    function selectHinigaranCafeSpot(label) {
-      state.selectedSpot = label;
-      saveState();
-      renderHinigaranCafes();
-      renderReceipt();
-      showBanner(`Reading spot set to "${label}" on your receipt.`);
-    }
-
-    function renderHinigaranCafes() {
-      const grid = document.getElementById('hinigaranCafesGrid');
-      const badge = document.getElementById('selectedSpotBadge');
-      if (badge) badge.textContent = `Spot: ${state.selectedSpot}`;
-      if (!grid) return;
-
-      grid.innerHTML = HINIGARAN_MAP_CAFES.map(cafe => {
-        const spotLabel = `${cafe.name} • ${cafe.address.split(',')[0]}`;
-        const active = state.selectedSpot === spotLabel;
-        return `
-          <div class="rounded-2xl border-2 p-4 flex flex-col justify-between gap-3 transition ${active ? 'border-[#b85d3b] bg-amber-50/90' : 'border-stone-800/20 bg-white'}">
-            <div class="space-y-1.5">
-              <div class="flex items-start justify-between gap-2">
-                <h3 class="font-display text-lg font-bold text-stone-900 leading-snug">${cafe.name}</h3>
-                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-950 shrink-0">${cafe.rating}</span>
-              </div>
-              <p class="text-xs font-medium text-stone-700">${cafe.address}</p>
-              <p class="text-[11px] font-mono text-stone-600">${cafe.hours}</p>
-              <p class="font-sketch text-base text-stone-700 pt-0.5">${cafe.vibe}</p>
-            </div>
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-dashed border-stone-800/15">
-              <button type="button" onclick="selectHinigaranCafeSpot('${spotLabel.replace(/'/g, "\'")}')" class="px-3 py-1.5 sketch-btn ${active ? 'bg-[#4f6d58] text-white' : 'bg-amber-100 text-stone-900 hover:bg-amber-200'} text-xs font-semibold">
-                ${active ? 'Selected ✓' : 'Use as Spot'}
-              </button>
-              <a href="${cafe.mapsUrl}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-[#b85d3b] hover:underline">
-                Open on Map ↗
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderAll() {
-      renderCoffeeBoard();
-      renderActiveBook();
-      renderBookshelf();
-      renderCorkboard();
-      renderHinigaranCafes();
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
-
-    loadState();
-    initSketchpad();
-    renderAll();
-    switchPrimaryView(state.activeView || 'booth');
+    })();
   </script>
 </body>
 </html>
